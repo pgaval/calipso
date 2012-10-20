@@ -1,0 +1,18 @@
+<wicket:panel>
+<!-- begin:AssetTypesListPanel.html -->
+	<span wicket:id="paginationPanel"></span>
+	<table class="itemlist" cellspacing="0">
+		<thead>
+			<tr class="sortable">
+				<th wicket:id="headings"><span wicket:id="heading"><a href="#" wicket:id="heading"></a></span></th>
+				<th><wicket:message key="edit"/></th>
+			</tr>
+		</thead>
+		<tr wicket:id="assetTypeList">
+			<td wicket:id="description"></td>
+  		  	<td wicket:id="edit" align="center"><a href="#" wicket:message="title:edit"><img src="resources/edit.gif"/></a></td>
+		</tr>
+		<tr wicket:id="noData"><td colspan="6" class="noData"><wicket:message key="noData"/></td></tr>
+	</table>
+<!-- end:AssetTypesListPanel.html -->
+</wicket:panel>

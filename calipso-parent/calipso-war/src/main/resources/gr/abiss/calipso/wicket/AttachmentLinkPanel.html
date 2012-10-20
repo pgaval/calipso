@@ -1,0 +1,37 @@
+<wicket:head>
+<script language="javascript" type="text/javascript" src="resources/js/highslide/highslide-full.js"></script>
+<script type="text/javascript">
+	hs.registerOverlay({
+		overlayId: 'closebutton',
+		position: 'top right',
+		fade: 2 // fading the semi-transparent overlay looks bad in IE
+	});
+	
+	
+	//hs.graphicsDir is set in Java
+	
+	hs.wrapperClassName = 'borderless';
+</script>
+
+</wicket:head>
+
+<wicket:panel>
+<!-- begin:AttachmentLinkPanel.html -->
+
+<span wicket:id="attachmentContainer">
+	<span wicket:id="imageAttachment">
+		<a href="#" wicket:id="attachment" class="highslide" onclick="return hs.expand(this)">
+			<img class="link" wicket:id="imageThumb" title="Click to enlarge"/>
+		</a>
+	</span>
+	<div class='highslide-caption'>
+	    <a href="#" wicket:id="attachment" target="_blank">
+			<!-- img src="resources/attachment.gif" class="nav-link"/-->
+			<span wicket:id="fileName"/>
+		</a>
+	</div>
+</span>
+    
+<!-- end:AttachmentLinkPanel.html -->
+</wicket:panel>
+

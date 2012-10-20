@@ -1,0 +1,50 @@
+<wicket:panel>
+	<!-- begin: EditFieldGroupsPanel.html -->
+
+<form wicket:id="fieldGroupForm">
+	
+	<div wicket:id="fieldGroupFormFeedback">Errors and messages go here</div>
+	<table>
+	
+		<tr>
+			<td class="label">
+				<label wicket:id="idLabel">name</label>
+				<span class="mandatory">*</span>
+			</td>
+			<td>
+				<input type="text" wicket:id="id" />
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				<label wicket:id="nameLabel">name</label>
+				<span class="mandatory">*</span>
+			</td>
+			<td>
+				<input type="text" wicket:id="name" />
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				<label wicket:id="priorityLabel">priority</label>
+				<span class="mandatory">*</span>
+			</td>
+			<td>
+				<input type="text" wicket:id="priority" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button wicket:id="save">save</button>
+			</td>
+			<td>
+				<button wicket:id="cancel">cancel</button>
+			</td>
+		</tr>
+	</table>
+	
+	
+</form>
+
+	<!-- end: EditFieldGroupsPanel.html -->
+</wicket:panel>

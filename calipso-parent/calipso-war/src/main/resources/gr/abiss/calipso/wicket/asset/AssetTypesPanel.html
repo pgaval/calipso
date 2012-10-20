@@ -1,0 +1,45 @@
+<wicket:panel>
+<!-- begin:AssetTypesPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+    	<h1><wicket:message key="asset.assetTypes.title"/></h1>
+    	<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+    	<span class="heading-actions">
+    		<a href="#" wicket:id="new"><img src="resources/new.gif" class="nav-link"/><wicket:message key="asset.assetTypes.Create"/></a>
+    	</span>
+		<span class="heading-actions">
+			<img src="resources/search.gif"/>
+			<a href="#" wicket:id="search"><wicket:message key="asset.assetTypes.searchAssetTypes"/></a>
+		</span>
+    </div>
+    <div class="section-body">
+	    <p class="help-message"><wicket:message key="AssetTypesPanel.help"/></p>
+	    <span wicket:id="searchContainer">
+			<div wicket:id="searchPlaceHolder">
+				<form wicket:id="form">
+					<fieldset>
+						<legend><wicket:message key="asset.assetTypes.searchParameters"/></legend>
+				    	<table class="itemlist" cellspacing="0">
+				    		<tr>
+				    			<td class="label"><label wicket:id="nameLabel">asset.assetTypes.description</label></td>
+				    			<td><input type="text" wicket:id="name" /></td>
+				    		</tr>
+				    	</table>
+				    	<br />
+				    	<input type="submit" class="button" wicket:message="value:submit"/>
+				    	<input type="reset" class="button" wicket:message="value:reset"/>
+					</fieldset>
+			    </form>
+			</div>
+		</span>
+	</div>
+	<div class="heading-container-insection">
+    	<h2><wicket:message key="asset.assetTypes.assetTypesList"/></h2>
+    </div>
+	<div class="section-body" wicket:id="assetTypesListPanel"></div>
+	
+</div>
+<!-- end:AssetTypesPanel.html -->
+</wicket:panel>

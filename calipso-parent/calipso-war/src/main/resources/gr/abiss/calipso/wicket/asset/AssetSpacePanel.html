@@ -1,0 +1,81 @@
+<wicket:panel>
+	<!-- begin:AssetSpacePanel.html -->
+	<div class="section">
+		<div class="heading-container1">
+			<h1><wicket:message key="asset.title" /></h1>
+			<span class="heading-actions"> 
+				<span wicket:id="backLink"></span>
+			</span> 
+			<span class="heading-actions"> 
+				<a href="#" wicket:id="new">
+					<img src="resources/new.gif" wicket:message="title:asset.createNewAsset" />
+					<wicket:message key="asset.createNewAsset" /> 
+				</a> 
+			</span> 
+			<span class="heading-actions">
+				<img src="resources/search.gif" /> 
+				<a href="#" wicket:id="search">
+					<wicket:message key="asset.searchSpaceAssets" />
+				</a> 
+			</span>
+		</div>
+		<div class="section-body">
+			<p class="help-message"><wicket:message key="AssetSpacePanel.help" /></p>
+			<div wicket:id="searchContainer">
+				<div wicket:id="searchPlaceHolder" class="m0_10_0_10">
+					<form wicket:id="form">
+						<fieldset>
+							<legend><wicket:message key="search" /></legend>
+							<table cellspacing="0">
+								<tr>
+									<td class="label"><label wicket:id="assetInventoryCodeLabel">asset.inventoryCode</label>
+									</td>
+									<td colspan="3"><input wicket:id="asset.inventoryCode" size="35" />
+									</td>
+								</tr>
+								<tr>
+									<td class="label"><label wicket:id="startDateFromLabel">asset.fromStartDate</label>
+									</td>
+									<td wicket:id="startDateFrom"></td>
+									<td class="label"><label wicket:id="startDateToLabel">asset.toStartDate</label>
+									</td>
+									<td wicket:id="startDateTo"></td>
+								</tr>
+								<tr>
+									<td class="label"><label wicket:id="endDateFromLabel">asset.fromEndDate</label>
+									</td>
+									<td wicket:id="endDateFrom"></td>
+									<td class="label"><label wicket:id="endDateToLabel">asset.toEndDate</label>
+									</td>
+									<td wicket:id="endDateTo"></td>
+								</tr>
+								<tr>
+									<td class="label"><label wicket:id="assetSpaceLabel">asset.space</label>
+									</td>
+									<td colspan="3"><select wicket:id="asset.space" /></td>
+								</tr>
+								<tr>
+									<td class="label"><label wicket:id="assetTypeLabel">asset.assetType</label>
+									</td>
+									<td colspan="3"><select wicket:id="asset.assetType" /></td>
+								</tr>
+						
+								<span wicket:id="customAttributesPanel"></span>
+						
+								<tr>
+									<td colspan="4"><input type="submit" class="button"
+										wicket:message="value:submit" /> <input type="reset" class="button"
+										wicket:message="value:reset" /></td>
+								</tr>
+						
+							</table>
+						</fieldset>
+					</form>
+					<br />
+				</div>
+			</div>
+			<div wicket:id="assetsListPanel"></div>
+		</div>
+	</div>
+	<!-- end:AssetSpacePanel.html -->
+</wicket:panel>

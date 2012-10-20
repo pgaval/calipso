@@ -1,0 +1,61 @@
+<wicket:panel>
+<!-- begin:SelectAssetsForItemPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="asset.assetsList.assetsList"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="SelectAssetsForItemPanel.help"/></p>
+		<form wicket:id="form">
+		<span wicket:id="remainingAssetsPlace"></span>
+		<span wicket:id="selectedAssetsPlace"></span>
+
+		</form>
+	</div>
+</div>
+<!-- end:SelectAssetsForItemPanel.html -->
+</wicket:panel>
+<wicket:fragment wicket:id="remainingAssetsFragment">
+	<table cellspacing="0">
+		<thead>
+			<tr>
+				<th><wicket:message key="asset.assetPanel.assetType"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.inventoryCode"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.supportStartDate"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.supportEndDate"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.addAsset"></wicket:message></th>
+			</tr>
+		</thead>
+		<tr wicket:id="assetsListView">
+			<td class="label"><label wicket:id="assetType"></label></td>
+			<td class="label"><label wicket:id="inventoryCode"></label></td>
+			<td class="label"><label wicket:id="supportStartDate"></label></td>
+			<td class="label"><label wicket:id="supportEndDate"></label></td>
+			<td><input type="image" wicket:id="assetAction" src="../resources/add.gif"/></td>
+		</tr>
+	</table>
+</wicket:fragment>
+<wicket:fragment wicket:id="selectedAssetsFragment">
+	<table cellspacing="0">
+		<thead>
+			<tr>
+				<th><wicket:message key="asset.assetPanel.assetType"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.inventoryCode"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.supportStartDate"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.supportEndDate"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.removeAsset"></wicket:message></th>
+			</tr>
+		</thead>
+		
+		<tr wicket:id="assetsListView">
+			<td class="label"><label wicket:id="assetType"></label></td>
+			<td class="label"><label wicket:id="inventoryCode"></label></td>
+			<td class="label"><label wicket:id="supportStartDate"></label></td>
+			<td class="label"><label wicket:id="supportEndDate"></label></td>
+			<td><input type="image" wicket:id="assetAction" src="../resources/delete.gif"/></td>
+		</tr>
+	</table>
+</wicket:fragment>

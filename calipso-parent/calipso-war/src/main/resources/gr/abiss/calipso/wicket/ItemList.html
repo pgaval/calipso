@@ -1,0 +1,61 @@
+<html>
+    <body>
+        <wicket:panel>
+<!-- begin:ItemList.html -->
+		<div class="section">
+			<div class="heading-container">
+				<h2><wicket:message key=item_list.title /></h2>
+				<span class="heading-actions">
+					<span wicket:id="backLink"></span>
+				</span>
+				<span class="heading-actions">
+	            	<span wicket:id="count"><img src="resources/search.gif" class="nav-link"/><a href="#"><span wicket:id="count"></span> <span wicket:id="recordsFound"></span></a></span>&nbsp;
+	            </span>
+	            <span class="heading-actions" wicket:id="export">
+	            	<img src="resources/excel.gif" class="nav-link"/><a href="#"><wicket:message key="item_list.exportToExcel"/></a>
+	            </span>
+	            <span class="heading-actions" wicket:id="agregatesContainer">
+	            	<img src="resources/excel.gif" class="nav-link"/>
+	            	<a href="#" wicket:id="agregatesReportLink">
+	            		<wicket:message key="item_search_form.agregatesReportLinkLabel" />
+	            	</a>
+	            </span>
+	            <span class="heading-actions">
+	                    	<span wicket:id="saveSearchContainer">
+	                    		<span style="position:relative;" wicket:id="saveSearchFormPanel"></span>
+		                    	<img src="resources/page_save.png" class="nav-link"/>
+		                    	<a wicket:id="saveSearchLink" href="#"><wicket:message key="item_saved_search.save_this"/></a>
+	                    	</span>
+	            </span>
+	            <span class="heading-actions">
+	                <span wicket:id="pagination" class="page-links">
+	                	<span wicket:id="prevOn"><a href="#" wicket:id="prevOn"></a></span><span wicket:id="prevOff"></span>&nbsp;
+	                    <span wicket:id="pages">
+	                    	<span wicket:id="pageOn"><a href="#" wicket:id="pageOn"></a></span><span wicket:id="pageOff"></span>&nbsp;
+	                        </span><span wicket:id="nextOn"><a href="#" wicket:id="nextOn"></a></span><span wicket:id="nextOff"></span>                    
+	                    </span>
+	            </span>
+			</div>
+			<div class="section-body">
+				<div wicket:id="agregatesReportModal"></div>
+	            <table class="itemlist" cellspacing="0">
+	            	<caption class="help-message"><span wicket:id="helpMessage"/></caption>
+	                <thead>
+	                	<tr class="heading">
+		                    <th wicket:id="headings"><span wicket:id="heading"><a href="#" wicket:id="heading"></a></span></th>                    
+	                	</tr>
+	                </thead>
+	                <tr wicket:id="itemList">
+	                    <td wicket:id="columns"><span wicket:id="column"></span></td>
+	                </tr>
+	                <tr wicket:id="noData"><td wicket:id="noDataCell" class="noData"><wicket:message key="noData"/></td></tr>
+	            </table>
+	    	</div>
+		</div>
+<!-- end:ItemList.html -->
+        </wicket:panel>
+        <wicket:fragment wicket:id="refId"><a href="#" wicket:id="refId"><span wicket:id="refId"></span></a><span wicket:id="index"></span></wicket:fragment>
+        <wicket:fragment wicket:id="detail"><!-- span wicket:id="attachment"></span--><span wicket:id="detail"></span></wicket:fragment>
+        <wicket:fragment wicket:id="assetTypesFragment"><span wicket:id="assetTypesPanel"></span></wicket:fragment>
+    </body>
+</html>

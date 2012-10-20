@@ -1,0 +1,26 @@
+<wicket:panel>
+	<!-- begin:AssetFormCustomAttributePanel.html -->
+	<tr wicket:id="fields">
+		<td class="label" wicket:id="fieldLabel"></td>
+		<td wicket:id="customAttributes"></td>
+	</tr>
+
+	<!-- end:AssetFormCustomAttributePanel.html -->
+</wicket:panel>
+
+<wicket:fragment wicket:id="dropDownFragment">
+	<select wicket:id="attributeValue"></select>
+</wicket:fragment>
+<wicket:fragment wicket:id="dropDownField">
+	<select wicket:id="customAttribute.allowedLookupValues.id"></select>
+</wicket:fragment>
+<wicket:fragment wicket:id="treeField">
+	<div wicket:id="customAttribute.allowedLookupValues.id"></div>
+</wicket:fragment>
+<wicket:fragment wicket:id="textField">
+	<input type="text" wicket:id="attributeValue" />
+</wicket:fragment>
+<wicket:fragment wicket:id="mandatory">
+	<span wicket:id="label"></span>
+	<span wicket:id="mandatoryPanel"></span>
+</wicket:fragment>

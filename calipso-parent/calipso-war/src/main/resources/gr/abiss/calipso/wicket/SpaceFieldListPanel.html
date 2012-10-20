@@ -1,0 +1,84 @@
+<wicket:panel>
+<!-- begin:SpaceFieldListPanel.html -->
+<div class="section">
+		<div class="heading-container">
+			<h2><wicket:message key="fieldGroups"/></h2>
+	    	<span class="heading-actions">
+	    		<a href="#" wicket:id="newFieldGroupLink"><img src="resources/new.gif" class="nav-link"/><wicket:message key="new"/></a>
+	    	</span>
+		</div>
+		
+		<div class="section-body">
+		    <fieldset>
+				<div wicket:id="gridContainer">
+					<div wicket:id="fieldGroupGrid"></div>
+					<div wicket:id="fieldGroupModal"></div>
+				</div>
+		    </fieldset>
+			<div class="heading-container-insection">
+				<h1><wicket:message key="space_fields.customFields"/>:
+			        <span wicket:id="name"></span> (<span wicket:id="prefixCode"></span>)</h1>
+				<span class="heading-actions">
+					<span wicket:id="backLink"></span>
+				</span>	
+			</div>
+		<p class="help-message"><wicket:message key="SpaceFieldListPanel.help"/></p>
+		
+		
+	    <form wicket:id="form">
+		    <fieldset>
+		    	<legend><wicket:message key="space_fields.customFields"/></legend>
+	        
+	        	<label wicket:id="typeLabel">space_fields.chooseType</label>
+	      		<select wicket:id="type"/>
+	        	<input type="submit" class="button" wicket:id="add" wicket:message="value:space_fields.addField"/>                
+	        
+		    </fieldset>
+	        <p>
+	        	<input type="submit" class="button" wicket:id="back" wicket:message="value:back"/>                
+	        	<input type="submit" class="button" wicket:id="apply" wicket:message="value:apply"/>                 
+	        	<input type="submit" class="button" wicket:id="next" wicket:message="value:next"/>                
+	        </p>
+	        
+		        <table wicket:id="spaceFields" cellspacing="0">
+		        	<thead>
+			            <tr>
+			                <th><wicket:message key="space_fields.move"/></th>
+			                <th><wicket:message key="space_fields.internalName"/></th>
+			                <th><wicket:message key="space_fields.type"/></th>                        
+			                <th><wicket:message key="space_fields.label"/></th>
+			                <th><wicket:message key="space_fields.optionList"/></th>
+			                <th><wicket:message key="edit"/></th>
+			            </tr>
+		        	</thead>
+		        	<tbody>
+			            <tr wicket:id="fields">
+			                <td>
+			                    <input type="image" wicket:id="up" src="../resources/up.gif"/>
+			                    <input type="image" wicket:id="down" src="../resources/down.gif"/>
+			                </td>
+			                <td wicket:id="name"></td>
+			                <td wicket:id="type"></td>                        
+			                <td wicket:id="label"></td>
+			                <td>
+			                	<div wicket:id="options-container">
+				                	<ul>
+					                    <li wicket:id="options">
+					                        <span wicket:id="option"></span>
+					                    </li>
+				                    </ul>
+				                </div>
+			                </td>
+			                <td align="center">
+			                    <input type="image" wicket:id="edit" src="../resources/edit.gif"/>
+			                </td>
+			            </tr>      
+		        	</tbody>              
+		        </table>
+		        <div wicket:id="noData" class="noData"><wicket:message key="space_fields.noDataFound"/></div>
+	    </form>
+	    
+	</div>
+</div>
+<!-- end:SpaceFieldListPanel.html -->
+</wicket:panel>

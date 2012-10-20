@@ -1,0 +1,30 @@
+<html xmlns:wicket>
+<wicket:panel>
+	<!-- begin:OrganizationListPanel.html -->
+	<span wicket:id="paginationPanel"></span>
+	<table class="itemlist" cellspacing="0">
+		<thead>
+			<tr class="sortable">
+				<th wicket:id="headings">
+					<span wicket:id="heading">
+						<a href="#" wicket:id="heading"></a>
+					</span>
+				</th>
+				<th><wicket:message key="edit" /></th>
+			</tr>
+		</thead>
+		<tr wicket:id="organizationList">
+			<td wicket:id="description"></td>
+			<td wicket:id="address"></td>
+			<td wicket:id="zip"></td>
+			<td wicket:id="country"></td>
+			<td wicket:id="phone"></td>
+			<td><a wicket:id="web"></a></td>
+			<td wicket:id="edit" align="center">
+				<a href="#" wicket:message="title:edit"><img src="resources/edit.gif" /></a>
+			</td>
+		</tr>
+	</table>
+	<!-- end:OrganizationListPanel.html -->
+</wicket:panel>
+</html>

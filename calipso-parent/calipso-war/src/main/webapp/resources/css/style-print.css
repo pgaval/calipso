@@ -1,0 +1,34 @@
+.nav-header, 
+.context-menu, 
+.crumbs-container,
+#section-add-coment,
+.loggedByIcon,
+.heading-actions{
+	display: none;
+}
+.heading-container,
+.heading-container1{
+	border: none;
+	background: none;
+	border-bottom:1px dotted #888888;
+}
+
+.context-menu + .content {
+    margin: 10px;
+}
+.content, .main-content, .section-body{
+	width:100%;
+	
+}
+table.history-entry,
+.alt table.history-entry{
+	border:none;
+	border-bottom:1px dotted #888888;
+}
+
+.history-entry-details,
+.history-entry-comment
+.alt .history-entry-details,
+.alt .history-entry-comment{
+	border: none !important;
+}

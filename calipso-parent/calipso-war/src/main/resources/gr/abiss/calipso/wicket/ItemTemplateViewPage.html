@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html>
+	<head>
+		<style type='text/css'>
+			#normalFooter, #firstPageFooter{font-size:12px;}
+			@page {@bottom-right {content: element(normalFooter);}}
+			@page :first {@bottom-right {content: element(firstPageFooter);}}
+			#page:before {content: counter(page);}
+			#pagecount:before {content: counter(pages);}
+			.heading-container1{display:none;}
+			h1{font-size:16px;padding:10px;background: #B31921;font-weight:bold;color:#FFFFFF;}
+			body {font-size:14px; /*font-family: \"Arial Unicode MS\";*/ }
+			th{width:40%;max-width:50%;text-align:left;font-weight:bold;}
+			td, th, caption{padding-left:4px;padding-right:4px;padding-top:2px;padding-bottom:2px;}
+			table.overview{border-collapse:collapse;background:#FFFFFF;width:100%;margin-bottom:8px;page-break-inside: avoid; }
+			tr.alt { background: #F2F2F2; }
+			table.overview caption{background: #B31921;font-weight:bold;color:#FFFFFF;text-align:left;}
+			td, th{vertical-align:top;}
+			.footer{display:none;}
+			.clear{clear:both;}
+      
+
+		</style>
+	</head>
+	<body>
+		<img src='logo.png' style='margin:20px;' />
+<!-- begin:ItemTemplateViewPage.html -->
+		<div class="main-content" wicket:id="panel"></div>
+<!-- end:ItemTemplateViewPage.html -->
+		<div id='normalFooter' style='position: running(normalFooter);'><div class="footer">Page <span id='page'/> of <span id='pagecount'/></div></div>
+		<div id='firstPageFooter' style='position: running(firstPageFooter);'><div class="footer">Page <span id='page'/> of <span id='pagecount'/></div></div>
+	</body>
+</html>
+		

@@ -1,0 +1,58 @@
+<wicket:panel>
+	<!-- begin:ItemAssetsPanel.html -->
+	<div wicket:id="assetsContainer">
+		<div wicket:id="assetFIlterContainer">
+		<!-- Begin: AssetFIlterContainer -->
+			<span class="label" wicket:id="assetTypeFIlterLabel">
+				<wicket:message key="asset.assetPanel.assetTypeFilter"></wicket:message>
+			</span>
+			<select wicket:id="assetTypeChoice"></select> 
+			<span wicket:id="assetCodeContainer">
+				<span class="label" wicket:id="assetCodeLabel">
+				 	<wicket:message key="asset.assetPanel.assetCodeFilter"></wicket:message>
+				 </span>
+				 	<input type="text" wicket:id="assetCode" /> <input type="button" wicket:id="submitAssetCode" wicket:message="value:find" />
+			 </span>
+		<!-- End: AssetFIlterContainer -->
+		</div>
+		<div wicket:id="itemAssetsListPlaceHolder"></div>
+		<p wicket:id="noAssetMessage"></p>
+	</div>
+	<!-- end:ItemAssetsPanel.html -->
+</wicket:panel>
+<!-- Fragment with listView -->
+<wicket:fragment wicket:id="itemAssetsListContainerFragment">
+	<!-- start ItemAssetsPanel.html#itemAssetsListContainerFragment -->
+	<table class="itemAssetsList" wicket:id="itemAssetsListContainer" cellspacing="0">
+		<thead>
+			<tr>
+				<th wicket:id="hCheckbox"></th>
+				<th><wicket:message key="asset.assetPanel.assetType"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.inventoryCode"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.supportStartDate"></wicket:message></th>
+				<th><wicket:message key="asset.assetPanel.supportEndDate"></wicket:message></th>
+				<th style="display: none;"><wicket:message key="asset.assetPanel.Attributes"></wicket:message></th>
+			</tr>
+		</thead>
+		<tr wicket:id="assetsList">
+			<td wicket:id="chooseContainer"><input type="checkbox" wicket:id="choose" value="1" /></td>
+			<td>
+				<table>
+					<tr>
+						<td><span wicket:id="assetType"></span></td>
+						<td style="text-align: right;"><a href="#"
+							wicket:id="showCustomAttributesLink" style="text-align: right;">
+						<span wicket:id="imagePanel"></span> </a></td>
+						<td wicket:id="customAttributesContainer" nowrap="nowrap"><span
+							wicket:id="customAttributesPanel"></span></td>
+					</tr>
+				</table>
+			</td>
+			<td wicket:id="inventoryCode"></td>
+			<td wicket:id="supportStartDate"></td>
+			<td wicket:id="supportEndDate"></td>
+			<td style="display: none;"></td>
+		</tr>
+	</table>
+	<!-- end ItemAssetsPanel.html#itemAssetsListContainerFragment -->
+</wicket:fragment>

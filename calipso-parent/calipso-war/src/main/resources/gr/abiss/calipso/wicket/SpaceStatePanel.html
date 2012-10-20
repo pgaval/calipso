@@ -1,0 +1,64 @@
+<wicket:panel>
+<!-- begin:SpaceStatePanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="title"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<span class="heading-actions">
+			<a href="#" wicket:id="delete">
+				<img src="resources/delete.gif" class="nav-link"/>
+				<wicket:message key="delete"/>
+			</a>
+		</span>	  
+	</div>
+	<div class="section-body">
+		<form wicket:id="form">
+			<fieldset>
+				<div wicket:id="feedback"></div>
+				<table cellspacing="0" class="form">
+					<tr>
+						<td class="label"><label wicket:id="stateNameLabel">space_state_form.stateName</label></td>
+						<td><input wicket:id="stateName" /></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="statePluginLabel">space_state_form.statePlugin</label></td>
+						<td><textarea wicket:id="statePlugin"></textarea></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="stateDurationLabel">space_state_form.stateDuration</label></td>
+						<td><input wicket:id="stateDuration" wicket:message = "title:help.field.humantime"  /></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="makeAssetLabel">space_state_form.makeAsset</label></td>
+						<td><select wicket:id="makeAsset"></select></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="existingAssetTypeLabel">space_state_form.existinAsset</label></td>
+						<td>
+							<select wicket:id="existingAssetType"></select>
+							<input type="checkbox" wicket:id="existingAssetTypeMultiple" />
+							<label wicket:id="existingAssetTypeMultipleLabel">Allow multiple?</label>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="stateTemplateLabel">space_state_form.statePlugin</label></td>
+						<td><textarea wicket:id="stateTemplateTextArea"></textarea></td>
+						<td></td>
+					</tr>
+				</table>
+				<span style="padding-left:15px;">
+					<div wicket:id="movetospace"><label><wicket:message key="space_state_form.addSpecialState"/></label>&nbsp;<input wicket:id="addMoveToSpace" type="checkbox"/>&nbsp;<span style="font-weight:bold;" wicket:id="movetospacedescription"></span></div>
+				</span>
+			</fieldset>
+			<p><input type="submit" class="button" wicket:message="value:submit" /></p>
+		</form>
+	</div>
+</div>
+<!-- end:SpaceStatePanel.html -->
+</wicket:panel>

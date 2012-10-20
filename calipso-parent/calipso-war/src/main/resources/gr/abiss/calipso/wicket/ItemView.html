@@ -1,0 +1,161 @@
+<wicket:panel>
+<!-- begin:ItemView.html -->
+	<!--h1 wicket:id="title"></h1>
+	<br class="clear" /-->
+	<div class="section">
+		<div class="heading-container1">
+			<h1><wicket:message key="item_view.generalData" /></h1>
+			<span class="heading-actions">
+				<span wicket:id="backLink"></span>
+			</span>	
+			<span class="heading-actions" wicket:id="relatedContainer">	
+                <a style="padding-left:5px;" href="#" wicket:id="relate1" wicket:message="title:item_view_form.addRelatedItem">
+                	<img src="resources/add.gif" />
+                	<wicket:message key="item_view.relatedItems"/>
+                </a>
+			</span>
+			<span class="heading-actions">
+				<span wicket:id="editContainer">
+					<a href="#" wicket:id="edit"> 
+						<img src="resources/edit.gif" class="nav-link" />
+						 <wicket:message key="edit"/> 
+					</a>
+				</span>
+			</span>
+			<span class="heading-actions"> 
+				<img src="resources/pdf.png" class="nav-link"/>
+				<a wicket:id="printToPdf">
+					<wicket:message key="exportToPdf" />
+				</a>
+			</span>
+			<span class="clear"></span>
+		</div>
+		<div class="section-body">
+		    <table class="overview" cellspacing="0">
+		    	<!-- ID and related Items -->
+		        <tr wicket:id="summaryContainer">
+		            <th class="label-right"><wicket:message key="item_view.summary"/></th>
+		            <td colspan="3" wicket:id="summary"></td>
+		        </tr>
+		        <tr valign="top" class="alt">
+		            <th class="label-right">
+		            	<wicket:message key="item_view.id"/>
+		            </th>			
+		            <td>
+		            	<a href="#" wicket:id="uniqueRefId"><span wicket:id="uniqueRefId"></span></a>
+		            </td>
+		            <th class="label-right">
+		                <wicket:message key="item_view.relatedItems"/>
+		            </th>
+		            <td>
+		                <span wicket:id="relatedItems">
+		                    <span wicket:id="message"></span>
+		                    <span wicket:id="link"><a href="#" wicket:id="refId"></a></span>
+		                    <a href="#" wicket:id="remove" wicket:message="title:item_view.remove"><img src="resources/remove.gif"/></a>                                       
+		                    <br/>
+		                </span>                
+		                <span wicket:id="relatingItems">
+		                    <span wicket:id="link"><a href="#" wicket:id="refId"></a></span>
+		                    <span wicket:id="message"></span>
+		                    <a href="#" wicket:id="remove" wicket:message="title:item_view.remove"><img src="resources/remove.gif"/></a>                    
+		                    <br/>
+		                </span>
+		            </td>
+		        </tr>
+		        <tr>
+		            <th class="label-right"><wicket:message key="item_view.loggedBy"/></th>
+		            <td wicket:id="loggedBy"></td>
+		            <th class="label-right"><wicket:message key="item_view_form.reportedBy"/></th>
+		            <td><span wicket:id="reportedBy"/></td>		            
+		        </tr>
+		        <tr class="alt">
+		            <th class="label-right"><wicket:message key="item_view.status"/></th>
+		            <td wicket:id="status"></td>
+		            <th class="label-right"><wicket:message key="item_view.assignedTo"/></th>
+		            <td><span wicket:id="assignedTo"/></td>
+		        </tr>
+		        <tr>
+				    <th class="label-right" wicket:id="fileFieldLabel"></th>
+				    <td colspan="3">
+				    	<ul>
+						    <li wicket:id="fileCustomFieldsListView">
+						    	<a href="#" wicket:id="fileLink"></a>
+						    </li>
+					    </ul>
+				    </td>
+				</tr>
+			</table>
+			<table class="overview" wicket:id="fieldGroups">
+				<caption wicket:id="fieldGroupLabel"></caption>
+				<tr wicket:id="fields">
+					<th>
+						<span class="labelContainerBlock" wicket:id="fieldLabel">label</span>
+						<span class="help-message" wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+					</th>
+					<td  wicket:id="fieldValue"></td>
+				</tr>
+				
+			</table>
+			<br style="clear:both;" />
+		    <table class="overview" cellspacing="0">
+		        <!--tr wicket:id="CustomFieldsListView">
+		            <th class="label-right" wicket:id="fieldLabel"></th>
+		            <td colspan="3" wicket:id="fieldValue"></td>
+		        </tr-->
+		        <tr class="alt" wicket:id="stdFields">
+			        <th class="label-right" wicket:id="label"></th>
+			        <td colspan="3" wicket:id="value"></td>
+		        </tr>
+		        <!-- tr class="alt">
+		            <th class="label" valign="top"><wicket:message key="item_view.detail"/></th>
+		            <td wicket:id="detail" colspan="5"></td>
+		        </tr -->  
+		    </table>
+		</div>
+	</div>
+	<div wicket:id="assetsContainer">
+		<div class="section">
+			<div class="heading-container">
+				<h2>
+					<wicket:message key="item_view.assets"/>
+				</h2>
+					<span class="heading-actions" wicket:id="editAssetContainer">
+						<a href="#" wicket:id="editAsset">
+							<img src="resources/edit.gif" class="nav-link" /> 
+							<wicket:message key="edit"/>
+						</a>
+					</span>
+					<span class="heading-actions">
+				       	<a href="#" wicket:id="asset" style="padding-left:5px;">
+				       		<img src="resources/assets.gif" wicket:message="title:dashboard.assets"/>
+				       		<wicket:message key="dashboard.assets" />
+				   		</a>
+		        	</span>
+			</div>
+			<div class="section-body">
+				<!-- p class="help-message"><wicket:message key="ItemView.help.2"/></p-->
+				<div wicket:id="itemAssetsViewPanel" />
+			</div>
+	    </div>
+	</div>
+	<div class="section" wicket:id="historyContainer">
+	    <div class="heading-container">
+	    	<h2><wicket:message key="item_view.history"/></h2>
+	    	<span class="heading-actions">
+				<a href="#history-section" wicket:id="historyComment">
+					<img src="resources/comment.gif" class="nav-link" /> 
+					<wicket:message key="add.comment"/>
+				</a>
+			</span>	
+	    </div>
+		<div class="section-body">
+		    <p class="help-message"><wicket:message key="ItemView.help.3"/></p>
+		    <div id="history-entries">
+			    <div wicket:id="history">
+			    	<div wicket:id="historyEntry"/>
+				</div>
+		    </div>
+		</div>
+	</div>
+<!-- end:ItemView.html -->
+</wicket:panel>

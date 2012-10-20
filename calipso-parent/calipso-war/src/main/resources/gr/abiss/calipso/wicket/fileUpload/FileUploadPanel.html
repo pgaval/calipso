@@ -1,0 +1,19 @@
+<wicket:panel>
+<form wicket:id="ajax-simpleUpload">
+<fieldset><legend>Upload Files</legend>
+<p><label for="upload">File</label> <input wicket:id="fileInput"
+	id="upload" type="file" /></p>
+<input type="button" value="Upload!"  /> <span wicket:id="progress">[[ajax
+upload progressbar]]</span></fieldset>
+</form>
+<div>
+<!-- h4>Current files in <span wicket:id="dir">(dir)</span>:</h4 -->
+<table>
+	<tr wicket:id="fileList">
+		<td width="200"><span wicket:id="file">(file)</span></td>
+		<td><a href="#" wicket:id="delete"><img src="delete.gif"
+			border="0" /></a></td>
+	</tr>
+</table>
+</div>
+</wicket:panel>

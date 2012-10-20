@@ -1,0 +1,20 @@
+<wicket:panel>
+<!-- begin:IndexRebuildPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+    	<h1 wicket:id="heading"></h1> 
+    	<span class="heading-actions">
+    		<span wicket:id="backLink"></span>
+    	</span>
+    </div>
+	<div class="section-body">
+	    <p class="help-message"><wicket:message key="IndexRebuildPanel.help"/></p>
+	    <form wicket:id="form">
+	        <input type="submit" class="button" wicket:id="start" wicket:message="value:options.rebuildIndexes"/>                
+	        <p/>
+	        <span wicket:id="progress" class="selected"></span>
+	    </form>
+	</div>
+</div>
+<!-- end:IndexRebuildPanel.html -->
+</wicket:panel>

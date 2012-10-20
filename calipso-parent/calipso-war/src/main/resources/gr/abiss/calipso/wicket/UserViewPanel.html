@@ -1,0 +1,65 @@
+<wicket:panel>
+	<!-- begin:UserViewPanel.html -->
+	<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="user_form.userDetails" /></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span> 
+		<span class="heading-actions" wicket:id="editContainer">
+			<a href="#" wicket:id="edit">
+				<img src="resources/edit.gif" class="nav-link" />
+				<wicket:message key="edit" />
+			</a>
+		</span>
+	</div>
+	<div class="section-body">
+		<fieldset>
+			<legend><span wicket:id="userIcon"></span></legend>
+			<table>
+				<tr>
+					<td class="label"><wicket:message key="user_form.loginName" />: </td>
+					<td wicket:id="loginName"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.name" />: </td>
+					<td wicket:id="name"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.lastname" />: </td>
+					<td wicket:id="lastname"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.email" />: </td>
+					<td wicket:id="email"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.country" />: </td>
+					<td wicket:id="country"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.organization" />: </td>
+					<td wicket:id="organization"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.address" />: </td>
+					<td wicket:id="address"></td>
+				</tr>
+				<tr>
+					<td class="label"><wicket:message key="user_form.phone" />: </td>
+					<td wicket:id="phone"></td>
+				</tr>
+				<tr>
+					<td class="label"><span wicket:id="sharedSpaces" /> </td>
+					<td>					
+						<ul wicket:id="spaces">
+							<li wicket:id="space"><a href="#"><span wicket:id="space" /></a></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+	</div>
+	<!-- end:UserViewPanel.html -->
+</wicket:panel>

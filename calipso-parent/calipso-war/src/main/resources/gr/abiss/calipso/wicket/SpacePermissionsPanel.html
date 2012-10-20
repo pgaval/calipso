@@ -1,0 +1,89 @@
+<wicket:panel>
+<!-- begin:SpacePermissionsPanel.html -->
+<div class="section">
+	<div class="heading-container">
+		<h1><wicket:message key="space_roles.spaceRoles"/>:
+		    <span wicket:id="label"></span></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>	
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="SpacePermissionsPanel.help"/></p>
+		<form wicket:id="form">                
+		<table class="dashboard" cellspacing="0">
+		    <tr class="center instructions">
+		        <td colspan="5"/>
+		        <td wicket:id="statesColspan"><br /><strong><wicket:message key="space_roles.nextAllowedState"/></strong></td>
+		        <td wicket:id="fieldsColspan">   
+		            <strong><wicket:message key="space_roles.fieldLevelPermissions"/></strong><br/>
+		            <span style="font-weight:normal">
+		                <img src="resources/field-mandatory.gif"/><wicket:message key="space_roles.mandatory"/>
+		                <img src="resources/field-mandatory-if.gif"/><wicket:message key="space_roles.mandatoryIfEmpty"/>
+		                <img src="resources/field-optional.gif"/><wicket:message key="space_roles.optional"/>
+		                <img src="resources/field-readonly.gif"/><wicket:message key="space_roles.readonly"/>
+		                <img src="resources/field-hidden.gif"/><wicket:message key="space_roles.hidden"/>
+		            </span>
+		        </td>       
+		    </tr>
+		    <tr class="center alt">
+		        <th><wicket:message key="space_roles.state"/></th>
+		        <th><input type="image" wicket:id="addState" src="../resources/add.gif"/></th>
+		        <th><wicket:message key="space_roles.role"/></th>
+		        <th><input type="image" wicket:id="addRole" src="../resources/add.gif"/></th>
+		        <th><wicket:message key="space_roles.state.template"/></th>
+		        <th wicket:id="stateHeads"><span wicket:id="state"></span></th>
+		        <th wicket:id="fieldHeads" class="selected"><span wicket:id="field"></span></th>                        
+		    </tr>
+		    <tbody wicket:id="states" class="roles">
+		        <tr wicket:id="roles">
+		            <td wicket:id="state"></td>
+		            <td wicket:id="editState"><input type="image" wicket:id="editState" src="../resources/edit.gif"/></td>
+		            <td wicket:id="role" class="transition"></td>
+		            <td><input type="image" wicket:id="editRole" src="../resources/edit.gif"/></td>
+		            <td><select wicket:id="roleStateTemplate"></select></td>
+		            <td wicket:id="stateHeads"><input type="image" wicket:id="state"/></td>
+		            <td wicket:id="fieldHeads" class="info"><select class="states" type="image" wicket:id="field"/></td>
+		        </tr>
+		    </tbody>
+		</table>
+		<div class="heading-container-insection">
+			<h2><wicket:message key="presentation.templates"/></h2>
+	    	<span class="heading-actions">
+	    		<a href="#" wicket:id="newTemplateLink"><img src="resources/new.gif" class="nav-link"/><wicket:message key="new"/></a>
+	    	</span>
+		</div>
+		<br />
+		<div wicket:id="templatesGridContainer">
+			<div wicket:id="templatesGrid"></div>
+			<div wicket:id="templateModal"></div>
+		</div>
+		<p>
+			<wicket:message key="space_roles.stdFields"/>
+		</p>
+		<table class="dashboard" cellspacing="0">
+			<thead>
+				<tr class="center alt">
+					<td>&nbsp;</td>
+					<th wicket:id="stdFieldHeads"><span wicket:id="stdField"></span></th>
+				</tr>
+			</thead>
+			<tbody wicket : id="stdFieldsAndRoles" class="roles">
+			<tr wicket:id="rolesPermissions">
+				<td wicket:id="role"></td><td wicket:id="permissions"><span wicket:id="permission"></span></td>
+			</tr>
+			</tbody>
+		</table>
+	
+	
+		<p>
+		<input type="submit" class="button" wicket:id="back" wicket:message="value:back"/>               
+		<input type="submit" class="button" wicket:id="apply" wicket:message="value:apply"/>               
+		<input type="submit" class="button" wicket:id="finish" wicket:message="value:finish"/> 
+		</p>
+	    <div wicket:id="workflow" class="workflow"></div>
+		</form>
+	</div>
+</div>
+<!-- end:SpacePermissionsPanel.html -->
+</wicket:panel>  

@@ -1,0 +1,34 @@
+<wicket:panel>
+<!-- begin:SavedSearchList.html -->
+<table class="itemlist" cellspacing="0">
+	<tr class="heading">
+		<th><wicket:message key="saved_search_list.name"/></th>
+		<th><wicket:message key="saved_search_list.editDescription"/></th>
+		<th><wicket:message key="delete"/></th>
+		
+	</tr>
+	<tbody wicket:id="listContainer">
+		<tr wicket:id="nameList">
+			<td wicket:id="name"><a href="#" wicket:id="name"></a></td>
+			<td wicket:id="edit" align="center"><a href="#"><img src="resources/edit.gif"/></a></td>
+			<td wicket:id="delete" align="center"><a href="#"><img src="resources/delete.gif"/></a></td>
+			<td wicket:id="saveSearchFormPanel"></td>
+		</tr>
+	</tbody>
+</table>
+
+<wicket:fragment wicket:id="savedSearchFormFragment">
+	<span wicket:id="savedSearchFormContainer">
+		<form wicket:id="savedSearchForm">
+			<input type="text" wicket:id="name" />
+			&nbsp;<button wicket:id="btnSave" type="submit"><wicket:message key="save"/></button>
+			&nbsp;<button wicket:id="btnCancel"><wicket:message key="cancel"/></button>
+		</form>
+	</span>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="myFragment">
+	<div wicket:id="QQQ" style="border:red 1px solid;"></div>
+</wicket:fragment>
+<!-- end:SavedSearchList.html -->        
+</wicket:panel>

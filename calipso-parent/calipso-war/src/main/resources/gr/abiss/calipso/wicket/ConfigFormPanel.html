@@ -1,0 +1,32 @@
+<wicket:panel>
+<!-- begin:ConfigFormPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="headingTitle"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+	    <form wicket:id="form">
+		    <p class="help-message" wicket:id="heading"></p>
+	    	<fieldset>
+		        <table class="formtable">
+		            <tr>
+		                <td class="label">
+			                <label for="value">    
+			                	<span wicket:id="param"> </span>
+			                </label>
+		                </td>
+		                <td>                            
+		                    <input wicket:id="value" id="value"/>
+		                    <input type="submit" class="button" wicket:message="value:submit"/>                            
+		                </td>
+		            </tr>    
+		        </table>
+	    	</fieldset>
+	    </form>
+    </div>
+</div>
+<!-- end:ConfigFormPanel.html -->
+</wicket:panel>

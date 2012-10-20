@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+        "-//Hibernate/Hibernate Mapping DTD//EN" 
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="gr.abiss.calipso.domain">
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ Item ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+	<class name="Item" table="items">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<version name="version" column="version" />
+		<property name="type" column="type" />
+		<many-to-one name="parent" column="parent_id" />
+		<many-to-one name="space" column="space_id" not-null="true"
+			index="idx_items_space_id" />
+		<property name="sequenceNum" column="sequence_num"
+			index="idx_items_sequence_num" />
+		<property name="timeStamp" column="time_stamp" />
+		<property name="plannedEffort" column="planned_effort" />
+		<set name="children" order-by="id" cascade="all"
+			inverse="true">
+			<key column="parent_id" />
+			<one-to-many class="Item" />
+		</set>
+		<set name="history" order-by="id" cascade="all" inverse="true">
+			<key column="item_id" />
+			<one-to-many class="History" />
+		</set>
+		<set name="itemUsers" cascade="all">
+			<key column="item_id" />
+			<one-to-many class="ItemUser" />
+		</set>
+		<set name="relatedItems" cascade="all" inverse="true">
+			<key column="item_id" />
+			<one-to-many class="ItemItem" />
+		</set>
+		<set name="relatingItems" inverse="true">
+			<key column="related_item_id" />
+			<one-to-many class="ItemItem" />
+		</set>
+		<set name="itemTags" cascade="all" inverse="true">
+			<key column="item_id" />
+			<one-to-many class="ItemTag" />
+		</set>
+		<set name="attachments" cascade="all" inverse="true">
+			<key column="item_id" />
+			<one-to-many class="Attachment" />
+		</set>
+		<set name="assets" table="item_assets">
+    		<key column="ia_itemid" not-null="true"/>
+			<many-to-many column="ia_asid" class="Asset" lazy="false" />
+		</set>
+		
+		<many-to-one name="loggedBy" column="logged_by" index="idx_items_logged_by" not-null="false" />
+		<many-to-one name="assignedTo" column="assigned_to"
+			index="idx_items_assigned_to" />
+		<property name="summary" column="summary" type="string" length="1600" />
+		<property name="detail" column="detail" type="text" />
+		<property name="htmlDetail" column="html_detail" type="text" />
+		<property name="status" column="status" index="idx_items_status" />
+		
+		<property name="cusDbl01" type="double" column="cus_dbl_01" />
+		<property name="cusDbl02" type="double" column="cus_dbl_02" />
+		<property name="cusDbl03" type="double" column="cus_dbl_03" />
+		<property name="cusDbl04" type="double" column="cus_dbl_04" />
+		<property name="cusDbl05" type="double" column="cus_dbl_05" />
+		<property name="cusDbl06" type="double" column="cus_dbl_06" />
+		<property name="cusDbl07" type="double" column="cus_dbl_07" />
+		<property name="cusDbl08" type="double" column="cus_dbl_08" />
+		<property name="cusDbl09" type="double" column="cus_dbl_09" />
+		<property name="cusDbl10" type="double" column="cus_dbl_10" />
+		<property name="cusDbl11" type="double" column="cus_dbl_11" />
+		<property name="cusDbl12" type="double" column="cus_dbl_12" />
+		<property name="cusDbl13" type="double" column="cus_dbl_13" />
+		<property name="cusDbl14" type="double" column="cus_dbl_14" />
+		<property name="cusDbl15" type="double" column="cus_dbl_15" />
+		<property name="cusDbl16" type="double" column="cus_dbl_16" />
+		<property name="cusDbl17" type="double" column="cus_dbl_17" />
+		<property name="cusDbl18" type="double" column="cus_dbl_18" />
+		<property name="cusDbl19" type="double" column="cus_dbl_19" />
+		<property name="cusDbl20" type="double" column="cus_dbl_20" />
+		<property name="cusDbl21" type="double" column="cus_dbl_21" />
+		<property name="cusDbl22" type="double" column="cus_dbl_22" />
+		<property name="cusDbl23" type="double" column="cus_dbl_23" />
+		<property name="cusDbl24" type="double" column="cus_dbl_24" />
+		<property name="cusDbl25" type="double" column="cus_dbl_25" />
+		<property name="cusDbl26" type="double" column="cus_dbl_26" />
+		<property name="cusDbl27" type="double" column="cus_dbl_27" />
+		<property name="cusDbl28" type="double" column="cus_dbl_28" />
+		<property name="cusDbl29" type="double" column="cus_dbl_29" />
+		<property name="cusDbl30" type="double" column="cus_dbl_30" />
+		<property name="cusDbl31" type="double" column="cus_dbl_31" />
+		<property name="cusDbl32" type="double" column="cus_dbl_32" />
+		<property name="cusDbl33" type="double" column="cus_dbl_33" />
+		<property name="cusDbl34" type="double" column="cus_dbl_34" />
+		<property name="cusDbl35" type="double" column="cus_dbl_35" />
+		<property name="cusDbl36" type="double" column="cus_dbl_36" />
+		<property name="cusDbl37" type="double" column="cus_dbl_37" />
+		<property name="cusDbl38" type="double" column="cus_dbl_38" />
+		<property name="cusDbl39" type="double" column="cus_dbl_39" />
+		<property name="cusDbl40" type="double" column="cus_dbl_40" />
+		<property name="cusDbl41" type="double" column="cus_dbl_41" />
+		<property name="cusDbl42" type="double" column="cus_dbl_42" />
+		<property name="cusDbl43" type="double" column="cus_dbl_43" />
+		<property name="cusDbl44" type="double" column="cus_dbl_44" />
+		<property name="cusDbl45" type="double" column="cus_dbl_45" />
+		<property name="cusDbl46" type="double" column="cus_dbl_46" />
+		<property name="cusDbl47" type="double" column="cus_dbl_47" />
+		<property name="cusDbl48" type="double" column="cus_dbl_48" />
+		<property name="cusDbl49" type="double" column="cus_dbl_49" />
+		<property name="cusDbl50" type="double" column="cus_dbl_50" />
+		
+		<property name="cusInt01"  type="int" column="cus_int_01" />
+		<property name="cusInt02"  type="int" column="cus_int_02" />
+		<property name="cusInt03"  type="int" column="cus_int_03" />
+		<property name="cusInt04"  type="int" column="cus_int_04" />
+		<property name="cusInt05"  type="int" column="cus_int_05" />
+		<property name="cusInt06"  type="int" column="cus_int_06" />
+		<property name="cusInt07"  type="int" column="cus_int_07" />
+		<property name="cusInt08"  type="int" column="cus_int_08" />
+		<property name="cusInt09"  type="int" column="cus_int_09" />
+		<property name="cusInt10"  type="int" column="cus_int_10" />
+		<property name="cusInt11"  type="int" column="cus_int_11" />
+		<property name="cusInt12"  type="int" column="cus_int_12" />
+		<property name="cusInt13"  type="int" column="cus_int_13" />
+		<property name="cusInt14"  type="int" column="cus_int_14" />
+		<property name="cusInt15"  type="int" column="cus_int_15" />
+		<property name="cusInt16"  type="int" column="cus_int_16" />
+		<property name="cusInt17"  type="int" column="cus_int_17" />
+		<property name="cusInt18"  type="int" column="cus_int_18" />
+		<property name="cusInt19"  type="int" column="cus_int_19" />
+		<property name="cusInt20"  type="int" column="cus_int_20" />
+		<property name="cusInt21"  type="int" column="cus_int_21" />
+		<property name="cusInt22"  type="int" column="cus_int_22" />
+		<property name="cusInt23"  type="int" column="cus_int_23" />
+		<property name="cusInt24"  type="int" column="cus_int_24" />
+		<property name="cusInt25"  type="int" column="cus_int_25" />
+		<property name="cusInt26"  type="int" column="cus_int_26" />
+		<property name="cusInt27"  type="int" column="cus_int_27" />
+		<property name="cusInt28"  type="int" column="cus_int_28" />
+		<property name="cusInt29"  type="int" column="cus_int_29" />
+		<property name="cusInt30"  type="int" column="cus_int_30" />
+		<property name="cusInt31"  type="int" column="cus_int_31" />
+		<property name="cusInt32"  type="int" column="cus_int_32" />
+		<property name="cusInt33"  type="int" column="cus_int_33" />
+		<property name="cusInt34"  type="int" column="cus_int_34" />
+		<property name="cusInt35"  type="int" column="cus_int_35" />
+		<property name="cusInt36"  type="int" column="cus_int_36" />
+		<property name="cusInt37"  type="int" column="cus_int_37" />
+		<property name="cusInt38"  type="int" column="cus_int_38" />
+		<property name="cusInt39"  type="int" column="cus_int_39" />
+		<property name="cusInt40"  type="int" column="cus_int_40" />
+		
+		<property name="cusStr01" column="cus_str_01" />
+		<property name="cusStr02" column="cus_str_02" />
+		<property name="cusStr03" column="cus_str_03" />
+		<property name="cusStr04" column="cus_str_04" />
+		<property name="cusStr05" column="cus_str_05" />
+		<property name="cusStr06" column="cus_str_06" />
+		<property name="cusStr07" column="cus_str_07" />
+		<property name="cusStr08" column="cus_str_08" />
+		<property name="cusStr09" column="cus_str_09" />
+		<property name="cusStr10" column="cus_str_10" />
+		<property name="cusStr11" column="cus_str_11" />
+		<property name="cusStr12" column="cus_str_12" />
+		<property name="cusStr13" column="cus_str_13" />
+		<property name="cusStr14" column="cus_str_14" />
+		<property name="cusStr15" column="cus_str_15" />
+		<property name="cusStr16" column="cus_str_16" />
+		<property name="cusStr17" column="cus_str_17" />
+		<property name="cusStr18" column="cus_str_18" />
+		<property name="cusStr19" column="cus_str_19" />
+		<property name="cusStr20" column="cus_str_20" />
+		<property name="cusStr21" column="cus_str_21" />
+		<property name="cusStr22" column="cus_str_22" />
+		<property name="cusStr23" column="cus_str_23" />
+		<property name="cusStr24" column="cus_str_24" />
+		<property name="cusStr25" column="cus_str_25" />
+		<property name="cusStr26" column="cus_str_26" />
+		<property name="cusStr27" column="cus_str_27" />
+		<property name="cusStr28" column="cus_str_28" />
+		<property name="cusStr29" column="cus_str_29" />
+		<property name="cusStr30" column="cus_str_30" />
+		<property name="cusStr31" column="cus_str_31" />
+		<property name="cusStr32" column="cus_str_32" />
+		<property name="cusStr33" column="cus_str_33" />
+		<property name="cusStr34" column="cus_str_34" />
+		<property name="cusStr35" column="cus_str_35" />
+		<property name="cusStr36" column="cus_str_36" />
+		<property name="cusStr37" column="cus_str_37" />
+		<property name="cusStr38" column="cus_str_38" />
+		<property name="cusStr39" column="cus_str_39" />
+		<property name="cusStr40" column="cus_str_40" />
+		<property name="cusStr41" column="cus_str_41" />
+		<property name="cusStr42" column="cus_str_42" />
+		<property name="cusStr43" column="cus_str_43" />
+		<property name="cusStr44" column="cus_str_44" />
+		<property name="cusStr45" column="cus_str_45" />
+		<property name="cusStr46" column="cus_str_46" />
+		<property name="cusStr47" column="cus_str_47" />
+		<property name="cusStr48" column="cus_str_48" />
+		<property name="cusStr49" column="cus_str_49" />
+		<property name="cusStr50" column="cus_str_50" />
+		<property name="cusStr51" column="cus_str_51" />
+		<property name="cusStr52" column="cus_str_52" />
+		<property name="cusStr53" column="cus_str_53" />
+		<property name="cusStr54" column="cus_str_54" />
+		<property name="cusStr55" column="cus_str_55" />
+		<property name="cusStr56" column="cus_str_56" />
+		<property name="cusStr57" column="cus_str_57" />
+		<property name="cusStr58" column="cus_str_58" />
+		<property name="cusStr59" column="cus_str_59" />
+		<property name="cusStr60" column="cus_str_60" />
+		<property name="cusStr61" column="cus_str_61" />
+		<property name="cusStr62" column="cus_str_62" />
+		<property name="cusStr63" column="cus_str_63" />
+		<property name="cusStr64" column="cus_str_64" />
+		<property name="cusStr65" column="cus_str_65" />
+		<property name="cusStr66" column="cus_str_66" />
+		<property name="cusStr67" column="cus_str_67" />
+		<property name="cusStr68" column="cus_str_68" />
+		<property name="cusStr69" column="cus_str_69" />
+		<property name="cusStr70" column="cus_str_70" />
+		<property name="cusStr71" column="cus_str_71" />
+		<property name="cusStr72" column="cus_str_72" />
+		<property name="cusStr73" column="cus_str_73" />
+		<property name="cusStr74" column="cus_str_74" />
+		<property name="cusStr75" column="cus_str_75" />
+		<property name="cusStr76" column="cus_str_76" />
+		<property name="cusStr77" column="cus_str_77" />
+		<property name="cusStr78" column="cus_str_78" />
+		<property name="cusStr79" column="cus_str_79" />
+		<property name="cusStr80" column="cus_str_80" />
+		
+		<property name="cusTim01" column="cus_tim_01" />
+		<property name="cusTim02" column="cus_tim_02" />
+		<property name="cusTim03" column="cus_tim_03" />
+		<property name="cusTim04" column="cus_tim_04" />
+		<property name="cusTim05" column="cus_tim_05" />
+		<property name="cusTim06" column="cus_tim_06" />
+		<property name="cusTim07" column="cus_tim_07" />
+		<property name="cusTim08" column="cus_tim_08" />
+		<property name="cusTim09" column="cus_tim_09" />
+		<property name="cusTim10" column="cus_tim_10" />
+		
+		<property name="dueTo" column="due_to"/>
+		<property name="stateDueTo" column="statedue_to"/>
+		<property name="sentDueToNotifications" type="boolean">
+			<column name="sent_due_emails" default="0"/>
+		</property>
+		<many-to-one name="user" column="user" class="User" lazy="false" fetch="join" />
+		<many-to-one name="organization" column="organization" class="Organization" lazy="false" fetch="join" />
+		<many-to-one name="cusCountry1" column="cus_country_01" class="Country" lazy="false" fetch="join" />
+		<many-to-one name="cusCountry2" column="cus_country_02" class="Country" lazy="false" fetch="join" />
+		<many-to-one name="assignableSpaces" column="to_space"
+			outer-join="true" class="Space" />
+		<many-to-one name="reportedBy" column="reported_by" />
+	</class>
+
+	<class name="ItemUser" table="item_users">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="user" column="user_id" not-null="true" />
+		<property name="type" column="type" />
+	</class>
+
+	<class name="ValidationExpression" table="validation_exprs">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="name" column="name" type="string" />
+		<property name="description" column="description" type="string" />
+		<property name="expression" column="expression" type="string" not-null="true" />
+	</class>
+
+	<class name="ItemItem" table="item_items">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="item" column="item_id" not-null="true" />
+		<many-to-one name="relatedItem" column="related_item_id"
+			not-null="true" />
+		<property name="type" column="type" />
+	</class>
+
+	<class name="ItemTag" table="item_tags">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="tag" column="tag_id" not-null="true" />
+		<property name="type" column="type" />
+	</class>
+
+	<class name="Tag" table="tags">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="type" column="type" />
+		<property name="name" column="name" not-null="true"
+			unique="true" />
+		<property name="description" column="description" type="text" />
+	</class>
+
+	<class name="History" table="history">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<version name="version" column="version" />
+		<property name="type" column="type" />
+		<many-to-one name="parent" column="item_id" not-null="true" />
+		<property name="actualEffort" column="actual_effort" />
+		<property name="comment" column="hcomment" type="text" />
+		<property name="htmlComment" column="h_html_comment" type="text" />
+		<!-- identical to Item -->
+		<property name="timeStamp" column="time_stamp" />
+		<many-to-one name="loggedBy" column="logged_by"  not-null="false"/>
+		<many-to-one name="assignedTo" column="assigned_to" />
+		<property name="summary" column="summary" type="string" length="1600" />
+		<property name="detail" column="detail" type="text" />
+		<property name="status" column="status" />
+		
+		
+		<property name="cusDbl01" type="double" column="cus_dbl_01" />
+		<property name="cusDbl02" type="double" column="cus_dbl_02" />
+		<property name="cusDbl03" type="double" column="cus_dbl_03" />
+		<property name="cusDbl04" type="double" column="cus_dbl_04" />
+		<property name="cusDbl05" type="double" column="cus_dbl_05" />
+		<property name="cusDbl06" type="double" column="cus_dbl_06" />
+		<property name="cusDbl07" type="double" column="cus_dbl_07" />
+		<property name="cusDbl08" type="double" column="cus_dbl_08" />
+		<property name="cusDbl09" type="double" column="cus_dbl_09" />
+		<property name="cusDbl10" type="double" column="cus_dbl_10" />
+		<property name="cusDbl11" type="double" column="cus_dbl_11" />
+		<property name="cusDbl12" type="double" column="cus_dbl_12" />
+		<property name="cusDbl13" type="double" column="cus_dbl_13" />
+		<property name="cusDbl14" type="double" column="cus_dbl_14" />
+		<property name="cusDbl15" type="double" column="cus_dbl_15" />
+		<property name="cusDbl16" type="double" column="cus_dbl_16" />
+		<property name="cusDbl17" type="double" column="cus_dbl_17" />
+		<property name="cusDbl18" type="double" column="cus_dbl_18" />
+		<property name="cusDbl19" type="double" column="cus_dbl_19" />
+		<property name="cusDbl20" type="double" column="cus_dbl_20" />
+		<property name="cusDbl21" type="double" column="cus_dbl_21" />
+		<property name="cusDbl22" type="double" column="cus_dbl_22" />
+		<property name="cusDbl23" type="double" column="cus_dbl_23" />
+		<property name="cusDbl24" type="double" column="cus_dbl_24" />
+		<property name="cusDbl25" type="double" column="cus_dbl_25" />
+		<property name="cusDbl26" type="double" column="cus_dbl_26" />
+		<property name="cusDbl27" type="double" column="cus_dbl_27" />
+		<property name="cusDbl28" type="double" column="cus_dbl_28" />
+		<property name="cusDbl29" type="double" column="cus_dbl_29" />
+		<property name="cusDbl30" type="double" column="cus_dbl_30" />
+		<property name="cusDbl31" type="double" column="cus_dbl_31" />
+		<property name="cusDbl32" type="double" column="cus_dbl_32" />
+		<property name="cusDbl33" type="double" column="cus_dbl_33" />
+		<property name="cusDbl34" type="double" column="cus_dbl_34" />
+		<property name="cusDbl35" type="double" column="cus_dbl_35" />
+		<property name="cusDbl36" type="double" column="cus_dbl_36" />
+		<property name="cusDbl37" type="double" column="cus_dbl_37" />
+		<property name="cusDbl38" type="double" column="cus_dbl_38" />
+		<property name="cusDbl39" type="double" column="cus_dbl_39" />
+		<property name="cusDbl40" type="double" column="cus_dbl_40" />
+		<property name="cusDbl41" type="double" column="cus_dbl_41" />
+		<property name="cusDbl42" type="double" column="cus_dbl_42" />
+		<property name="cusDbl43" type="double" column="cus_dbl_43" />
+		<property name="cusDbl44" type="double" column="cus_dbl_44" />
+		<property name="cusDbl45" type="double" column="cus_dbl_45" />
+		<property name="cusDbl46" type="double" column="cus_dbl_46" />
+		<property name="cusDbl47" type="double" column="cus_dbl_47" />
+		<property name="cusDbl48" type="double" column="cus_dbl_48" />
+		<property name="cusDbl49" type="double" column="cus_dbl_49" />
+		<property name="cusDbl50" type="double" column="cus_dbl_50" />
+		
+		<property name="cusInt01"  type="int" column="cus_int_01" />
+		<property name="cusInt02"  type="int" column="cus_int_02" />
+		<property name="cusInt03"  type="int" column="cus_int_03" />
+		<property name="cusInt04"  type="int" column="cus_int_04" />
+		<property name="cusInt05"  type="int" column="cus_int_05" />
+		<property name="cusInt06"  type="int" column="cus_int_06" />
+		<property name="cusInt07"  type="int" column="cus_int_07" />
+		<property name="cusInt08"  type="int" column="cus_int_08" />
+		<property name="cusInt09"  type="int" column="cus_int_09" />
+		<property name="cusInt10"  type="int" column="cus_int_10" />
+		<property name="cusInt11"  type="int" column="cus_int_11" />
+		<property name="cusInt12"  type="int" column="cus_int_12" />
+		<property name="cusInt13"  type="int" column="cus_int_13" />
+		<property name="cusInt14"  type="int" column="cus_int_14" />
+		<property name="cusInt15"  type="int" column="cus_int_15" />
+		<property name="cusInt16"  type="int" column="cus_int_16" />
+		<property name="cusInt17"  type="int" column="cus_int_17" />
+		<property name="cusInt18"  type="int" column="cus_int_18" />
+		<property name="cusInt19"  type="int" column="cus_int_19" />
+		<property name="cusInt20"  type="int" column="cus_int_20" />
+		<property name="cusInt21"  type="int" column="cus_int_21" />
+		<property name="cusInt22"  type="int" column="cus_int_22" />
+		<property name="cusInt23"  type="int" column="cus_int_23" />
+		<property name="cusInt24"  type="int" column="cus_int_24" />
+		<property name="cusInt25"  type="int" column="cus_int_25" />
+		<property name="cusInt26"  type="int" column="cus_int_26" />
+		<property name="cusInt27"  type="int" column="cus_int_27" />
+		<property name="cusInt28"  type="int" column="cus_int_28" />
+		<property name="cusInt29"  type="int" column="cus_int_29" />
+		<property name="cusInt30"  type="int" column="cus_int_30" />
+		<property name="cusInt31"  type="int" column="cus_int_31" />
+		<property name="cusInt32"  type="int" column="cus_int_32" />
+		<property name="cusInt33"  type="int" column="cus_int_33" />
+		<property name="cusInt34"  type="int" column="cus_int_34" />
+		<property name="cusInt35"  type="int" column="cus_int_35" />
+		<property name="cusInt36"  type="int" column="cus_int_36" />
+		<property name="cusInt37"  type="int" column="cus_int_37" />
+		<property name="cusInt38"  type="int" column="cus_int_38" />
+		<property name="cusInt39"  type="int" column="cus_int_39" />
+		<property name="cusInt40"  type="int" column="cus_int_40" />
+		
+		<property name="cusStr01" column="cus_str_01" />
+		<property name="cusStr02" column="cus_str_02" />
+		<property name="cusStr03" column="cus_str_03" />
+		<property name="cusStr04" column="cus_str_04" />
+		<property name="cusStr05" column="cus_str_05" />
+		<property name="cusStr06" column="cus_str_06" />
+		<property name="cusStr07" column="cus_str_07" />
+		<property name="cusStr08" column="cus_str_08" />
+		<property name="cusStr09" column="cus_str_09" />
+		<property name="cusStr10" column="cus_str_10" />
+		<property name="cusStr11" column="cus_str_11" />
+		<property name="cusStr12" column="cus_str_12" />
+		<property name="cusStr13" column="cus_str_13" />
+		<property name="cusStr14" column="cus_str_14" />
+		<property name="cusStr15" column="cus_str_15" />
+		<property name="cusStr16" column="cus_str_16" />
+		<property name="cusStr17" column="cus_str_17" />
+		<property name="cusStr18" column="cus_str_18" />
+		<property name="cusStr19" column="cus_str_19" />
+		<property name="cusStr20" column="cus_str_20" />
+		<property name="cusStr21" column="cus_str_21" />
+		<property name="cusStr22" column="cus_str_22" />
+		<property name="cusStr23" column="cus_str_23" />
+		<property name="cusStr24" column="cus_str_24" />
+		<property name="cusStr25" column="cus_str_25" />
+		<property name="cusStr26" column="cus_str_26" />
+		<property name="cusStr27" column="cus_str_27" />
+		<property name="cusStr28" column="cus_str_28" />
+		<property name="cusStr29" column="cus_str_29" />
+		<property name="cusStr30" column="cus_str_30" />
+		<property name="cusStr31" column="cus_str_31" />
+		<property name="cusStr32" column="cus_str_32" />
+		<property name="cusStr33" column="cus_str_33" />
+		<property name="cusStr34" column="cus_str_34" />
+		<property name="cusStr35" column="cus_str_35" />
+		<property name="cusStr36" column="cus_str_36" />
+		<property name="cusStr37" column="cus_str_37" />
+		<property name="cusStr38" column="cus_str_38" />
+		<property name="cusStr39" column="cus_str_39" />
+		<property name="cusStr40" column="cus_str_40" />
+		<property name="cusStr41" column="cus_str_41" />
+		<property name="cusStr42" column="cus_str_42" />
+		<property name="cusStr43" column="cus_str_43" />
+		<property name="cusStr44" column="cus_str_44" />
+		<property name="cusStr45" column="cus_str_45" />
+		<property name="cusStr46" column="cus_str_46" />
+		<property name="cusStr47" column="cus_str_47" />
+		<property name="cusStr48" column="cus_str_48" />
+		<property name="cusStr49" column="cus_str_49" />
+		<property name="cusStr50" column="cus_str_50" />
+		<property name="cusStr51" column="cus_str_51" />
+		<property name="cusStr52" column="cus_str_52" />
+		<property name="cusStr53" column="cus_str_53" />
+		<property name="cusStr54" column="cus_str_54" />
+		<property name="cusStr55" column="cus_str_55" />
+		<property name="cusStr56" column="cus_str_56" />
+		<property name="cusStr57" column="cus_str_57" />
+		<property name="cusStr58" column="cus_str_58" />
+		<property name="cusStr59" column="cus_str_59" />
+		<property name="cusStr60" column="cus_str_60" />
+		<property name="cusStr61" column="cus_str_61" />
+		<property name="cusStr62" column="cus_str_62" />
+		<property name="cusStr63" column="cus_str_63" />
+		<property name="cusStr64" column="cus_str_64" />
+		<property name="cusStr65" column="cus_str_65" />
+		<property name="cusStr66" column="cus_str_66" />
+		<property name="cusStr67" column="cus_str_67" />
+		<property name="cusStr68" column="cus_str_68" />
+		<property name="cusStr69" column="cus_str_69" />
+		<property name="cusStr70" column="cus_str_70" />
+		<property name="cusStr71" column="cus_str_71" />
+		<property name="cusStr72" column="cus_str_72" />
+		<property name="cusStr73" column="cus_str_73" />
+		<property name="cusStr74" column="cus_str_74" />
+		<property name="cusStr75" column="cus_str_75" />
+		<property name="cusStr76" column="cus_str_76" />
+		<property name="cusStr77" column="cus_str_77" />
+		<property name="cusStr78" column="cus_str_78" />
+		<property name="cusStr79" column="cus_str_79" />
+		<property name="cusStr80" column="cus_str_80" />
+		
+		<property name="cusTim01" column="cus_tim_01" />
+		<property name="cusTim02" column="cus_tim_02" />
+		<property name="cusTim03" column="cus_tim_03" />
+		<property name="cusTim04" column="cus_tim_04" />
+		<property name="cusTim05" column="cus_tim_05" />
+		<property name="cusTim06" column="cus_tim_06" />
+		<property name="cusTim07" column="cus_tim_07" />
+		<property name="cusTim08" column="cus_tim_08" />
+		<property name="cusTim09" column="cus_tim_09" />
+		<property name="cusTim10" column="cus_tim_10" />
+		
+		
+		
+		<many-to-one name="user" column="user" class="User" lazy="false" fetch="join" />
+		<many-to-one name="organization" column="organization" class="Organization" lazy="false" fetch="join" />
+		<many-to-one name="cusCountry1" column="cus_country_01" class="Country"/>
+		<many-to-one name="cusCountry2" column="cus_country_02" class="Country"/>
+		<many-to-one name="assignableSpaces" column="to_space"
+			outer-join="true" class="Space" />
+		<set name="attachments" cascade="all" inverse="true">
+			<key column="history_id" />
+			<one-to-many class="Attachment" />
+		</set>
+		<property name="dueTo" column="due_to"/>
+	</class>
+
+	<class name="User" table="users">
+		<id name="id" column="id" unsaved-value="0">
+			<generator class="native" />
+		</id>
+		<property name="type" column="type" />
+		<many-to-one name="parent" column="parent" />
+		<property name="loginName" column="login_name" unique="true" not-null="true" index="idx_users_login_name" length="50" />
+		<property name="name"      column="name" length="50" />
+		<property name="password"  column="password" />
+		<property name="email"     column="email" type="string" length="100" />
+		<property name="emailHash" column="email_hash" type="string" />
+		
+		<property name="gravatar"  column="gravatar" type="boolean" />
+		<property name="locale"    column="locale" type="string" length="20" />
+		<property name="locked"    column="locked" />
+		<property name="lastname"  column="lastname" type="string"/>
+		<property name="address"   column="address" type="string"/>
+		<property name="zip"       column="postal_code" type="string"/>
+		<property name="phone"     column="phone" type="string"/>
+		<property name="alternativePhone" column="alt_phone" type="string"/>
+		<property name="fax"       column="fax" type="string"/>
+		<property name="dateCreated" column="created" type="date"/>
+		<property name="dateLastUpdated" column="updated" type="date"/>
+		<many-to-one name="country" class="Country" column="country_id" lazy="false"/>
+		<many-to-one name="createdBy" class="User" column="createdby_user_id" />
+		<many-to-one name="lastUpdatedBy" class="User" column="lastupdatedby_user_id" />
+		<many-to-one name="organization" column="organization_id" not-null="false" lazy="false"/>
+		<!-- many-to-one name="metadata" class="Metadata" column="metadata_id" /-->
+		<set name="userSpaceRoles" cascade="all" inverse="true">
+			<key column="usr_user_id" />
+			<one-to-many class="UserSpaceRole" />
+		</set>
+	</class>
+	
+	<class name="Country" table="countries">
+		<id name="id" column="id"  type="string" length="2">
+			<generator class="assigned" />
+		</id>
+		<property name="name" column="country_name" type="string" not-null="true"/>
+		<property name="isoName" column="iso_name" type="string" not-null="true"/>
+		<property name="preferredLocale" column="prefered_locale" type="string" length="10" not-null="false" />
+		<property name="callingCode" column="calling_code" type="string" length="4" not-null="false"/>
+	</class>
+	
+	<class name="Language" table="locale_languages">
+		<id name="id" column="id"  type="string" length="2">
+			<generator class="assigned" />
+		</id>
+	</class>
+
+	<class name="SpaceRole" table="space_roles">
+		<id name="id" column="sr_id">
+			<generator class="native"/>
+		</id>
+		<many-to-one name="space"  column="sr_space_id" not-null="false" /> 
+		<property name="description" column="sr_descr" />
+		<property name="roleCode" column="sr_role_code" unique="true"/>
+		<property name="roleTypeId" column="sr_role_type_id" />
+		<set name="userSpaceRoles" cascade="all" inverse="true">
+			<key column="usr_srid" />
+			<one-to-many class="UserSpaceRole" />
+		</set>
+		<!-- templates map using template type and ID for key-value pairs -->
+        <map name="itemRenderingTemplates" table="spacerole_item_templates" lazy="true" inverse="false" cascade="all"><!--   order-by="description asc" -->
+            <key column="spacerole_id" not-null="true" />
+            <map-key type="string" column="state_status" length="9"/>
+            <many-to-many column="template_id" class="ItemRenderingTemplate" />
+        </map>
+	</class>
+
+	<class name="UserSpaceRole" table="user_space_roles">
+		<id name="id" column="usr_id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="user" column="usr_user_id" />
+		<many-to-one name="spaceRole" column="usr_srid" lazy="false" />
+	</class>
+
+	<class name="RoleSpaceStdField" table="role_space_fields">
+		<id  name="id" column="RSF_ID" >
+			<generator class="native" />
+		</id>
+		
+		<property name="stdFieldId" column="rsf_field_id" type="java.lang.Integer"/>
+		<property name="fieldMaskId" column="rsf_mask" type="java.lang.Integer" />
+		<many-to-one name="spaceRole" column="rsf_srid" class="SpaceRole" />
+	</class>
+
+	<class name="SpaceGroup" table="spacegroups">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		
+		<property name="name" column="name" length="255" />
+		<property name="description" column="description" length="255" />
+		<set name="spaces" inverse="true" cascade="all">
+			<key column="spacegroup_id" not-null="true"/>
+			<one-to-many class="Space" />
+		</set>	
+		<set name="admins" table="space_group_admins" cascade="all">
+			<key column="spacegroup_id" not-null="true"/>
+			<many-to-many column="user_id" class="User" />
+		</set>	
+	</class>
+	
+	<class name="Space" table="spaces">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<version name="version" column="version" />
+		<property name="type" column="type" />
+		<property name="defaultDuration" column="def_duration" type="long" not-null="false" />
+		<property name="closingDate" column="closing_date" type="timestamp" />
+		<property name="prefixCode" column="prefix_code" unique="true" length="10" />
+		
+		<property name="itemSummaryEnabled" type="boolean">
+			<column name="titles_enabled" not-null="true" default="1" />
+		</property>
+		<property name="itemDetailCommentEnabled" type="boolean">
+			<column name="detail_comment_enabled" not-null="true" default="1" />
+		</property>
+		<property name="name" column="name" length="255" />
+		<property name="description" column="description" type="text" />
+		<property name="itemVisibility" column="item_visibility" type="short" />
+		<property name="assetVisibility" column="asset_visibility" type="short" />
+		<property name="simpleAttachmentsSupport" column="simple_attachment_support" type="boolean" />
+		<property name="isTemplate" column="is_template" type="boolean" />
+		<one-to-one name="spaceSequence" cascade="all" />	
+		<many-to-one name="metadata" column="metadata_id" cascade="all" lazy="proxy" />
+		<many-to-one name="spaceGroup" column="spacegroup_id" lazy="false" cascade="all" />
+
+		<list name="supportedLanguages" table="space_languages" inverse="false">
+			<key column="sl_space_id" not-null="true"/>
+			<list-index column="sl_sort_order"/>
+			<many-to-many column="sl_lid" class="Language" />
+		</list>
+		<list name="itemRenderingTemplates" table="space_templates" cascade="none" inverse="false">
+			<key column="space_id" />
+			<list-index column="priority" />
+			<many-to-many class="ItemRenderingTemplate" />
+		</list>
+		
+	</class>
+
+	<class name="SpaceSequence" table="space_sequence">
+		<id name="id" column="id">
+			<generator class="foreign">
+				<param name="property">space</param>
+			</generator>
+		</id>
+		<property name="nextSeqNum" column="next_seq_num" />
+		<one-to-one name="space" constrained="true" />
+	</class>
+
+	<class name="Metadata" table="metadata">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<version name="version" column="version" />
+		<property name="type" column="type" />
+		<property name="name" column="name" length="50" />
+		<property name="description" column="description" type="text" />
+		<many-to-one name="parent" column="parent_id" />
+		<property name="xmlString" column="xml_string" type="text" />
+	</class>
+
+	<class name="Attachment" table="attachments">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="previous" column="previous_id" class="Attachment" />
+		<many-to-one name="item" column="item_id" class="Item"/>
+		<many-to-one name="history" column="history_id" class="History" />
+		<property name="basePath" column="base_path" type="string" />
+		<property name="fileName" column="file_name" type="string" />
+		<property name="originalFileName" column="original_file_name" type="string" />
+		<property name="filePrefix" column="file_prefix" />
+		<property name="temporary" column="temporary" type="boolean" />
+		<property name="simple" type="boolean">
+			<column name="simple" default="0" />
+		</property>
+	</class>
+
+	<class name="Config" table="config">
+		<id name="param" column="param" />
+		<property name="value" column="value" />
+	</class>
+
+	<class name="SavedSearch" table="saved_searches">
+		<id name="id" column="ss_id" type="java.lang.Long" >
+			<generator class="native" />
+		</id>
+		<property name="queryString" type="string">
+            <column name="SS_QUERY" length="4000" />
+		</property>
+		<property name="name"        column="ss_name" type="string" /> 
+		<property name="visibility"  column="ss_visibility" type="short" /> 
+		<many-to-one name="user"     class="User" not-null="true" column="ss_userid" />
+		<many-to-one name="space"    class="Space" not-null="false" column="ss_spaceid" />
+	</class>
+	
+	<class name="Organization" table="organization">
+		<id name="id" column="org_id">
+			<generator class="native" />
+		</id>
+		<property name="name" not-null="true" column="org_name"/>
+		<property name="vatNumber" column="vat_number"/>
+		<property name="phone" column="org_phone" />
+		<property name="alternativePhone" column="alt_phone" type="string"/>
+		<property name="web" column="org_web" />
+		<property name="email" column="email" length="100" type="string" />
+		
+		<property name="address" column="address" type="string"/>
+		<property name="zip" column="postalcode" type="string"/>
+		<property name="fax" column="fax" type="string"/>
+		<property name="dateCreated" not-null="true" column="created" type="date"/>
+		<property name="dateLastUpdated" not-null="true" column="updated" type="date"/>
+		<property name="lastUpdateComment" column="last_update_comment" type="string"/>
+		<many-to-one name="createdBy" class="User" column="createdby_user_id" />
+		<many-to-one name="lastUpdatedBy" class="User" column="lastupdatedby_user_id" />
+		
+		<many-to-one name="country" class="Country" column="country_id" />
+		
+		<set name="users" cascade="all" inverse="true">
+			<key column="organization_id" />
+			<one-to-many class="User" />
+		</set>
+	</class>
+
+	<class name="Asset" table="assets">
+		<meta attribute="class-description" inherit="false">
+			Instances of this class represent assets. 
+		</meta>
+		<id name="id" column="as_id" unsaved-value="null">
+			<generator class="native"  />
+		</id>
+		<property name="inventoryCode"    type="string"         column="as_inventory_code"  unique-key="as_inventory_code_as_spaceid" not-null="true" />
+		<property name="supportStartDate" type="java.util.Date" column="as_support_start_date" />
+		<property name="supportEndDate"   type="java.util.Date" column="as_support_end_date" />
+		<property name="dateCreated"   type="java.util.Date" column="date_created" />
+		<property name="dateUpdated"   type="java.util.Date" column="date_updated" />
+		<many-to-one name="space"         class="Space" not-null="true" column="as_spaceid" /><!-- unique-key="AS_INVENTORY_CODE_AS_SPACEID" -->
+		<many-to-one name="createdBy"     class="User" not-null="false" column="as_createdby" /><!-- unique-key="AS_INVENTORY_CODE_AS_SPACEID" -->
+		<!-- bi-directional many-to-one association to AssetType -->
+		<many-to-one name="assetType" class="AssetType" not-null="true">
+			<column name="AS_ATID" />
+		</many-to-one>
+		
+		<map name="customAttributes" table="asset_custom_attributes_values" cascade="all-delete-orphan" inverse="false" lazy="false" sort="natural">
+			<key column="acav_asid" not-null="true" />
+			<index-many-to-many column="acav_caid" class="AssetTypeCustomAttribute"/>
+			<element type="string" column="acav_value"/>
+		</map>
+	</class>
+
+<!-- AssetType ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+	<class name="AssetType" table="asset_types">
+		<id name="id" column="at_id">
+			<generator class="native" />
+		</id>
+		<property name="name" type="string" column="at_name"/>
+		<set name="allowedCustomAttributes" table="asset_types_custom_attributes" lazy="false" cascade="all" inverse="false" sort="natural">
+    		<key column="atca_atid" not-null="true"/>
+			<many-to-many column="atca_caid" class="AssetTypeCustomAttribute" />
+		</set>
+		<set name="assets" inverse="true">
+        	<key column="as_atid" not-null="true"/>
+        	<one-to-many class="Asset"/>
+    	</set>
+		<many-to-one name="printingTemplate" class="RenderingTemplate" not-null="false">
+			<column name="at_printtmpl_id" />
+		</many-to-one>
+	</class>
+
+
+<!-- Custom Attribute Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+	<class name="CustomAttribute" table="custom_attributes" >
+		<id name="id" column="a_id" type="long">
+			<generator class="native" />
+		</id>
+		
+		<property name="name" type="string" column="ca_name" />
+		<property name="formType" type="java.lang.Integer" column="ca_ftype"/>
+		<property name="dataType" type="string" column="ca_dtype" />
+		
+		<!-- 
+		used for rendering, attributeGroupIndex corresponds to a fieldset and it's rendering order,  
+		attributeIndex specifies the field rendering order within the fieldset
+		-->
+		<!--property name="attributeGroupIndex" type="short" not-null="true">
+			<column name="CA_GROUP" default="0"/>
+		</property-->
+		<!--property name="attributeGroupName" type="string" not-null="true">
+			<column name="CA_GROUPNAME"/>
+		</property-->
+		<property name="attributeIndex" type="short" not-null="true">
+			<column name="ca_groupindex" default="0"/>
+		</property>
+		<property name="defaultStringValue" type="string" column="ca_default_value" />
+		<many-to-one name="validationExpression" class="ValidationExpression" lazy="false" not-null="true" column="ca_validation_expr" />
+		<set name="allowedLookupValues" inverse="true" cascade="all-delete-orphan" order-by="lkv_show_order asc" lazy="false">
+			<key column="lkv_caid" />
+			<one-to-many class="CustomAttributeLookupValue" />
+		</set>
+		<joined-subclass name="ItemFieldCustomAttribute" table="item_field_custom_attributes" >
+			<key column="ca_id"/>
+			<property name="fieldName" type="string" not-null="true"  column="field_name" />
+			<property name="showInSearchResults" type="boolean" not-null="true">
+				<column name="show_in_search_results" default="0" />
+			</property>
+			<property name="htmlDescription" type="text" not-null="false"  column="html_description" />
+			<many-to-one name="space" class="Space" lazy="proxy" not-null="true" column="space" />
+		</joined-subclass>
+		<joined-subclass name="AssetTypeCustomAttribute" table="asset_custom_attributes" >
+			<key column="ca_id"/>
+			<property name="mandatory" type="java.lang.Boolean" column="ca_mandatory"/>
+			<property name="active" type="java.lang.Boolean" column="ca_active"/>
+			<set name="assetTypes" table="asset_types_custom_attributes" cascade="all" inverse="true" >
+				<key column="atca_caid" not-null="true"/>
+				<many-to-many column="atca_atid" class="AssetType"/>
+			</set>
+		</joined-subclass>
+	</class>
+
+<!-- CustomAttributeLookupValue ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+	<class name="CustomAttributeLookupValue" table="attributes_lookup_values">
+		<id name="id" column="lkv_id">
+			<generator class="native" />
+		</id>
+		<property name="value" type="string" column="lkv_value"/>
+		<property name="showOrder" type="integer" column="lkv_show_order"/>
+		<property name="level" type="integer">
+			<column  name="lkv_level" default="1" />
+		</property>
+		<set name="children" cascade="all" inverse="false" lazy="false" order-by="lkv_show_order asc">
+            <key column="parent_lkv_id"/>
+            <!--index column="LKV_SHOW_ORDER"/-->
+            <one-to-many class="CustomAttributeLookupValue" />
+        </set>
+		<many-to-one name="attribute" column="lkv_caid" class="CustomAttribute" not-null="true" />
+		<many-to-one name="parent" column="parent_lkv_id" class="CustomAttributeLookupValue" not-null="false" lazy="proxy" />
+	</class>
+
+	<class name="RenderingTemplate" table="rendering_templates">
+		<id name="id" column="rt_id"  unsaved-value="null">
+			<generator class="native" />
+		</id>
+		<property name="templateLanguage" type="short" column="rt_type"
+			not-null="true" />
+		<property name="templateText" type="text" column="rt_text"
+			not-null="true" length="4000" />
+		<joined-subclass name="ItemRenderingTemplate" table="item_rendering_templates">
+			<key column="rt_id" />
+			<property name="priority" column="priority" type="short" not-null="true" />
+			<property name="hideOverview" type="boolean" column="hide_overview" not-null="true" />
+			<property name="hideHistory" type="boolean" column="hide_history" not-null="true" />
+				<!-- this will allow multiple templates for different parts of the page, 
+				but we need to consider how to map multiple templates per role/state -->
+				<!--property name="position" type="boolean" column="RENDERING_POSITION" not-null="true" /-->
+				<!-- we could just automatically hide it if one or none stages are available for a given role to set the item to -->
+				<!--property name="hideStateSelection" type="boolean" column="HIDE_STATE_SELECTION" not-null="true" /-->
+			<!--component name="name" class="ItemRenderingTemplateName" unique="true"-->
+				<property name="description" type="string" column="description" not-null="true" unique="true" />
+				<many-to-one name="space" column="space_id" class="Space" not-null="true" />
+			<!--/component-->
+		</joined-subclass>
+	</class>
+	<!-- I18N Resources ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+	<class name="I18nStringResource" table="i18n_string_resources">
+	    <composite-id name="id" class="I18nStringIdentifier" mapped="false">
+	        <key-property name="key" column="isr_key" type="string" />
+	        <key-property name="locale" column="isr_locale" type="string" />
+	    </composite-id>
+		<property name="value" type="string" column="isr_value" not-null="true"/>
+	</class>
+
+<!-- GeoLocationPoint ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+	<class name="GeoLocationPoint" table="geo_location_point">
+		<id name="id" column="glp_id">
+			<generator class="native" />
+		</id>
+		<property name="latitude" type="double" column="glp_lat" />
+		<property name="longitude" type="double" column="glp_long" />
+		<property name="altitude" type="double" column="glp_alt" />
+	</class>
+		
+</hibernate-mapping>

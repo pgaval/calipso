@@ -1,0 +1,34 @@
+<wicket:panel>
+<!-- begin:ItemSearchFormPanel.html -->
+		<div class="section">
+			<div class="heading-container1">
+				<h1><wicket:message key=item_search_form.title  /></h1>
+				<span class="heading-actions">
+					<span wicket:id="backLink"></span>
+				</span>
+				<span class="heading-actions">
+					<a href="#" wicket:id="searchOnAnotherSpaceLink">
+						<img src="resources/search.gif"/> <wicket:message key="item_search_form.searchOnAnotherSpace"/> &nbsp;
+					</a>
+					<span wicket:id="searchOnAnotherSpacePanel"></span>
+					&nbsp;
+					<a href="#" wicket:id="savedSearchesLink"><img src="resources/text_list_bullets.png" /> <span wicket:id="savedSearchLabel"></span></a>
+				</span>
+			</div>
+			<div class="section-body">
+			
+				<p style="padding:12px 8px;"><!--span wicket:id="info" /--></p>
+				<div wicket:id="savedSearchContainer">
+					<div wicket:id="savedSearchPlaceHolder">
+						<p class="help-message"><wicket:message key="item_saved_search.title"/></p>
+					    <div wicket:id="savedList"></div>
+					</div>
+				</div>
+				
+	
+				<div wicket:id="relate"></div>
+				<div wicket:id="panel"></div>
+			</div>
+		</div>
+<!-- end:ItemSearchFormPanel.html -->
+</wicket:panel>

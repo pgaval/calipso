@@ -1,0 +1,25 @@
+<wicket:panel>
+<!-- begin:ItemRelatePanel.html -->
+    <table>
+        <tr>
+            <td valign="top">
+                <span wicket:id="message"></span>
+                <span wicket:id="link"><a href="#" wicket:id="refId"></a></span>                               
+                <form wicket:id="form">
+                    <div style="padding-top:1em;padding-left:1em">
+                        <span wicket:id="link"><a href="#" wicket:id="refId"></a></span>
+                        <select wicket:id="type"/>                    
+                        <wicket:message key="item_view_form.comment"/>
+                        <textarea wicket:id="comment" rows="2" cols="40"></textarea>
+                        <input type="submit" class="button" wicket:message="value:submit"/>                        
+                    </div>
+                </form>
+            </td>
+            <td>
+                <img src="resources/cancel.gif" class="nav-link"/><a href="#" wicket:id="cancel"><wicket:message key="cancel"/></a>
+            </td>
+        </tr>
+    </table>
+    <span wicket:id="itemWindow"></span>
+<!-- end:ItemRelatePanel.html --> 
+</wicket:panel>

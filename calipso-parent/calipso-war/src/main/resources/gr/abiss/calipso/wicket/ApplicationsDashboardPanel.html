@@ -1,0 +1,44 @@
+<wicket:panel>
+<!-- begin: ApplicationsDashboardPanel.html -->
+<div class="section" style="width:435px;float:left;">
+	<div class="section-body">
+		<div wicket:id="spaces">
+			<h2 wicket:id="spaceTitle" style="padding-top:10px;"></h2>
+			<p class="grey" wicket:id="spaceDescription"></p>
+			<p wicket:id="closingDate"></p>
+			<p style="text-align:right;"><a href="#" wicket:id="prefixLink"><span wicket:id="prefixLinkLabel"></span></a></p>
+			<hr />
+		</div>
+		<div wicket:id="noSpaces">
+			<h2 style="padding-top:10px;">There are no active applications you have not already participated in.</h2>
+		</div>
+	</div>
+</div>
+<div class="section" style="width:435px;float:right;">
+	<table cellspacing="0" cellpadding="0" class="section-body" style="width:100%">
+		<thead>
+			<tr>
+				<th>Job Title</th>
+				<th>Closing Date</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody wicket:id="items">
+			<tr>
+				<td><span wicket:id="spaceName"></span></td>
+				<td><span wicket:id="closingDate"></span></td>
+				<td><span wicket:id="status"></span></td>
+				<td><a href="#" wicket:id="uniqueRefId"><span wicket:id="uniqueRefId"></span></a></td>
+			</tr>
+		</tbody>
+		<tbody wicket:id="noItems">
+			<tr>
+				<td colspan="4">You have no active applications.</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<br class="clear" />
+<!-- end: ApplicationsDashboardPanel.html -->
+</wicket:panel>

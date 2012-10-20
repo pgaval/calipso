@@ -1,0 +1,47 @@
+<wicket:panel>
+	<!-- begin:AssetViewPanel.html -->
+	<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="asset.form.legend" /></h1>
+		<span class="heading-actions"> <span wicket:id="backLink"></span></span>
+		<span class="heading-actions"> 
+			<img src="resources/pdf.png" class="nav-link"/>
+			<a wicket:id="printToPdf">
+				<wicket:message key="exportToPdf" />
+			</a>
+		</span>
+		
+	</div>
+	<div class="section-body">
+	<table class="itemlist">
+		<tr class="alt">
+			<td colspan="2" wicket:id="assetIcon"></td>
+		</tr>
+
+
+		<tr>
+			<td class="label"><wicket:message key="asset.form.assetType" /></td>
+			<td wicket:id="assetType"></td>
+		</tr>
+
+		<tr class="alt">
+			<td class="label"><wicket:message key="asset.form.inventoryCode" /></td>
+			<td wicket:id="inventoryCode"></td>
+		</tr>
+		<tr>
+			<td class="label"><wicket:message key="asset.form.supportStartDate" /></td>
+			<td wicket:id="supportStartDate"></td>
+		</tr>
+		<tr class="alt">
+			<td class="label"><wicket:message key="asset.form.supportEndDate" /></td>
+			<td wicket:id="supportEndDate"></td>
+		</tr>
+		<tr wicket:id="attributeValuesList">
+			<td class="label" wicket:id="customAttribute"></td>
+			<td><wicket:container wicket:id="customAttributeValue"></wicket:container></td>
+		</tr>
+	</table>
+	</div>
+	</div>
+	<!-- end:AssetViewPanel.html -->
+</wicket:panel>

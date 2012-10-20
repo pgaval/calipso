@@ -1,0 +1,40 @@
+<wicket:head>
+	<style>
+	</style>
+</wicket:head>
+<wicket:panel>
+	<div wicket:id="mainContainer" class="calipso-multivalue-text">
+		<input type="hidden" wicket:id="valuesField" />
+		
+		<form wicket:id="addValueform">
+			<div wicket:id="feedback"></div>
+			<table>
+				<tbody>
+					<tr wicket:id="row">
+						<td wicket:id="cell">
+							<span wicket:id="cellValue" ></span>
+						</td>
+						<td class="right">
+							<a wicket:id="remove"><img src="resources/delete_row_from_field.gif" wicket:message="alt:delete"/></a>
+						</td>
+					</tr>
+				</tbody>
+				<tr>
+					<td wicket:id="subFieldsListView" class="bottom">
+						<label wicket:id="newValueLabel"></label>
+						<br />
+						<input type="text" wicket:id="newValueField" />
+						<br />
+						<span wicket:id="newValueHelp"></span><span>&nbsp;</span>
+					</td>
+					<td wicket:id="submitControls" class="right" colspan="">
+						<input type="submit" wicket:id="add" class="submit-to-add"  wicket:message="value:add" />
+						<input type="reset" wicket:id="reset"  wicket:message="value:reset" />
+					</td>
+				</tr>
+				
+			</table>
+			
+		</form>
+	</div>
+</wicket:panel>

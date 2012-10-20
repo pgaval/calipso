@@ -1,0 +1,56 @@
+<wicket:panel>
+<!-- begin:AssetTypeFormPanel.html -->
+	<table>
+		<!--tr>
+			<td class="label"><label wicket:id="textLabel">asset.assetTypes.description</label>
+			<span wicket:id="mandatoryPanel"></span></td>
+			<td><input type="text" wicket:id="name"/></td>
+		</tr-->
+		<tr>
+			<td class="label">
+				<label>
+					<wicket:message key="asset.assetTypes.description" />
+					<span class="red">*</span>
+				</label>
+			</td>
+			<td class="nopad">
+	 			<ul class="fieldlist">
+		 			<li wicket:id="nameTranslations">
+						<input type="text" wicket:id="name" />
+						<label wicket:id="languageLabel">language name</label>
+				 	</li>
+			 	</ul>
+	 		</td>
+		</tr>
+	</table>
+	<p class="help-message"><wicket:message key="asset.assetTypes.customAttributes"/></p> 
+	<div wicket:id="customAttributes">
+		<table class="itemlist" cellspacing="0">
+			<thead>
+				<tr>
+					<th><wicket:message key="asset.assetTypes.customAttributeDescription"/></th>
+					<th><wicket:message key="asset.assetTypes.type"/></th>
+					<th><wicket:message key="asset.assetTypes.active"/></th>
+					<th><wicket:message key="asset.assetTypes.mandatory"/></th>
+					<th><wicket:message key="asset.assetTypes.remove"/></th>
+				</tr>
+			</thead>
+			<tr wicket:id="customAttributesList">
+				<td wicket:id="name"></td>
+				<td wicket:id="type"></td>
+				<td wicket:id="active"></td>
+				<td wicket:id="mandatory"></td>
+				<td wicket:id="remove" align="center"><a href="#" wicket:message="title:asset.assetTypes.remove"><img src="resources/delete.gif"/></a></td>
+			</tr>
+			<tr>
+				<td colspan="5"> 
+					<a href="#" wicket:message="title:asset.assetTypes.addCustomAttribute" wicket:id="add">
+						<img src="resources/add.gif"/>
+						<wicket:message key="asset.assetTypes.addCustomAttribute"/>
+					</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+<!-- end:AssetTypeFormPanel.html -->
+</wicket:panel>

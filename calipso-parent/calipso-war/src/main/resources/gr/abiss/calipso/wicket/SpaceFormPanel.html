@@ -1,0 +1,113 @@
+<wicket:panel>
+	<!-- begin:SpaceFormPanel.html -->
+	<div class="section">
+	<div class="heading-container1">
+	<h1><wicket:message key="space_form.spaceDetails" /></h1>
+	<span class="heading-actions"> <span wicket:id="backLink"></span>
+	</span> <span class="heading-actions"> <a href="#" wicket:id="delete">
+	<img src="resources/delete.gif" class="nav-link" /> <wicket:message
+		key="delete" /> </a> </span></div>
+	<div class="section-body">
+	<p class="help-message"><wicket:message key="SpaceFormPanel.help" /></p>
+	<form wicket:id="form">
+		<div wicket:id="feedback"></div>
+		<fieldset>
+			<table class="form">
+				<tbody>
+					<tr>
+						<td class="label">
+							<label>
+								<wicket:message key="space_form.displayName" />
+								<span class="red">*</span>
+							</label>
+						</td>
+						<td class="nopad">
+				 			<ul class="fieldlist">
+					 			<li wicket:id="nameTranslations">
+									<input type="text" wicket:id="name" />
+									<label wicket:id="languageLabel">language name</label>
+							 	</li>
+						 	</ul>
+				 		</td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="prefixCodeLabel">space_form.spaceKey</label>
+						<span class="red">*</span></td>
+						<td><input wicket:id="space.prefixCode" size="10" /></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="descriptionLabel">space_form.description</label>
+						<span class="red">*</span></td>
+						<td><textarea wicket:id="space.description" rows="3" cols="40"></textarea></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="isTemplateLabel"></label></td>
+						<td><input type="checkbox" wicket:id="space.isTemplate" /></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="itemSummaryEnabledLabel"></label></td>
+						<td><input type="checkbox" wicket:id="space.itemSummaryEnabled" /></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="defaultDurationLabel"></label></td>
+						<td><input wicket:id="space.defaultDuration" size="10" wicket:message = "title:help.field.humantime" /></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="closingDateLabel"></label></td>
+						<td><span class="customField"  wicket:id="space.closingDate"></span></td>
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="spaceItemVisibilityChoiceLabel">space_form.visibility</label></td>
+						<td><select wicket:id="space.itemVisibility"></select></td>
+						
+					</tr>
+					<tr>
+						<td class="label"><label wicket:id="spaceAssetVisibilityChoiceLabel">space_form.visibility</label></td>
+						<td><select wicket:id="space.assetVisibility"></select></td>
+					</tr>
+				</tbody>
+				
+				<tbody>
+					<tr wicket:id="hide">
+		                <td class="label"><label wicket:id="copyFromLabel">space_form.copyExisting</label></td>
+		                <td><select wicket:id="copyFrom"/></td>
+		            </tr>
+	            </tbody>
+			</table>
+		</fieldset>
+			
+		<fieldset wicket:id="spaceGroupDetailsContainer">
+			
+				<table class="form">
+					<tbody>
+						<tr>
+							<td class="label"><label wicket:id="spaceGroupChoiceLabel">space_form.spaceGroupChoice(this should me removed)</label>
+							<span class="red">*</span></td>
+							<td><select wicket:id="space.spaceGroup"></select></td>
+						</tr>
+					</tbody>
+					<tbody wicket:id="spaceGroupDetails">
+						<tr>
+							<td class="label"><label wicket:id="spaceGroupNameLabel">space_form.spaceGroupName(this should me removed)</label>
+							<span class="red">*</span></td>
+							<td><input type="text" wicket:id="space.spaceGroup.name"></input></td>
+						</tr>
+						<tr>
+							<td class="label"><label wicket:id="spaceGroupDescriptionLabel">space_form.spaceGroupDescription(this should me removed)</label>
+							<span class="red">*</span></td>
+							<td><textarea wicket:id="space.spaceGroup.description"></textarea></td>
+						</tr>
+					</tbody>
+				</table>
+				
+		</fieldset>
+		<p>
+			<input type="submit" class="button" wicket:id="back" wicket:message="value:back" />            
+	        <input type="submit" class="button" wicket:id="apply" wicket:message="value:apply"/>  
+			<input type="submit" class="button" wicket:id="next" wicket:message="value:next" />
+		</p>
+	</form>
+	</div>
+	</div>
+	<!-- end:SpaceFormPanel.html -->
+</wicket:panel>

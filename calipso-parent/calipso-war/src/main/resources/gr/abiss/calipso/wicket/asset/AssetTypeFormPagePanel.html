@@ -1,0 +1,28 @@
+<wicket:panel>
+<!-- begin:AssetTypeFormPagePanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="label"></span></h1> 
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="AssetTypeFormPagePanel.help"/></p>
+		<form wicket:id="form">
+			<fieldset>
+				
+				<table class="itemlist" cellspacing="0">
+					<tbody wicket:id="iconForm"/>
+					<tr><td colspan="2" style="text-align:center;" wicket:id="feedback"></td></tr>
+					<tr><td colspan="2" wicket:id="AssetTypeFormPanel"></td></tr>
+				</table>
+				<br />
+				<input type="submit" class="button" wicket:message="value:submit"/>
+				<input type="reset" class="button" wicket:message="value:reset"/>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<!-- end:AssetTypeFormPagePanel.html -->
+</wicket:panel>

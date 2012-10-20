@@ -1,0 +1,63 @@
+<wicket:panel>
+	<span wicket:id="findUserPlaceHolder"></span>
+	<a href="#" wicket:id="findUser"
+		wicket:message="title:item_form.findUser">
+		<img src="resources/find.png" />
+	</a>
+</wicket:panel>
+<wicket:fragment wicket:id="findUserFragment">
+	<fieldset class="popup" style="left:-100px;">
+		<legend>
+			<a href="#" wicket:id="close" wicket:message="title:item_form.findUser">
+				<img src="resources/remove.gif" />
+			</a>
+			<wicket:message	key="searchUser.searchUser" />
+		</legend>
+		
+	<div wicket:id="searchFormContainer">
+		<div  class="submit-controls">
+			<label for="searchOn"><wicket:message key="user_list.filterBy" /> </label> 
+			<select wicket:id="searchOn" id="searchOn"></select> 
+			<input wicket:id="searchText" />
+			<input type="button" wicket:id="submit" class="button" wicket:message="value:search" />
+		</div>
+		<table wicket:id="usersDataViewContainer" class="userlist" cellspacing="0">
+			<thead>
+				<tr>
+					<th><wicket:message key="user_list.loginName" /></th>
+					<th><wicket:message key="user_list.name" /></th>
+					<th><wicket:message key="user_list.lastname" /></th>
+					<th><wicket:message key="user_list.email" /></th>
+					<th><wicket:message key="user_list.country" /></th>
+					<th><wicket:message key="user_list.organization" /></th>
+					<th><wicket:message key="user_list.address" /></th>
+					<th><wicket:message key="user_list.phone" /></th>
+					<th></th>
+					<th class="scroll-last"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td wicket:id="navigator"></td>
+				</tr>
+			</tbody>	
+			<tbody class="scroll">
+				<tr wicket:id="userDataView">
+					<td wicket:id="loginName"></td>
+					<td wicket:id="name"></td>
+					<td wicket:id="lastname"></td>
+					<td wicket:id="email"></td>
+					<td wicket:id="country"></td>
+					<td wicket:id="organization"></td>
+					<td wicket:id="address"></td>
+					<td wicket:id="phone"></td>
+					<td wicket:id="select">
+						<a href="#"><img src="resources/add.gif" style="margin-right:20px;"/></a>
+					</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</fieldset>
+</wicket:fragment>

@@ -1,0 +1,63 @@
+<wicket:panel>           
+<!-- begin:OrganizationViewPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="organization.organizationDetails"/></h1>		
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+	    <table>
+	    	<tr>    
+	            <td wicket:id="organizationIcon"></td>
+	            <td><h2 wicket:id="organizationName"></h2></td>           
+	        </tr>
+	        <tr>
+	        	<td class="label">
+	        		<wicket:message key="organization.vatNumber" />
+	        	</td>
+	        	<td wicket:id="organizationVatNumber"></td>
+	        </tr>
+	        <tr>
+		    	<td class="label">
+		    		<wicket:message key="organization.address" />
+		    	</td>
+		    	<td wicket:id="organizationAddress"></td>
+			</tr>		
+		    <tr>
+				<td class="label">
+					<wicket:message key="organization.zip" />
+				</td>
+				<td wicket:id="organizationZip"></td>
+			</tr>
+		    <tr>
+				<td class="label">
+					<wicket:message key="organization.country" />
+				</td>
+				<td wicket:id="organizationCountry"></td>
+			</tr>
+	
+			<tr>
+				<td class="label">
+					<wicket:message key="organization.phone" />
+				</td>
+				<td wicket:id="organizationPhone"></td>
+			</tr>
+			<tr>
+				<td class="label">
+					<wicket:message key="organization.email" />
+				</td>
+				<td wicket:id="organizationEmail"></td>
+			</tr>
+			<tr>
+				<td class="label">
+					<wicket:message key="organization.web" />
+				</td>
+				<td><a href=# wicket:id="organizationWeb"><span wicket:id="organizationWeb" /></a></td>
+			</tr>
+	    </table>
+	</div>
+</div>
+<!-- end:OrganizationViewPanel.html -->
+</wicket:panel>

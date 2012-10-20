@@ -1,0 +1,64 @@
+<wicket:panel>
+<!-- begin:AssetSpacePanel.html -->
+<!-- div wicket:id="searchContainer"-->
+			<div wicket:id="assetAjaxSearchForm">
+				<fieldset class="popup">
+					<legend>
+					<a href="#" wicket:id="close">
+							<img src="resources/remove.gif" />
+					</a>
+					<wicket:message key="search"></wicket:message>
+						
+					</legend>
+					<table cellspacing="0">
+						<tr>
+							<td class="label"><label wicket:id="assetInventoryCodeLabel">asset.inventoryCode</label>
+							</td>
+							<td colspan="3"><input wicket:id="asset.inventoryCode" size="35" />
+							</td>
+						</tr>
+						<tr>
+							<td class="label"><label wicket:id="assetTypeLabel">asset.assetType</label>
+							</td>
+							<td colspan="3"><select wicket:id="asset.assetType" /></td>
+						</tr>
+						<tr>
+							<td colspan="4">
+							
+								<input type="button" class="button" wicket:id="submit"  wicket:message="value:submit"/> 
+								<input type="reset" class="button" wicket:message="value:reset" />
+							</td>
+						</tr>
+				
+					</table>
+					
+					<!-- div wicket:id="assetsListPanel"></div-->
+					<span wicket:id="navigator"></span>
+					<table cellspacing="0">
+						<thead>
+							<tr class="sortable">
+								<th wicket:id="headings"><span wicket:id="heading"><a href="#" wicket:id="heading"></a></span></th>
+								<th><span wicket:id="hAction"></span></th>
+							</tr>
+						</thead>
+						<tbody class="scroll">
+					  		<tr wicket:id="assetDataView">
+								<!--td wicket:id="expandCustomAttributesLink" align="center">
+						  		  		<img src="resources/expanded.gif"/>
+						  		</td-->
+						  		<td wicket:id="typeLabel"></td>
+								<td wicket:id="inventoryCodeLabel"></td>
+								<td wicket:id="supportStartDateLabel" class="date"></td>
+								<td wicket:id="supportEndDateLabel" class="date"></td>
+								<td wicket:id="spacenameLabel"></td>
+					  		  	<td wicket:id="add" align="center">
+					  		  		<img src="resources/add.gif"/>
+					  		  	</td>
+				  		  	</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</div>
+<!-- /div-->
+	<!-- end:AssetSpacePanel.html -->
+</wicket:panel>

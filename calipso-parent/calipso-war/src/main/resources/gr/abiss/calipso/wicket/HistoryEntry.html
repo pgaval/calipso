@@ -1,0 +1,42 @@
+<wicket:panel>
+	<!-- begin:HistoryEntry.html -->
+	<table class="history-entry">
+		<tr>
+		<td class="history-entry-details">
+			<span class="loggedByIcon" wicket:id="loggedByIcon"></span>
+			<span class="loggedBy" wicket:id="loggedBy"></span>
+			<br />
+			<span class="timeStamp" wicket:id="timeStamp"></span>
+			<div>
+			<ul>
+				<li class="status" wicket:id="status"></li>
+				<wicket:container wicket:id="fields">
+				<li>
+					<span class="change" wicket:id="field"></span>
+					<span class="change" wicket:id="fileLink"></span>
+				</li>
+				</wicket:container>
+				<li class="change" wicket:id="dueTo"></li>
+				<li class="change" wicket:id="actualEffort"></li>
+				<li class="assignedTo" wicket:id="assignedToContainer">
+					<wicket:message key="item_view.assignedToMessage"></wicket:message>
+				 	<span wicket:id="assignedToLink"> </span>
+				</li>
+			</ul>
+			</div>
+		</td>
+		<td wicket:id="comment" class="history-entry-comment">
+			<span>
+				
+				<wicket:container wicket:id="attachmentThumbs">
+			
+				<span class="comment-attachment" wicket:id="attachment"> </span>
+				</wicket:container>
+			 </span> 
+
+			 <wicket:container wicket:id="commentLabel"></wicket:container>
+		</td>
+		</tr>
+		</table>
+	<!-- end:HistoryEntry.html -->
+</wicket:panel>

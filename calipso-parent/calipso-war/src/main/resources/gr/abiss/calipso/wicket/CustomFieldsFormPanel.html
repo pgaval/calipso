@@ -1,0 +1,73 @@
+<wicket:panel>
+	<!-- begin:CustomFieldsFormPanel.html -->
+	<div wicket:id="fieldGroups" style="width:49%;float:left;">
+		<fieldset class="fieldGroup" style="margin-right:10px;border-left:none;border-right:none;border-bottom:none;">
+		<legend wicket:id="fieldGroupLabel"></legend>
+		<div class="customFieldContainer" wicket:id="fields">
+			<span wicket:id="labelContainer" class="labelContainerBlock"><label wicket:id="label">label</label><span class="mandatory" wicket:id="star">*</span></span>
+			<div  wicket:id="field"></div>
+			<br class="clear" />
+		</div>
+		
+		</fieldset>
+	</div>
+	<br style="clear:both;" />
+
+<wicket:fragment wicket:id="dateFragment">
+	<span class="customField"><span wicket:id="field"></span></span>
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+</wicket:fragment>
+<wicket:fragment wicket:id="dropDown">
+	<span class="customField"><span wicket:id="border"><select wicket:id="field" /></span></span>
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+</wicket:fragment>
+<wicket:fragment wicket:id="autoCompleteFragment">
+	<span class="customField"><span wicket:id="border"><select wicket:id="field" /></span></span>
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+</wicket:fragment>
+
+
+<wicket:fragment wicket:id="treeField">
+	<span class="customField"><span wicket:id="border"><span wicket:id="field" /></span></span>
+	<br style="clear:both" />
+	<div wicket:id="htmlDescriptionContainer"><div wicket:id="htmlDescription"></div></div>
+</wicket:fragment>
+
+
+<wicket:fragment wicket:id="textField">
+	<span class="customField"><input wicket:id="field" type="text" /></span>
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+	
+</wicket:fragment>
+
+<wicket:fragment wicket:id="dateField">
+	<span class="customField"><input wicket:id="field" type="text" /></span>
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+	
+</wicket:fragment>
+<wicket:fragment wicket:id="textareaField">
+	<span class="customField"><textarea wicket:id="field"> </textarea></span>
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+	
+</wicket:fragment>
+<wicket:fragment wicket:id="multipleValuesTextField">
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+	<span class="customField"><div wicket:id="field"> </div></span>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="fileField">
+	<input type="file" wicket:id="field" />
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+</wicket:fragment>
+<wicket:fragment wicket:id="dropDownFragment">
+	<select wicket:id="field" />
+	<span wicket:id="htmlDescriptionContainer"><span wicket:id="htmlDescription"></span></span>
+</wicket:fragment>
+</wicket:panel>
+
+<!-- end:CustomFieldsFormPanel.html -->
+<!--  begin:CustomFieldsFormPanel.html panels -->
+
+
+<!-- end:CustomFieldsFormPanel.html panels -->
+

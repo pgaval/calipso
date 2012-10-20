@@ -1,0 +1,71 @@
+<wicket:panel>
+
+	<!-- begin: EditItemRenderingTemplatesPanel.html -->
+
+<form wicket:id="itemRenderingTemplateForm">
+	
+	<div wicket:id="itemRenderingTemplateFormFeedback">Errors and messages go here</div>
+	<table>
+	
+		<tr>
+			<td class="label">
+				<label wicket:id="descriptionLabel">name</label>
+				<span class="mandatory">*</span>
+			</td>
+			<td>
+				<input type="text" wicket:id="description" />
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				<label wicket:id="priorityLabel">priority</label>
+				<span class="mandatory">*</span>
+			</td>
+			<td>
+				<input type="text" wicket:id="priority" />
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				<label wicket:id="hideOverviewLabel">hideOverview</label>
+			</td>
+			<td>
+				<input type="checkbox" wicket:id="hideOverview" />
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				<label wicket:id="hideHistoryLabel">hideHistory</label>
+			</td>
+			<td>
+				<input type="checkbox" wicket:id="hideHistory" />
+			</td>
+		</tr>
+		<tr>
+			<td class="label">
+				<label wicket:id="templateTextLabel">template text</label>
+				<span class="mandatory">*</span>
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<td class="label" colspan="2" style="padding:0px;width:100%;">
+				<textarea id="templateText" wicket:id="templateText" style="width:100%;height:200px;"> </textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<button wicket:id="save">save</button>
+			</td>
+			<td>
+				<button wicket:id="cancel">cancel</button>
+			</td>
+		</tr>
+	</table>
+	
+	
+</form>
+
+	<!-- end: EditItemRenderingTemplatesPanel.html -->
+</wicket:panel>

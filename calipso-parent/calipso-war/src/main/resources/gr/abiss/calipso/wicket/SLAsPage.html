@@ -1,0 +1,77 @@
+<html>
+    <body>
+        <wicket:extend>
+<!-- begin:SLAsPage.html -->
+        <div><a href="#" wicket:id="new"><wicket:message key="sla.createNewSLA"/></a></div>
+        <br />
+
+        <form wicket:id="form">
+	        <fieldset>
+	        	<legend><wicket:message key="sla.searchParameters"/></legend>
+	        	<table>
+	        		<tr><td class="label">Contract Code</td><td colspan="3"><input type="text" wicket:id="slaCode" style="width:99%;" /></td></tr>
+	        		<tr>
+	        			<td class="label">From "Start Date"</td><td wicket:id="fromStartDate"></td>
+	        			<td class="label">To "Start Date"</td><td wicket:id="toStartDate"></td>
+	        		</tr>
+	        		<tr>
+	        			<td class="label">From "End Date"</td><td wicket:id="fromEndDate"></td>
+	        			<td class="label">To "End Date"</td><td wicket:id="toEndDate"></td>
+	        		</tr>
+	        		<tr><td class="label">Notes</td><td colspan="3"><input type="text" wicket:id="notes" style="width:99%;" /></td></tr>
+	        		<tr>
+	        			<td class="label">Response Time between</td><td><input type="text" wicket:id="fromResponseTime" size="15" maxlength="10" /></td>
+	        			<td class="label"> and </td><td><input type="text" size="15" wicket:id="toResponseTime" maxlength="10" /></td>
+	        		</tr>
+	        		<tr>
+	        			<td colspan="2" style="text-align:center;"><input type="submit" class="button" wicket:message="value:submit"/></td>
+	        			<td colspan="2" style="text-align:center;"><input type="reset" class="button" wicket:message="value:reset"/></td>
+	        		</tr>
+	        		<tr><td colspan="4" style="text-align:center;" wicket:id="feedback"></td></tr>
+	        	</table>
+	        </fieldset>
+        </form>
+        <br />
+
+				<fieldset>
+					<legend><wicket:message key="sla.slaList"/></legend>
+	        <table>
+	            <tr>
+	                <td>
+	                    <span wicket:id="recordsFound"></span>&nbsp;                
+	                    <span wicket:id="pagination" class="page-links">
+	                        <span wicket:id="prevOn"><a href="#" wicket:id="prevOn"></a></span><span wicket:id="prevOff"></span>&nbsp;
+	                        <span wicket:id="pages">
+	                            <span wicket:id="pageOn"><a href="#" wicket:id="pageOn"></a></span><span wicket:id="pageOff"></span>&nbsp;
+	                        </span>
+	                        <span wicket:id="nextOn"><a href="#" wicket:id="nextOn"></a></span><span wicket:id="nextOff"></span>                    
+	                    </span>
+	                 </td>
+	            </tr>
+	        </table>
+			<br />
+			
+	        <table class="calipso">
+	    		<tr class="sortable">
+	    			<th><a href="#">Contract Code</a></th>
+	    			<th><a href="#">Start Date</a></th>
+	    			<th><a href="#">End Date</a></th>
+	    			<th><a href="#">Notes</a></th>
+	    			<th><a href="#">Response Time</a></th>
+	    			<th>Edit</th>
+	    		</tr>
+        		<tr wicket:id="slaList">
+        			<td wicket:id="slaCode"></td>
+        			<td wicket:id="startDate"></td>
+        			<td wicket:id="endDate"></td>
+        			<td wicket:id="notes"></td>
+        			<td wicket:id="responseTime"></td>
+        			<td wicket:id="edit" align="center"><a href="#" wicket:message="title:edit"><img src="resources/edit.gif"/></a></td>
+        		</tr>
+	        </table>
+        </fieldset>
+        
+<!-- end:SLAsPage.html -->        
+        </wicket:extend>
+    </body>
+</html>

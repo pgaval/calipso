@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <wicket:extend>
+<!-- begin:SLAFormPage.html -->
+					<form wicket:id="form">
+						<table>
+							<tr><td colspan="2" style="text-align:center;" wicket:id="feedback"></td></tr>
+							<tr><td class="label">Contract Code</td><td><input type="text" wicket:id="slaCode" /></td></tr>
+							<tr><td class="label">Start Date</td><td wicket:id="startDate"></td></tr>
+							<tr><td class="label">End Date</td><td wicket:id="endDate"></td></tr>
+							<tr><td class="label">Notes</td><td><textarea rows="15" cols="35" wicket:id="notes"></textarea></td></tr>
+							<tr><td class="label">Response Time</td><td><input type="text" wicket:id="responseTime" /></td></tr>
+							<tr>
+								<td style="text-align:center;"><input type="submit" class="button" wicket:message="value:submit"/></td>
+								<td style="text-align:center;"><input type="reset" class="button" wicket:message="value:reset"/></td>
+							</tr>
+						</table>
+						<p><a href="#" wicket:id="cancel"><img src="resources/cancel.gif" class="nav-link"/><wicket:message key="cancel"/></a></p>
+					</form>	
+<!-- end:SLAFormPage.html -->
+	        </wicket:extend>
+    </body>
+</html>

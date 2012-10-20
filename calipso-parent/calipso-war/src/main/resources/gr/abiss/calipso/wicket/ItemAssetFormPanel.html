@@ -1,0 +1,33 @@
+<wicket:panel>            
+<!-- begin:ItemAssetFormPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="title" /></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="ItemAssetFormPanel.help"/></p>
+		<form wicket:id="form">          
+		    <fieldset>      
+				<legend class="label">
+					<wicket:message key="asset.assetPanel.assets"></wicket:message>
+				</legend>
+			    <span wicket:id="feedback"></span>
+			    <div wicket:id="assetPanel" />
+		    </fieldset>
+		    <fieldset>
+				<legend class="label">
+					<wicket:message key="asset.assetPanel.availableAssets"></wicket:message>
+				</legend>
+		    	<div wicket:id="availableAssetPanel" />
+		    	<button class="button" type="submit">
+		    		<wicket:message key="submit"/>
+		    	</button> 
+		    </fieldset>
+		</form>
+	</div>
+</div>
+<!-- end:ItemAssetFormPanel.html -->
+</wicket:panel>

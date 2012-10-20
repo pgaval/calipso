@@ -1,0 +1,10 @@
+body, body div, body p, body th, body td, body li, body dd, body input, body button, body textarea, body select{
+	font-size:	small;
+	voice-family:	"\"}\"";
+	voice-family:	inherit;
+	font-size:	medium
+}
+
+html>body, html>body div, html>body p, html>body th, html>body td, html>body li, html>body dd, html>body input, html>body button, html>body textarea, html>body select{
+	font-size:	medium
+}

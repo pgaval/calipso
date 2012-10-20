@@ -1,0 +1,35 @@
+<wicket:panel>
+<!-- begin:SpaceRolePanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="title"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<span class="heading-actions">
+			<a href="#" wicket:id="delete">
+				<img src="resources/delete.gif" class="nav-link"/>
+				<wicket:message key="delete"/>
+			</a>
+		</span>	  
+	</div>
+	<div class="section-body">
+		<form wicket:id="form">
+			<fieldset>
+				<div wicket:id="feedback"></div>
+				<table cellspacing="0" class="form">
+					<tr>
+						<td class="label"><label wicket:id="roleDescriptionLabel">space_role_form.roleName</label></td>
+						<td><input wicket:id="roleDescription" /></td>
+					</tr>
+					<tr>
+						<td><input wicket:id="btnSubmit" type="submit" class="button" wicket:message="value:submit"/></td>
+						<td></td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<!-- end:SpaceRolePanel.html -->
+</wicket:panel>

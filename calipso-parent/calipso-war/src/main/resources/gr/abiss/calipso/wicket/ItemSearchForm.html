@@ -1,0 +1,59 @@
+<html>
+    <body>        
+        <wicket:panel>            
+<!-- begin:ItemSearchForm.html -->
+            <form wicket:id="form">
+                <table class="itemlist" cellspacing="0">
+                <caption class="help-message"><wicket:message key="ItemSearchFormPanel.help"/></caption>
+                	<thead>
+                	<tr>
+                		<td class="submit-controls" colspan="4">
+			                <span wicket:id="feedback"></span>
+			                <label wicket:id="pageSizeLabel">item_search_form.resultsPerPage</label>
+			                <select wicket:id="pageSize" />
+			                <label wicket:id="showHistoryLabel">item_search_form.showHistory</label>
+			                <input type="checkbox" wicket:id="showHistory" id="showHistory"/>
+			                <input type="submit" class="button" wicket:message="value:search" wicket:id="search"/>
+                		</td>
+                	</tr>
+                	</thead>
+                	<tbody>
+                    <tr>
+                        <th><wicket:message key="item_filter.fieldName"/></th>
+                        <th><wicket:message key="item_filter.showColumn"/></th>
+                        <th>
+                        	<wicket:message key="item_filter.condition"/> 
+                        	<a class="not100" href="#" wicket:id="expandAll">
+                        		<wicket:message key="item_filter.expandAll"/>
+                        	</a>
+                        </th>
+                        <th>
+                        	<wicket:message key="item_filter.expression"/>
+                        </th>
+                    </tr>
+                    <tr valign="top" wicket:id="columns">
+                        <td class="label">
+                            <label wicket:id="columnLabel"></label>
+                        </td>                            
+                        <td>
+                            <input type="checkbox" wicket:id="visible"/>
+                        </td>                            
+                        <td><select wicket:id="expression"/></td>
+                        <td wicket:id="fragParent"></td>
+                    </tr>    
+                    </tbody>                
+                </table>
+            </form>
+            <wicket:fragment wicket:id="multiSelect"><span wicket:id="values"></span></wicket:fragment>            
+            <wicket:fragment wicket:id="textField"><input wicket:id="value"/> <input wicket:id="value2"/></wicket:fragment>            
+            <wicket:fragment wicket:id="dateField"><span wicket:id="value"></span> <span wicket:id="value2"></span></wicket:fragment>
+            <wicket:fragment wicket:id="effortField2"><span wicket:id="value"></span> <br /><span wicket:id="and"><wicket:message key="and"/></span> <span wicket:id="value2"></span></wicket:fragment>
+            <wicket:fragment wicket:id="effortField">
+	        	<span wicket:id="days"><wicket:message key="item_search_form.days"/>: <input wicket:id="value" size="5"/></span> 
+	        	<span wicket:id="days2"><wicket:message key="item_search_form.days"/>: <input wicket:id="value2" size="5"/></span>
+        	</wicket:fragment>
+       
+<!-- end:ItemSearchForm.html -->     
+        </wicket:panel>
+    </body>
+</html>

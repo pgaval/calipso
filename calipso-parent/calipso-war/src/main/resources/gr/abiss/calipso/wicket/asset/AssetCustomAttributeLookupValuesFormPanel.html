@@ -1,0 +1,49 @@
+<wicket:panel>
+<!-- begin:AssetCustomAttributeLookupValuesFormPanel.html -->
+	<fieldset>
+		<legend><wicket:message key="asset.customAttributes.valueList"/></legend>
+		<table>
+			<tr>
+				<td>
+				 <form wicket:id="valuesForm">
+	                 <table>                                
+		                 <tr wicket:id="values">
+		                     <td wicket:id="showOrder"></td>
+		                     <td wicket:id="value" class="alt"></td>
+		                     <td><a href="#" wicket:id="up" wicket:message="title:asset.customAttributes.moveUpValue"><img src="resources/up.gif"/></a></td>
+		                     <td><a href="#" wicket:id="down" wicket:message="title:asset.customAttributes.moveDownValue"><img src="resources/down.gif"/></a></td>
+		                     <td><a href="#" wicket:id="edit" wicket:message="title:asset.customAttributes.editValue"><img src="resources/edit.gif"/></a></td>
+		                     <td><a href="#" wicket:id="delete" wicket:message="title:asset.customAttributes.deleteValue"><img src="resources/delete.gif"/></a></td>
+		                 </tr>
+		             </table>
+				 </form>
+		 		</td>
+		 	</tr>
+		 	<tr><td style="border-top:1px solid;"><p><span class="label"><wicket:message key="asset.customAttributes.addValue"/></span>:<a href="#" wicket:message="title:asset.customAttributes.addValue" wicket:id="add"><img src="resources/add.gif"/></a></p></td></tr>
+		 </table>
+	 </fieldset>
+	 <br />
+	 
+	 <fieldset wicket:id="editArea">
+	 	<legend wicket:id="editLabel"></legend>
+	 	<form  wicket:id="editForm">
+	 	<table>
+		 	<tr>
+				<td class="nopad">
+		 			<ul class="fieldlist">
+			 			<li wicket:id="nameTranslations">
+							<input type="text" wicket:id="name" />
+							<label wicket:id="languageLabel">language name</label>
+					 	</li>
+				 	</ul>
+		 		</td>
+				<td>
+					<button type="submit" wicket:id="btnSubmit"><wicket:message key="submit"/></button> &nbsp;
+					<button type="submit" wicket:id="btnCancel"><wicket:message key="cancel"/></button>
+			 	</td>
+		 	</tr>
+	 	</table>
+	 	</form>
+	 </fieldset>
+<!-- end:AssetCustomAttributeLookupValuesFormPanel.html -->
+</wicket:panel>

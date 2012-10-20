@@ -1,0 +1,43 @@
+<wicket:panel>
+<!-- begin: SpacePanelLanguageSupport.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="space_form.spaceSupportedLanguages"></wicket:message></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<span class="heading-actions"> 
+			<a href="#" wicket:id="delete">
+				<img src="resources/delete.gif" class="nav-link" /> 
+				<wicket:message key="delete"></wicket:message>
+			</a>
+		</span>
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="SpaceFormPanel.help"></wicket:message></p>
+		<form wicket:id="form">
+		
+			<div wicket:id="feedback"></div>
+			<fieldset>
+				<legend><span wicket:id="space.supportedLanguagesLabel" /></legend>
+				<div wicket:id="space.supportedLanguages"></div>
+			</fieldset>
+			<fieldset>
+				<legend><wicket:message key="dateFormatting">Date formatting</wicket:message></legend>
+				<table>
+					<tr wicket:id="dateFormatsListView">
+						<td>
+							<label wicket:id="dateFormatLabel" />
+						</td>
+						<td>
+							<input type="text" wicket:id="dateFormatField" />
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+			<p><input type="submit" class="button" wicket:message="value:next" /></p>
+		</form>
+	</div>
+</div>
+<!-- end: SpacePanelLanguageSupport.html -->
+</wicket:panel>

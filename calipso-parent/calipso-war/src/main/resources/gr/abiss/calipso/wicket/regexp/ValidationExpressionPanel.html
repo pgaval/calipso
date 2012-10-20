@@ -1,0 +1,45 @@
+<wicket:panel>
+<!-- begin:ValidationExpressionPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+	<h1><wicket:message key="validation_Expression.title"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<span class="heading-actions">
+			<a href="#" wicket:id="new"><img src="resources/new.gif" class="nav-link"/><wicket:message key="validation_Expression.create"/></a>
+		</span>
+		<span class="heading-actions">
+			<img src="resources/search.gif"/>
+			<a href="#" wicket:id="search"><wicket:message key="validation_Expression.search"/></a>
+		</span>
+	</div>
+	<div class="section-body">
+	    <p class="help-message"><wicket:message key="validationExpressionPanel.help"/></p>
+	    <div wicket:id="searchContainer">
+			<fieldset wicket:id="searchPlaceHolder">
+				<legend><wicket:message key="validation_Expression.searchParameters"/></legend>
+				<form wicket:id="form">
+			    	<table class="itemlist" cellspacing="0">
+			    		<tr>
+			    			<td class="label"><label wicket:id="nameLabel">validation_Expression.name</label></td><td colspan="3"><input type="text" wicket:id="name" /></td>
+			    		</tr>
+			    		<tr>
+			    			<td class="label"><label wicket:id="descriptionLabel">validation_Expression.description</label></td><td><input type="text" wicket:id="description" /></td>
+			    		</tr>
+			    		<tr>
+			    			<td colspan="2" style="text-align:center;"><input type="submit" class="button" wicket:message="value:submit"/></td>
+			    			<td colspan="2" style="text-align:center;"><input type="reset" class="button" wicket:message="value:reset"/></td>
+			    		</tr>
+			    	</table>
+			    </form>
+			</fieldset>
+		</div>
+		<!-- div class="heading-container-insection">
+			<h2><wicket:message key="validation_Expression.list"/></h2>
+		</div-->
+		<div wicket:id="validationExpressionListPanel"></div>
+	</div>
+</div>
+<!-- end:ValidationExpression.html -->
+</wicket:panel>

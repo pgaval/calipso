@@ -1,0 +1,34 @@
+<wicket:panel>
+<!-- begin:SaveSearchFormPanel.html -->
+<span wicket:id="formContainer"></span>
+
+<wicket:fragment wicket:id="editFormFragment">
+	<form wicket:id="editForm" class="popup">
+		<table cellspacing="0" cellpadding="0">
+			<caption><span wicket:id="feedback"></span></caption>
+			<tr>
+				<td><wicket:message key="name"/>: </td>
+				<td><input type="text" wicket:id="name" style="width:100px;"/></td>
+			</tr>
+			<tr>
+				<td><wicket:message key="visibility"/>: </td>
+				<td><select wicket:id="visibility" style="width:100px;" /></td>
+			</tr>
+			<tr>
+				<td><button type="submit" wicket:id="btnSave"><wicket:message key="save"/></button></td>
+				<td><button wicket:id="btnCancel"><wicket:message key="cancel"/></button></td>
+			</tr>
+		</table> 
+	</form>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="confirmFormFragment">
+	<form wicket:id="confirmForm" style="display:inline;">
+		<span wicket:id="message"></span>
+		<button type="submit" wicket:id="btnYes"><wicket:message key="yes"/></button>
+		<button wicket:id="btnNo"><wicket:message key="no"/></button>
+	</form>
+</wicket:fragment>
+
+<!-- end:SaveSearchFormPanel.html -->
+</wicket:panel>

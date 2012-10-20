@@ -1,0 +1,39 @@
+<html xmlns:wicket>
+<wicket:panel>
+<!-- begin:OrganizationFormPanel.html -->
+<div class="section">
+<div class="heading-container1">
+	<h1><span wicket:id="label"></span></h1> 
+	<span class="heading-actions">
+		<span wicket:id="backLink"></span>
+	</span>
+</div>
+<p class="help-message"><wicket:message key="OrganizationFormPanel.help"/></p>
+<form wicket:id="form">
+
+<span wicket:id="iconFormPanel" />
+
+<table class="itemlist" cellspacing="0">
+	<tr><td colspan="4" style="text-align:center;" wicket:id="feedback"></td></tr>
+	<tr><td class="label"><label wicket:id="nameLabel">organization.name</label><span wicket:id="mandatoryPanelForName"></span></td><td><input type="text" wicket:id="name" /></td></tr>
+	<tr><td class="label"><label wicket:id="vatNumberLabel">organization.vatNumber</label></td><td><input type="text" wicket:id="vatNumber" /></td></tr>
+	<tr><td class="label"><label wicket:id="addressLabel">organization.address</label></td><td><input type="text" wicket:id="address" /></td></tr>
+	<tr><td class="label"><label wicket:id="zipLabel">organization.zip</label></td><td><input type="text" wicket:id="zip" /></td></tr>
+	<tr><td class="label"><label wicket:id="countryLabel">organization.country</label><span wicket:id="mandatoryPanelForCountry"></span></td><td><select wicket:id="country"></select></td></tr>
+	<tr><td class="label"><label wicket:id="phoneLabel">organization.phone</label></td><td><input type="text" wicket:id="phone" /></td></tr>
+	<tr><td class="label"><label wicket:id="alternativePhoneLabel">organization.alternativePhone</label></td><td><input type="text" wicket:id="alternativePhone" /></td></tr>
+	<tr><td class="label"><label wicket:id="faxLabel">organization.fax</label></td><td><input type="text" wicket:id="fax" /></td></tr>
+	<tr><td class="label"><label wicket:id="webLabel">organization.web</label></td><td><input type="text" wicket:id="web" /></td></tr>
+	<tr><td class="label"><label wicket:id="emailLabel">organization.email</label></td><td><input type="text" wicket:id="email" /></td></tr>
+	<tr><td class="label"><label wicket:id="lastUpdateCommentLabel">organization.lastUpdateComment</label></td><td><textarea wicket:id="lastUpdateComment"> </textarea></td></tr>
+	<tr>
+		<td style="text-align:center;"><input type="submit" class="button" wicket:message="value:submit"/></td>
+		<td style="text-align:center;"><input type="reset" class="button" wicket:message="value:reset"/></td>
+	</tr>
+</table>
+</form>  
+</div>
+<!-- end:OrganizationFormPanel.html -->
+</wicket:panel>
+</html>
+  

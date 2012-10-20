@@ -1,0 +1,46 @@
+<wicket:panel>
+<!-- begin:SpaceListPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="space_list.spaceList"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<span class="heading-actions">
+			<a href="#" wicket:id="create"><img src="resources/new.gif" class="nav-link" /><wicket:message key="space_list.createNewSpace"/></a>
+		</span>
+	</div>
+	<div class="section-body"> 
+		<p class="help-message"><wicket:message key="SpaceListPanel.help"/></p>
+	    <table class="itemlist" cellspacing="0">
+	    	<thead>
+		        <tr wicket:id="listHead">
+		            <th><wicket:message key="space_list.name"/></th>                    
+		            <th><wicket:message key="space_list.key"/></th>
+		            <th><wicket:message key="space_list.description"/></th>
+		            <th><wicket:message key="space_list.spaceGroupName"/></th>
+		            <th><wicket:message key="space_list.edit"/></th>
+		            <th><wicket:message key="space_list.users"/></th>
+		            <th><wicket:message key="space_list.assets"/></th>
+		            <!-- th><wicket:message key="space_list.documents"/></th-->
+		        </tr>
+	    	</thead>
+	        <tr wicket:id="spaces">
+	            <td wicket:id="name"></td>
+	            <td wicket:id="prefixCode"></td>                    
+	            <td wicket:id="description"></td>
+	            <td wicket:id="spaceGroupName"></td>
+	            <td wicket:id="edit" align="center">
+	                <a href="#" wicket:message="title:edit"><img src="resources/edit.gif"/></a>                        
+	            </td>                    
+	            <td wicket:id="allocate" align="center"><a href="#"><img src="resources/users.gif"/></a></td>
+	            <td wicket:id="asset" align="center"><a href="#"><img src="resources/assets.gif" wicket:message="title:dashboard.assets"/></a></td>
+	            <!--td align="center"><a wicket:id="documents"><img src="resources/pilcrow.png" wicket:message="title:space_list.documents"/></a></td-->
+	        </tr>
+	        <tr wicket:id="noData"><td colspan="7"><wicket:message key="space_list.noSpaces.plainText"/>&nbsp;<a href="#" wicket:id="create"><wicket:message key="space_list.noSpaces.linkText"/></a></td></tr>
+	    </table>
+	</div>
+</div>
+    
+<!-- end:SpaceListPanel.html -->
+</wicket:panel>

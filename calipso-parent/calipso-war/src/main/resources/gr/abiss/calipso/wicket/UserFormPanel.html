@@ -1,0 +1,167 @@
+<wicket:panel>           
+<!-- begin:UserFormPanel.html Calipso -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="user_form.userDetails"/></h1>		
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<span class="heading-actions">
+			<a href="#" wicket:id="delete">
+				<img src="resources/delete.gif" class="nav-link"/>
+				<wicket:message key="delete"/>
+			</a>
+		</span>	  
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="UserFormPanel.help"/></p>
+	    <form wicket:id="form">
+	    	<fieldset>
+				<legend><wicket:message key="edit.details"/></legend>
+				<span wicket:id="feedback"></span>
+		        <table class="form">
+			        <tbody wicket:id="iconFormPanel" />
+			        <tbody>
+			            <tr>
+			                <td class="label">
+			                	<label wicket:id="loginNameLabel">user_form.loginName</label>
+			                	<span class="red">*</span>
+			                </td>    
+			                <td>
+			                    <input type="text" wicket:id="user.loginName" size="15"/>
+			                    <span wicket:id="locked">
+			                        <input type="checkbox" wicket:id="user.locked"/>
+			                        <label wicket:id="lockedLabel">user_form.locked</label>
+			                    </span>
+			                </td>           
+			            </tr>
+			            <tr>
+			                <td class="label">
+			                	<label wicket:id="nameLabel">user_form.name</label><span class="red">*</span>
+			                </td>    
+			                <td><input type="text" wicket:id="user.name" size="35"/></td>                        
+			            </tr>
+			            <tr>
+			                <td class="label">
+			                	<label wicket:id="lastnameLabel">user_form.lastname</label><span class="red">*</span>
+			                </td>    
+			                <td><input type="text" wicket:id="user.lastname" size="35"/></td>                        
+			            </tr>
+			            <tr>
+			                <td class="label">
+			                	<label wicket:id="emailLabel">user_form.email</label><span class="red">*</span>
+			                </td>    
+			                <td>
+			                    <input type="text" wicket:id="user.email" size="35"/>                                                            
+			                </td>                        
+			            </tr>
+			        </tbody>
+			        <tbody>
+			            <tr><td class="label"><label wicket:id="addressLabel">user_form.address</label></td><td><input type="text" wicket:id="user.address" /></td></tr>
+						<tr><td class="label"><label wicket:id="zipLabel">user_form.zip</label></td><td><input type="text" wicket:id="user.zip" /></td></tr>
+						<tr><td class="label"><label wicket:id="countryLabel">user_form.country</label></td><td><select  wicket:id="user.country"></select></td></tr>
+						<tr><td class="label"><label wicket:id="phoneLabel">user_form.phone</label></td><td><input type="text" wicket:id="user.phone" /></td></tr>
+						<tr><td class="label"><label wicket:id="alternativePhoneLabel">user_form.alternativePhone</label></td><td><input type="text" wicket:id="user.alternativePhone" /></td></tr>
+						<tr><td class="label"><label wicket:id="faxLabel">user_form.fax</label></td><td><input type="text" wicket:id="user.fax" /></td></tr>
+		            </tbody>
+		            <tbody><div wicket:id="organizationArea"></div></tbody>
+		            <tbody>
+		            <tr>
+		                <td class="label">
+		                	<label wicket:id="languageLabel">user_form.language</label>
+		                </td>    
+		                <td>
+		                    <select wicket:id="user.locale"/>                                                            
+		                </td>                        
+		            </tr>
+		            <tr>
+		            	<td class="label">
+		            		<label for="fontSizeSelector"><wicket:message key="user_form.fontsize" /></label>
+		            	</td>
+		            	<td>
+		            		<select id="fontSizeSelector" onchange="setActiveStyleSheet(this.value);">
+		            			<option value="A++">extra large</option>
+		            			<option value="A+">large</option>
+		            			<option value="A">medium</option>
+		            			<option value="A-" selected="selected">small</option>
+		            			<option value="A--">extra small</option>
+		            		</select>
+		            	    <!-- button onclick="javascript:setActiveStyleSheet('A-');syncSelector();return false;"><wicket:message key="user_form.fontsize.default"/></button-->
+		            	</td>
+		            </tr>
+		            <tbody wicket:id="spaceRoleAllocationArea">
+		            	<tr>
+			            	<td class="label">
+			            		<label wicket:id="spaceLabel">user_form.space</label>
+			            	</td>
+			            	<td>
+			            		<select wicket:id="space"></select>
+			            	</td>
+			            </tr>
+			            <tr>
+			            	<td class="label">
+			            		<label wicket:id="roleLabel">user_form.role</label>
+			            	</td>
+			            	<td>
+			            		<select wicket:id="roleKey"></select>
+			            	</td>
+			            </tr>
+		            </tbody> 
+		            <tr wicket:id="hide">
+		                <td/>
+		                <td><wicket:message key="user_form.passwordMessage"/></td>
+		            </tr>
+		            <tr>
+		                <td class="label">
+		                	<label wicket:id="passwordLabel">user_form.password</label>
+		                </td>    
+		                <td>
+		                    <input type="password" wicket:id="password" size="15"/>                                                            
+		                </td>                        
+		            </tr>
+		            <tr>
+		                <td class="label">
+		                	<label wicket:id="passwordConfirmLabel">user_form.confirmPassword</label>
+		                </td>    
+		                <td>
+		                    <input type="password" wicket:id="passwordConfirm" size="15"/>                                                            
+		                </td>                        
+		            </tr>
+		            <tr>
+		                <td> </td>
+		                <td>
+		                    <span wicket:id="hideSendNotifications">
+		                        <input type="checkbox" wicket:id="sendNotifications"/>
+		                        <label wicket:id="sendNotificationsLabel">user_form.mailPassword</label>
+		                    </span>
+		                </td>
+		            </tr>  
+		            </tbody>                  
+		        </table>
+	        </fieldset>
+	        <p><input type="submit" class="button" wicket:message="value:submit"/></p>
+	    </form>
+	</div>
+</div>
+<!-- end:UserFormPanel.html -->
+</wicket:panel>
+<wicket:fragment wicket:id="newOrganizationFragment">
+	<tr>
+		<td class="label"><label wicket:id="organizationLabel">user_form.organization</label></td>
+		<td><select wicket:id="user.organization"></select></td>
+	</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="editOrganizationFragment">
+	<tr>
+		<td class="label">
+			<wicket:message key="user_form.organization" />
+		</td>    
+		<td wicket:id="organization"></td>                                   
+</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="noOrganizationFragment">
+	<tr>
+		<td></td>
+		<td><span wicket:id="noOrganizationLabel"></span></td>
+	</tr>
+</wicket:fragment>

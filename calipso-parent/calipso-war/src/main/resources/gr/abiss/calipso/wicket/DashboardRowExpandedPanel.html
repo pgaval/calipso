@@ -1,0 +1,25 @@
+<wicket:panel>
+<!-- begin:DashboardRowExpandedPanel.html -->
+    <tr wicket:id="rows">
+		<td wicket:id="spaceName" class="dashboard-rowname"><a href="#" wicket:id="spaceName"></a></td>
+        <td class="icon" wicket:id="new"><a href="#" wicket:id="new"><img src="resources/new.gif" wicket:message="title:dashboard.new"/></a></td>
+        <td class="icon" wicket:id="sla"><a href="#" wicket:id="sla">SLAs</a></td>
+        <td class="icon" wicket:id="asset"><a href="#" wicket:id="asset"><img src="resources/assets.gif" wicket:message="title:dashboard.assets"/></a></td>
+        <td wicket:id="search" class="icon"><a href="#"><img src="resources/search.gif" wicket:message="title:dashboard.search"/></a></td>
+        <td wicket:id="link" style="padding:0pt" valign="top"><a href="#" wicket:id="link"><img src="resources/expanded.gif" wicket:message="title:dashboard.hideDetails"/></a></td>
+        <td wicket:id="status"></td>
+        <td nowrap="nowrap" class="nopad" wicket:id="loggedByMe"><a class="block" href="#" wicket:id="loggedByMeNumbers"></a></td>
+        <td nowrap="nowrap" class="nopad" wicket:id="assignedToMe"><a class="block" href="#" wicket:id="assignedToMeNumbers"></a></td>
+        <td nowrap="nowrap" class="nopad" wicket:id="unassigned"><a class="block" href="#" wicket:id="unassignedNumbers"></a></td>
+        <td nowrap="nowrap" class="right" wicket:id="total"><a class="block" href="#" wicket:id="total"></a></td>
+    </tr>
+    <tr>
+        <td><wicket:message key="dashboard.all" /></td>
+        <td nowrap="nowrap" class="nopad" wicket:id="loggedByMeTotal"><a class="block" href="#" wicket:id="loggedByMeNumbers"></a></td>
+        <td nowrap="nowrap" class="nopad" wicket:id="assignedToMeTotal"><a class="block" href="#" wicket:id="assignedToMeNumbers"></a></td>
+        <td nowrap="nowrap" class="nopad" wicket:id="unassignedTotal"><a class="block" href="#" wicket:id="unassignedNumbers"></a></td>
+        <td nowrap="nowrap" class="right" wicket:id="totalTotal"><a class="block" href="#" wicket:id="total"></a></td>
+    </tr>
+    
+<!-- end:DashboardRowExpandedPanel.html -->
+</wicket:panel>

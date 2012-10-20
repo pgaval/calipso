@@ -1,0 +1,67 @@
+<wicket:panel>
+<!-- begin:DashboardPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="dashboardTitle" /></h1>
+		<span wicket:id="message">
+			<wicket:message key="dashboard.noSpaces" />
+		</span>
+		<span class="heading-actions"> 
+			<span wicket:id="backLink" /> 
+		</span> 
+		<span class="heading-actions">
+			<a href="#" wicket:id="new"> 
+				<img src="resources/new.gif" wicket:message="title:dashboard.new" /> 
+				<wicket:message key="dashboard.new" /> 
+			</a>
+		</span>
+		<span class="heading-actions"> 
+			<a href="#" wicket:id="asset"> 
+				<img src="resources/assets.gif" wicket:message="title:dashboard.assets" />
+				<wicket:message key="dashboard.assets" />
+			</a>
+		</span>
+		<span class="heading-actions"> 
+			<a href="#" wicket:id="search">
+				<img src="resources/search.gif" wicket:message="title:dashboard.search" />
+				<wicket:message key="search.space" /> 
+			</a>
+		</span>
+	</div>
+	<div class="section-body">
+		<table class="dashboard" wicket:id="table" cellspacing="0">
+			<caption class="help-message"><span wicket:id="DashboardPanelHelp"></span></caption>
+			<thead>
+				<tr class="heading">
+					<th wicket:id="spaceTitle"></th>
+					<th wicket:id="hAction"></th>
+					<th colspan="2"><wicket:message key="dashboard.status" /></th>
+					<th wicket:id="hideLogged"><wicket:message key="dashboard.loggedByMe" /></th>
+					<th wicket:id="hideAssigned"><wicket:message key="dashboard.assignedToMe" /></th>
+					<th wicket:id="hideUnassigned"><wicket:message key="dashboard.unassigned" /></th>
+					<th style="width: 4.5em"><wicket:message key="dashboard.count" /></th>
+				</tr>
+			</thead>
+			<wicket:container wicket:id="dashboardRows">
+				<tbody wicket:id="dashboardRow" />
+			</wicket:container>
+			<tfoot>
+				<tr wicket:id="total">
+					<!-- was a single colspan2 TH -->
+					<td><span wicket:id="allSpaces" /></td>
+					<td></td>
+					<td class="icon"><a href="#" wicket:id="search"> <img
+						src="resources/search.gif" wicket:message="title:dashboard.search" />
+					</a></td>
+					<td class="right" wicket:id="hTotal"></td>
+					<td class="right" wicket:id="loggedByMe"><a href="#" wicket:id="loggedByMe"></a></td>
+					<td class="right" wicket:id="assignedToMe"><a href="#" wicket:id="assignedToMe"></a></td>
+					<td class="right" wicket:id="unassigned"><a href="#" wicket:id="unassigned"></a></td>
+					<td class="right" wicket:id="total"><a href="#" wicket:id="total"></a></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+<!-- end:DashboardPanel.html -->
+</wicket:panel>

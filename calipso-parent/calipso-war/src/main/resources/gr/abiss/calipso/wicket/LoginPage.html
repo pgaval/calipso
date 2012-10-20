@@ -1,0 +1,51 @@
+<wicket:extend>
+<!-- begin:LoginPage.html -->
+<div style="width:500px;margin:auto;padding-top:40px;">
+	<div class="section">
+		<div class="heading-container1">
+			<h1 style="display:inline;"><wicket:message key="login.loginHeader" /></h1>
+			<span class="heading-actions" style="float:none;display:inline;">
+				<form wicket:id="forgottenPasswordForm" style="display:inline;">
+					<a href="#" wicket:id="forgottenPasswordLink">
+						<img src="resources/lock_go.png"/> <wicket:message key="login.forgottenPassword" /></a> &nbsp;
+						<div wicket:id="forgottenPasswordPlaceHolder" style="margin:4px 10px;">
+							<label wicket:id="emailAddressLabel">login.emailAddress</label>&nbsp;
+							<input type="text" wicket:id="emailAddress" />&nbsp;
+							<button type="submit"><wicket:message key="login.sendPassword" /></button>
+						</div>
+				</form>
+			<span wicket:id="successMessage"><wicket:message key="login.successMessage" /></span>
+			</span>
+		</div>
+		<div class="section-body">
+		    <form wicket:id="form">
+		        <div class="left" wicket:id="hide"> </div>
+		        
+	            <table border="0" class="form">
+	            	<caption wicket:id="feedback" class="feedback"></caption>
+	                <tr>
+	                    <td class="label"><label wicket:id="loginNameLabel">login.loginName</label></td>
+	                    <td><input type="text" wicket:id="loginName" size="35" /></td>
+	                </tr>
+	                <tr>
+	                    <td class="label"><label wicket:id="passwordLabel">login.password</label></td>
+	                    <td><input type="password" wicket:id="password" size="35" /></td>
+	                </tr>
+	                <tr>
+	                    <td class="label"></td>
+	                    <td>
+	                    	<input type="checkbox" wicket:id="rememberMe"/>
+	                    	<label wicket:id="rememberMeLabel">login.rememberMe</label>	
+	                    </td>
+	                </tr>
+	                <tr>
+	                    <td class="label"></td>
+	                    <td><button type="submit"><wicket:message key="login.submit" /></button></td>
+	                </tr>
+	            </table>
+		    </form>
+		</div>
+	</div>
+</div>
+<!-- end:LoginPage.html -->
+</wicket:extend>

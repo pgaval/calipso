@@ -1,0 +1,28 @@
+<wicket:head>
+	<style>
+		table.wicket-tree-content {
+		width: 100%;
+		}
+		.calipso-tree-menu-links{
+			border-bottom: 1px solid #CCCCCC;
+			background:#F0F0EE;
+			text-align: right;
+			padding:2px 8px;
+		}
+		.calipso-tree-content {
+			max-height: 180px;
+			overflow: auto;
+		}
+	</style>
+</wicket:head>
+<wicket:panel>
+	<div class="calipso-tree">
+		<div wicket:id="treeMenuLinks" class="calipso-tree-menu-links">
+			<a href="foo" wicket:id="helpLink" target="_blank">
+				<wicket:message key="help">help</wicket:message>
+			</a>
+		</div>
+		<div wicket:id="tree" class="calipso-tree-content">
+		</div>
+	</div>
+</wicket:panel>

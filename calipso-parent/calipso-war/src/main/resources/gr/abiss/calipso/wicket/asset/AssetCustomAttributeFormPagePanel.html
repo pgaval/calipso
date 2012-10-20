@@ -1,0 +1,43 @@
+<wicket:panel>
+<!-- begin:AssetCustomAttributeFormPagePanel.html -->
+<div class="section">
+<div class="heading-container1">
+	<h1><span wicket:id="label"></span></h1> 
+	<span class="heading-actions">
+		<span wicket:id="backLink"></span>
+	</span>
+	<span class="heading-actions">
+		<a href="#" wicket:id="delete">
+			<img src="resources/delete.gif" class="nav-link"/>
+			<wicket:message key="delete"/>
+		</a>
+	</span>	 
+</div>
+<div class="section-body">
+<p class="help-message"><wicket:message key="AssetCustomAttributeFormPagePanel.help"/></p>
+<form wicket:id="form">
+<!-- begin:AssetCustomAttributeForm in AssetCustomAttributeFormPagePanel.html -->
+	<table class="itemlist">
+		<tbody>
+			<tr><td colspan="2" wicket:id="feedback"></td></tr>
+		</tbody>
+		<tbody wicket:id="customAttributeFormPanel">
+		</tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="submit-controls">
+					<input type="submit" class="button" wicket:message="value:submit"/>
+					<input type="reset" class="button" wicket:message="value:reset"/>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+<!-- end:AssetCustomAttributeForm in AssetCustomAttributeFormPagePanel.html -->
+</form>
+<br />
+<!--span wicket:id="lookupValuesPanel"></span-->
+</div>
+</div>
+<!-- end:AssetCustomAttributeFormPagePanel.html -->
+</wicket:panel>

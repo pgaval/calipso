@@ -1,0 +1,40 @@
+<wicket:panel>
+<!-- begin:AssignableSpacesPanel.html -->
+	<div class="heading" wicket:id="referenceSpace"></div>
+<form wicket:id="form">
+	<table>
+	    <tr>
+	    <td class="label"><wicket:message key="space_field_form.internalName"/></td>
+	        <td><span wicket:id="name"></span></td>
+	        <td><input type="submit" class="button" wicket:id="delete" wicket:message="value:delete"/></td>
+	    </tr>
+		<tr>
+		    <td class="label">
+		        <wicket:message key="space_field_form.label"/>
+		        <span class="red">*</span>
+		    </td>
+		    <td>
+		        <input wicket:id="field.label"/>
+		    </td>
+		</tr>
+		<tr>
+			<td><wicket:message key="assignable_spaces.availableSpaces"/></td>
+			<td>&nbsp;</td>
+			<td><wicket:message key="assignable_spaces.assignableSpaces"/></td>
+		</tr>
+		<tr>
+			<td><select size="10" id="availableSpaces" multiple wicket:id="availableSpaces"></select></td>
+			<td style="text-align:center;vertical-align:middle;padding:5px;">
+				<div><button type="submit" wicket:id="btnAddSelected">&gt;</button></div>
+				<div><button type="submit" wicket:id="btnAddAll">&gt;&gt;</button></div>
+				<div><button type="submit" wicket:id="btnRemoveSelected">&lt;</button></div>
+				<div><button type="submit" wicket:id="btnRemoveAll">&lt;&lt;</button></div>
+			</td>
+			<td><select size="10" id="assignableSpaces" multiple wicket:id="assignableSpaces"></select></td>
+		</tr>
+		<tr><td><button wicket:id="done"><wicket:message key="assignable_spaces.save"/></button></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	</table>
+	<p><a href="#" wicket:id="cancel"><img src="resources/cancel.gif" class="nav-link"/><wicket:message key="cancel"/></a></p>
+	</form>
+<!-- end:AssignableSpacesPanel.html -->
+ </wicket:panel>

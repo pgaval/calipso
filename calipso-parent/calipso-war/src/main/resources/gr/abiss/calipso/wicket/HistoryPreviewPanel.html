@@ -1,0 +1,34 @@
+<html xmlns:wicket>
+<wicket:panel>
+
+
+<div class="section">
+	<div class="heading-container">
+		<h2>
+			<wicket:message key="item_view.addNewRecord" />
+		</h2>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+		<a id="history-section" name="history-section"> </a>
+	</div>
+	
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="ItemViewPanel.help"/></p>
+		<span wicket:id="historyEntry"/>		
+	</div>	
+
+	<form wicket:id="form">
+	   	<table>
+	   		<tr>
+		   		<td><input type="submit" class="button" wicket:id="edit" wicket:message="value:edit"/> </td>
+		   		<td><input type="submit" class="button" wicket:id="submit" wicket:message="value:submit" /></td>
+		   	</tr>
+		</table>
+	</form>
+	
+</div>
+  
+</wicket:panel>
+</html>
+  

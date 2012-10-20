@@ -1,0 +1,73 @@
+<wicket:panel>
+<!-- begin:AssetCustomAttributesPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+    	<h1><wicket:message key="asset.customAttributes.title"/></h1>
+    	<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+    	<span class="heading-actions">
+    		<a href="#" wicket:id="new"><img src="resources/new.gif" class="nav-link"/><wicket:message key="asset.customAttributes.createNewAttribute"/></a>
+    	</span>
+		<span class="heading-actions">
+			<img src="resources/search.gif"/>
+			<a href="#" wicket:id="search"><wicket:message key="asset.customAttributes.searchCustomAttributes"/></a>
+		</span>
+    </div>
+    <div class="section-body">
+	    <p class="help-message"><wicket:message key="AssetCustomAttributesPanel.help"/></p>
+	    <div wicket:id="searchContainer">
+			<div wicket:id="searchPlaceHolder">
+				<form wicket:id="form">
+						
+				    	<table class="itemlist">
+				    	<caption><legend><wicket:message key="asset.customAttributes.searchParameters"/></legend></caption>
+				    		<tbody>
+				    			<tr><td colspan="2" wicket:id="feedback"></td></tr>
+				    		</tbody>
+					    	<tbody wicket:id="customAttributeFormPanel">
+							</tbody>
+				    		<tbody>
+				    			<tr>
+					    			<td colspan="2" class="submit-controls">
+					    				<input type="submit" class="button" wicket:message="value:submit"/>
+					    				<input type="reset" class="button" wicket:message="value:reset"/>
+					    			</td>
+					    		</tr>
+				    		</tbody>
+				    		
+				    	</table>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="heading-container-insection">
+    	<h1><wicket:message key="asset.customAttributes.attributesList"/></h1>     	
+    </div>
+    <div class="section-body">
+		<div wicket:id="paginationPanel"></div>
+	    <table class="itemlist" cellspacing="0">
+	    	<thead>
+				<tr class="sortable">
+					<th wicket:id="headings"><span wicket:id="heading"><a href="#" wicket:id="heading"></a></span></th>
+					<th><wicket:message key="edit"/></th>
+					<th wicket:id="add"></th>
+				</tr>
+	    	</thead>
+			<tr wicket:id="attributesList">
+				<td wicket:id="name"></td>
+				<td wicket:id="formType"></td>
+				<td wicket:id="mandatory"></td>
+				<td wicket:id="active"></td>
+				<td wicket:id="edit" align="center"><a href="#" wicket:message="title:edit"><img src="resources/edit.gif"/></a></td>
+				<td wicket:id="add" align="center"></td>
+			</tr>
+			<tr wicket:id="noData"><td colspan="6" class="noData"><wicket:message key="noData"/></td></tr>
+		</table>
+	</div>
+</div>
+<!-- end:AssetCustomAttributesPanel.html -->	
+</wicket:panel>
+
+<wicket:fragment wicket:id="addLink"><a wicket:id="link" href="#" wicket:message="title:asset.assetTypes.addCustomAttribute"><img src="resources/add.gif"/></a></wicket:fragment>
+<wicket:fragment wicket:id="removeLink"><a wicket:id="link" href="#" wicket:message="title:asset.assetTypes.removeCustomAttribute"><img src="resources/remove-alt.gif"/></a></wicket:fragment>

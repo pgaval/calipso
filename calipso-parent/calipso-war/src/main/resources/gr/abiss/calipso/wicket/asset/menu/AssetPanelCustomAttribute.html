@@ -1,0 +1,75 @@
+<wicket:panel>
+	<!-- begin:AssetCustomAttributeFormPagePanel.html -->
+	<div class="section">
+	<div class="heading-container1">
+	<h1><span wicket:id="label"></span></h1>
+	<span class="heading-actions"> <span wicket:id="backLink"></span>
+	</span> <span class="heading-actions"> <a href="#" wicket:id="delete">
+	<img src="resources/delete.gif" class="nav-link" /> <wicket:message
+		key="delete" /> </a> </span></div>
+	<div class="section-body">
+	<p class="help-message"><wicket:message
+		key="AssetCustomAttributeFormPagePanel.help" /></p>
+	<form wicket:id="form">
+	<table class="itemlist">
+		<tbody>
+			<tr>
+				<td colspan="2" wicket:id="feedback"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td class="label"><label wicket:id="nameLabel">asset.customAttributes.description</label>
+
+				</td>
+				<td><input type="text" wicket:id="name" style="width: 99%;" /></td>
+			</tr>
+			<tr>
+				<td class="label"><label wicket:id="formTypeLabel">asset.customAttributes.type</label>
+
+				</td>
+				<td><select wicket:id="formType"></select></td>
+			</tr>
+			<tr>
+				<td class="label"><label wicket:id="mandatoryLabel">asset.customAttributes.mandatory</label></td>
+				<td wicket:id="mandatoryField"></td>
+			</tr>
+			<tr>
+				<td class="label"><label wicket:id="activeLabel">asset.customAttributes.active</label></td>
+				<td wicket:id="activeField"></td>
+			</tr>
+		</tbody>
+		<tbody wicket:id="validPanel"></tbody>
+		<tbody>
+			<tr>
+				<td colspan="2" class="submit-controls"><input type="submit"
+					class="button" wicket:message="value:submit" /> <input type="reset"
+					class="button" wicket:message="value:reset" /></td>
+			</tr>
+		</tbody>
+	</table>
+	</form>
+	<br />
+	<span wicket:id="lookupValuesPanel"></span></div>
+	</div>
+	<!-- end:AssetCustomAttributeFormPagePanel.html -->
+</wicket:panel>
+<wicket:fragment wicket:id="mandatoryEditMode">
+	<input type="checkbox" wicket:id="mandatory" />
+</wicket:fragment>
+
+<wicket:fragment wicket:id="mandatoryEditMode">
+	<input type="checkbox" wicket:id="mandatory" />
+</wicket:fragment>
+
+<wicket:fragment wicket:id="activeEditMode">
+	<input type="checkbox" wicket:id="active" />
+</wicket:fragment>
+
+<wicket:fragment wicket:id="mandatorySearchMode">
+	<select wicket:id="mandatory"></select>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="activeSearchMode">
+	<select wicket:id="active"></select>
+</wicket:fragment>

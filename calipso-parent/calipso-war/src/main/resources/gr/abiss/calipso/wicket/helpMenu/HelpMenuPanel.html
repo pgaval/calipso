@@ -1,0 +1,34 @@
+<wicket:panel>
+	<!-- HelpMenuPanel -->
+	<div class="section">
+		<div class="section-body">
+			<a href="#" wicket:id="spaceLink">
+				<h3 wicket:id="spaceNameLabel"></h3>
+			</a>
+			<ul>
+				<li><a href="" wicket:id="spaceCreateLink"><wicket:message key="header.new" ></wicket:message></a></li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="section">
+		<div class="section-body">
+			<h3 wicket:id="assetTypesHeadingLabel"></h3>
+			<ul wicket:id="availableAssetTypesListMenu">
+				<li><a href="" wicket:id="space"><label wicket:id="itemLabel"></label></a></li>
+			</ul>
+			<!--p class="help-message" wicket:id="noAssetTypes"></p-->
+		</div>
+	</div>
+	
+	<div class="section">
+		<div class="section-body">
+			<h3 wicket:id="reports"></h3>
+			<ul wicket:id="visibleSearchListView">
+				<li><a href="" wicket:id="visbleSearchItem"><label wicket:id="visbleSearchItemLabel"></label></a></li>
+			</ul>
+			<p class="help-message" wicket:id="noReports"></p>
+		</div>
+	</div>
+	<!-- /HelpMenuPanel -->
+</wicket:panel>

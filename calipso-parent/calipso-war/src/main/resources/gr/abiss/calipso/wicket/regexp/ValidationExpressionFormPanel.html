@@ -1,0 +1,56 @@
+<html xmlns:wicket>
+<wicket:panel>
+<!-- Begin: ValidationExpressionFormPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><span wicket:id="label"></span></h1> 
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+		<form wicket:id="form">
+			<span wicket:id="feedback"></span>
+			<fieldset>
+				<table class="form">
+					<caption>
+						<wicket:message key="validation_Expression.msgFormatHelp" />
+					</caption>
+					<tr>
+						<td class="label">
+							<label wicket:id="nameLabel">validation_Expression.name</label>
+							<span class="red">*</span>
+						</td>    
+						<td>
+							<input type="text" wicket:id="name" size="15"></input>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">
+							<label wicket:id="expressionLabel">validation_Expression.expression</label>
+							<span class="red">*</span>
+						</td>    
+						<td>
+							<input type="text" wicket:id="expression" size="15" ></input>
+						</td>
+					</tr>
+					<tr wicket:id="descriptionTranslations">
+						<td class="label">
+							<label wicket:id="descriptionLabel">validation_Expression.description</label>
+							<span class="red">*</span>
+						</td>    
+						<td>
+							<input type="text" wicket:id="description" size="15" ></input>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+			<p>
+				<input class="button" type="submit" value="save" />
+			</p>
+		</form>
+	</div>
+</div>
+<!-- End: ValidationExpressionFormPanel.html -->
+</wicket:panel>
+</html>

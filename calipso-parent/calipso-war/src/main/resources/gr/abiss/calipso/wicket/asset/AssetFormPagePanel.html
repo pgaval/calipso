@@ -1,0 +1,48 @@
+<wicket:panel>
+	<!-- begin:AssetFormPagePanel.html -->
+	<div class="section">
+		<div class="heading-container1">
+			<h1><span wicket:id="title">spaceName</span></h1>
+			<span class="heading-actions"> 
+				<span wicket:id="backLink"></span>
+			</span>
+		</div>
+		<div class="section-body">
+			<p class="help-message">
+				<wicket:message	key="AssetFormPagePanel.help" />
+			</p>
+			<form wicket:id="form">
+				<fieldset>
+					<legend>
+						<wicket:message key="asset.form.legend" />
+					</legend> 
+					<span wicket:id="feedback"></span>
+					<table>
+						<tr>
+							<td class="label"><label wicket:id="assetTypeLabel">asset.form.assetType</label><span
+								wicket:id="mandatoryPanel"></span></td>
+							<td><select wicket:id="assetType" /></td>
+						</tr>
+						<tr>
+							<td class="label"><label wicket:id="inventoryCodeLabel">asset.form.inventoryCode</label><span
+								wicket:id="mandatoryPanel"></span></td>
+							<td><input wicket:id="inventoryCode" size="35" /></td>
+						</tr>
+						<tr>
+							<td class="label"><label wicket:id="supportStartDateLabel">asset.form.supportStartDate</label></td>
+							<td wicket:id="supportStartDate"></td>
+						</tr>
+						<tr>
+							<td class="label"><label wicket:id="supportEndDateLabel">asset.form.supportEndDate</label></td>
+							<td wicket:id="supportEndDate"></td>
+						</tr>
+						<tbody wicket:id="customAttributesPanel"></tbody>
+					</table>
+					<input type="submit" class="button" wicket:message="value:submit" />
+					<input type="reset" class="button" wicket:message="value:reset" />
+				</fieldset>
+			 </form>
+		</div>
+	</div>
+	<!-- end:AssetFormPagePanel.html -->
+</wicket:panel>

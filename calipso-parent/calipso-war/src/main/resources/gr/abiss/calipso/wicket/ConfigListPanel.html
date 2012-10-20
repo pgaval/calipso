@@ -1,0 +1,52 @@
+<wicket:panel>
+<!-- begin:ConfigListPanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="config_list.configurationSettings"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">  
+		<p class="help-message"><wicket:message key="ConfigListPanel.help"/></p>
+	    <table class="itemlist" cellspacing="0">
+	    	<thead>
+		        <tr>
+		            <th><wicket:message key="config_list.parameter"/></th>
+		            <th><wicket:message key="config_list.value"/></th>
+		            <th><wicket:message key="config_list.edit"/></th>
+		            <th><wicket:message key="config_list.description"/></th>
+		        </tr>
+	    	</thead>
+	        <tr wicket:id="configs">
+	            <td wicket:id="param"></td>
+	            <td wicket:id="value"></td>
+	            <td wicket:id="link" align="center"><a href="#"><img src="resources/edit.gif"/></a></td>
+	            <td wicket:id="description"></td>                   
+	        </tr>
+	    </table>
+   </div>
+	<div class="heading-container-insection">
+		<h1><wicket:message key="config_list.databaseSettings"/></h1>
+	</div>
+	<div class="section-body">    
+    	<table class="itemlist" cellspacing="0">
+    		<thead>
+			    <tr>
+			        <th><wicket:message key="config_list.parameter"/></th>
+			        <th><wicket:message key="config_list.value"/></th>
+			        <th><wicket:message key="config_list.edit"/></th>
+			        <th><wicket:message key="config_list.description"/></th>
+			    </tr>
+		    </thead>
+		    <tr wicket:id="configs_">
+		        <td wicket:id="param_"></td>
+		        <td wicket:id="value_"></td>
+		        <td wicket:id="link_" align="center"><a href="#"><img src="resources/edit.gif"/></a></td>
+		        <td wicket:id="description_"></td>                   
+		    </tr>
+		</table>
+	</div>
+</div>
+<!-- end:ConfigListPanel.html -->
+</wicket:panel>

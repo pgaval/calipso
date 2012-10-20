@@ -1,0 +1,152 @@
+<wicket:head>
+<script language="javascript" type="text/javascript" src="resources/js/tiny_mce/tiny_mce.js"></script>
+<script language="javascript" type="text/javascript">
+tinyMCE.init({
+// General options
+	mode : "exact",
+	elements : "detail", 
+	theme : "advanced",
+	plugins : "contextmenu,paste,fullscreen",
+	entity_encoding : "raw",
+	inline_styles : false,
+	// Theme options
+	//content_css : "../resources/css/style.css",
+	theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,bullist,numlist,|,blockquote,sub,sup,|,link,unlink,|,code,pasteword,fullscreen",
+	theme_advanced_buttons2 : "",
+	theme_advanced_buttons3 : "",
+	theme_advanced_toolbar_location : "top",
+	theme_advanced_toolbar_align : "left",
+	theme_advanced_statusbar_location : "bottom",
+	theme_advanced_resizing : true
+});
+</script>
+</wicket:head>
+<wicket:panel>
+<!-- begin:ItemFormPanel.html -->
+<div wicket:id="velocityPanelContainer"><div wicket:id="velocityPanel"></div></div>
+<div class="section">
+	<div class="heading-container">
+		<h1 wicket:id="title"></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+        </span>
+		<span class="heading-actions">
+			<a href="#" wicket:id="delete">
+				<img src="resources/delete.gif" class="nav-link"/>
+				<wicket:message key="delete"/>
+			</a>
+		</span>	
+	</div>
+	<div class="section-body">
+		
+		<form wicket:id="form">
+			<fieldset>
+				<legend><wicket:message key="edit.details.bellow"/></legend>   
+			        <table class=" form">
+						<caption class="help-message">
+							<wicket:message key="ItemFormPanel.help" />
+						</caption>
+						<tbody>
+							<tr>
+								<td colspan="2"><div class="feedback" wicket:id="feedback" ></div></td>
+							</tr>
+							<tr wicket:id="summaryContainer">
+								<td class="label"><label wicket:id="summaryLabel">item_form.summary</label>
+								</td>
+								<td><input type="text" wicket:id="summary" /></td>
+							</tr>
+						</tbody>
+						<tbody wicket:id="commentContainer">
+							<tr>
+								<td class="label"><label wicket:id="detailLabel">item_form.detail</label></td>
+								<td><textarea wicket:id="detail" rows="10" cols="80"></textarea></td>
+							</tr>
+						</tbody>
+						<tbody>
+							<tr wicket:id="reportedByContainer">
+								<td class="label">
+									<label wicket:id="reportedByLabel">item_form.reportedBy</label>
+									<span wicket:id="searchUserPanel" class="popup-container" />
+								</td>
+								<td>
+									<input type="text" wicket:id="reportedByName" size="30" readonly="readonly" /> 
+									<input type="hidden" wicket:id="reportedBy.id" /> &nbsp; 
+								</td>
+							</tr>
+							<tr>
+								<td class="label"><label wicket:id="dueToLabel">item_form.dueToDate</label></td>
+								<td wicket:id="dueToField"></td>
+							</tr>
+							<tr>
+								<td class="label"><label wicket:id="plannedEffortLabel">item_form.plannedEffort</label></td>
+								<td wicket:id="effortField"></td>
+							</tr>
+							<tr>
+								<td class="label">
+									<div wicket:id="assetsPanelContainer">
+										<div class="popup-container" wicket:id="assetsPanel" />
+									</div>
+									<label wicket:id="existinAssetTypeLabel"></label>
+									<a href="#" wicket:id="findAsset">
+										<img src="resources/find.png" />
+									</a>
+								</td>
+								<td>
+									<input type="text" wicket:id="itemAsset" size="30" /> 
+								</td>
+							</tr>
+							<tr>
+							<td></td>
+								<td colspan="2">
+									<span wicket:id="availableAssetPanel" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<div wicket:id="fields"></div>
+				
+					<table class="form">
+						<tbody>
+							<tr wicket:id="hideAssignedTo">
+								<td class="label"><label wicket:id="assignedToLabel">item_form.assignTo</label>
+								</td>
+								<td>
+								<div wicket:id="border"><select wicket:id="assignedTo" /></div>
+								</td>
+							</tr>
+							<tr wicket:id="hideEditReason">
+								<td class="label"><label wicket:id="editReasonLabel">item_form.editReason</label>
+								<span class="red">*</span></td>
+								<td><textarea wicket:id="editReason" rows="5" cols="40"></textarea>
+								</td>
+							</tr>
+						</tbody>
+						<tbody wicket:id="notificationsContainer">
+							<tr>
+								<td class="label">
+									<label wicket:id="sendNotificationsLabel">sendNotificationsLabel</label>
+								</td>
+								<td>
+									<input type="checkbox" wicket:id="sendNotifications" style="float:left;margin-right:10px;"/> 
+								</td>
+							</tr>
+							<tr>
+								<td class="label">
+									<label><wicket:message key="item_form.notifyByEmail"/></label>
+								</td>
+								<td>
+									<div wicket:id="hideNotifyList">
+					                	<div wicket:id="itemUsers"></div>
+			                		</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+			</fieldset>
+			<p><input class="button" type="submit" wicket:message="value:submit" /></p>
+	    </form>
+	</div>
+</div>
+<!-- end:ItemFormPanel.html -->
+</wicket:panel>

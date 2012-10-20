@@ -1,0 +1,81 @@
+<wicket:panel>
+<!-- begin:UserAllocatePanel.html -->
+<div class="section">
+	<div class="heading-container1">
+		<h1><wicket:message key="user_list.spaceRolesAllocation"/></h1>
+		<span class="heading-actions">
+			<span wicket:id="backLink"></span>
+		</span>
+	</div>
+	<div class="section-body">
+		<p class="help-message"><wicket:message key="UserAllocatePanel.help"/></p>
+	    <form wicket:id="form">
+	    	
+	        
+	    	<fieldset>
+	    		<legend><wicket:message key="user_allocate_space.chooseSpace"/> <span wicket:id="label"></span></legend>
+	                   
+	        <span wicket:id="feedback"></span>
+	        <table class="itemlist" cellspacing="0">
+	            <tr>
+	                <th><label wicket:id="spaceLabel">user_allocate_space.space</label></th>
+	                <td>
+	                    <select wicket:id="space"/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <th><label wicket:id="spaceRoleLabel">user_allocate_space.role</label></th>
+	                <td>
+	                    <select wicket:id="spaceRole"/>
+	                    <input type="submit" class="button" wicket:id="allocate" wicket:message="value:space_allocate.allocate"/>                            
+	                </td>        
+	            </tr>
+	        </table>
+	       </fieldset>
+
+	       <fieldset>
+	    		<legend><span wicket:id="label"></span></legend>
+		        <p wicket:id="makeAdmin">
+		            <wicket:message key="user_allocate_space.makeUserAdmin"/>
+		            <input type="submit" class="button" wicket:id="makeAdmin" wicket:message="value:user_allocate_space.makeAdmin"/>                    
+		        </p>
+		        <p wicket:id="makeSpaceAdmin">
+		            <wicket:message key="user_allocate_space.makeUserSpaceAdmin"/>
+		            <input type="submit" class="button" wicket:id="makeSpaceAdmin" wicket:message="value:user_allocate_space.makeSpaceAdmin"/>
+		        </p>
+	        </fieldset>
+	        
+	        <fieldset>
+	    		<legend>
+	    			<wicket:message key="user_list.spacesandrolesfor"/> 
+	    			<span wicket:id="label"></span>
+	    		</legend>
+		        <table class="itemlist" cellspacing="0">
+		            <thead>
+			            <tr>
+			                <th><wicket:message key="user_allocate_space.space"/></th>
+			                <th><wicket:message key="user_allocate_space.role"/></th>
+			                <th><wicket:message key="user_allocate_space.remove"/></th>
+			            </tr>
+		            </thead>
+		            <tbody>
+			            <tr wicket:id="usrs">
+			                <td>
+			                    <span wicket:id="space">
+			                        <span wicket:id="name"></span>
+			                        [<a href="#" wicket:id="prefixCode"><span wicket:id="prefixCode"></span></a>]
+			                    </span>
+			                </td>
+			                <td wicket:id="spaceRole"></td>                        
+			                <td align="center"><input type="image" wicket:id="deallocate" src="../resources/delete.gif"/></td>
+			            </tr>
+			            <tr wicket:id="nodata"><td colspan="3" class="noData"><wicket:message key="noRecords" /></td></tr>
+		            </tbody>
+		        </table>
+	       </fieldset>
+	       <p><input type="submit" class="button" wicket:id="done" wicket:message="value:space_field_form.done"/></p>
+	    </form>
+	</div>
+</div>
+<!-- end:UserAllocatePanel.html -->
+</wicket:panel>
