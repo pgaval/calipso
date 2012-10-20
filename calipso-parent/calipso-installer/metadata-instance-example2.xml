@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+	<fields>
+		<field name="priority" field-type="Drop down menu" label="Priority">
+			<option value="1">Highest</option>
+			<option value="2">High</option>
+			<option value="3">Medium</option>
+			<option value="4">Low</option>
+			<option value="5">Lowest</option>
+		</field>
+		<field name="cusInt01" field-type="Drop down menu" label="Type of failure">
+			<option value="1">Hardware</option>
+			<option value="2">Software</option>
+		</field>
+		<field-order>
+			<field name="priority" />
+			<field name="cusInt01" />
+		</field-order>
+	</fields>
+	<roles>
+		<role name="THESSTEST1_836738291_520550414">
+			<state status="0" exising-asset-type-multiple="false">
+				<transition status="1" />
+				<field name="cusInt01" mask="3" />
+				<field name="priority" mask="3" />
+			</state>
+			<state status="1" exising-asset-type-multiple="false">
+				<transition status="1" />
+				<transition status="99" />
+				<field name="cusInt01" mask="1" />
+				<field name="priority" mask="1" />
+			</state>
+			<state status="99" exising-asset-type-multiple="false">
+				<transition status="1" />
+				<field name="cusInt01" mask="1" />
+				<field name="priority" mask="1" />
+			</state>
+		</role>
+		<role name="THESSTEST1_-459020785_2130179734">
+			<state status="0" exising-asset-type-multiple="false">
+				<transition status="1" />
+				<field name="cusInt01" mask="3" />
+				<field name="priority" mask="3" />
+			</state>
+			<state status="1" exising-asset-type-multiple="false">
+				<transition status="1" />
+				<transition status="99" />
+				<field name="cusInt01" mask="1" />
+				<field name="priority" mask="1" />
+			</state>
+			<state status="99" exising-asset-type-multiple="false">
+				<transition status="1" />
+				<field name="cusInt01" mask="1" />
+				<field name="priority" mask="1" />
+			</state>
+		</role>
+	</roles>
+	<states>
+		<state status="0" label="New" />
+		<state status="1" label="Open" />
+		<state status="99" label="Closed" />
+	</states>
+</metadata>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<installation version="1.0">
+
+	<info>
+		<appname>Calipso</appname>
+		<appversion>${project.version}</appversion>
+		<authors>
+			<author name="Abiss.gr" email="info@abiss.gr" />
+		</authors>
+		<url>http://calipso.abiss.gr</url>
+		<requiresjdk>yes</requiresjdk>
+		<javaversion>1.6</javaversion>
+		<appsubpath>$SORTAPPNAME</appsubpath>
+		<!-- undocumented feature -->
+		<uninstaller write="no" />
+	</info>
+
+	<variables>
+
+		<variable name="INSTALL_PATH" value="$APPLICATIONS_DEFAULT_ROOT" />
+		<variable name="APPEARVERSION" value="${project.version}" />
+
+		<variable name="SORTAPPNAME" value="" />
+		<variable name="JBOSSHOME" value="" />
+		<variable name="APPSERVERNAME" value="localhost" />
+		<variable name="APPSERVERPORT" value="8080" />
+		<variable name="DBSERVERNAME" value="localhost" />
+		<variable name="DBSERVERPORT" value="3306" />
+		<variable name="DBNAME" value="$SORTAPPNAME" />
+		<variable name="DBUSERNAME" value="" />
+		<variable name="DBPASSWORD" value="" />
+		<variable name="DBROOTUSERNAME" value="root" />
+		<variable name="DBROOTPASSWORD" value="" />
+		<variable name="ANTTARGETCREATEDBUSER" value="" />
+		<variable name="ANTTARGETCREATEDB" value="" />
+	</variables>
+
+	<conditions>
+		<condition type="packselection" id="db-setup-selected">
+			<packid>Database Setup</packid>
+		</condition>
+	</conditions>
+	<!-- The gui preferences indication. Sets the installer window to 640x480. 
+		It will not be able to change the size. -->
+	<guiprefs width="640" height="480" resizable="yes">
+
+		<modifier key="allYGap" value="4" />
+		<modifier key="filler1YGap" value="5" />
+		<modifier key="filler3XGap" value="10" />
+		<modifier key="labelGap" value="20" />
+		<modifier key="layoutAnchor" value="CENTER" />
+		<modifier key="paragraphYGap" value="10" />
+		<modifier key="useButtonIcons" value="yes" />
+		<modifier key="useLabelIcons" value="yes" />
+
+		<modifier key="headingPanelCounter" value="text" />
+		<modifier key="headingPanelCounterPos" value="inHeading" />
+		<modifier key="useHeadingForSummary" value="yes" />
+		<modifier key="headingBackgroundColor" value="0x00ffffff" />
+		<modifier key="headingFontSize" value="1.5" />
+		<modifier key="headingImageOnLeft" value="yes" />
+		<modifier key="headingLineCount" value="2" />
+		<modifier key="useHeadingPanel" value="yes" />
+
+		<!-- usefull for debugging -->
+		<modifier key="showDebugWindow" value="true" />
+	</guiprefs>
+
+	<!-- The locale section. -->
+	<locale>
+		<langpack iso3="eng" />
+	</locale>
+
+	<!-- The resources section. The ids must be these ones if you want to use 
+		the LicencePanel and/or the InfoPanel. -->
+	<resources>
+		<!-- Installer images -->
+		<!-- res id="Heading.image" src="resources/installer_banner.png" / -->
+		<!-- res id="Installer.image.0" src="resources/foobar.png" / -->
+		<!-- The license to display -->
+		<res id="HTMLLicencePanel.licence" src="resources/app/LICENSE.html" />
+		<!-- Our Ant Actions -->
+		<res id="AntActionsSpec.xml" src="resources/antSpec.xml" />
+		<res id="HTMLInfoPanel.prerequisites" src="resources/prerequisites.html" />
+		<res id="userInputSpec.xml" src="resources/userInputSpec.xml" />
+		<res id="ear" src="resources/app/calipso-${project.version}.war" />
+		<res id="userInputSpec.xml" src="resources/userInputSpec.xml" />
+		<!-- Panel resources <res id="Installer.image" src="resources/install-logo.gif" 
+			/> <res id="HTMLInfoPanel.info" src="resources/disclaimer.html"/> <res id="ProcessPanel.Spec.xml" 
+			src="resources/ProcessPanel.Spec.xml"/> <res id="shortcutSpec.xml" src="resources/shortcutSpec.xml"/> 
+			AntActionSpec.xml -->
+	</resources>
+	<!-- JARs used by IZpack during the installation -->
+	<jar src="resources/lib/ant-1.8.1.jar" />
+	<jar src="resources/lib/ant-launcher-1.8.1.jar" />
+	<jar src="resources/lib/ant-nodeps-1.8.1.jar" />
+	<jar src="resources/lib/log4j-1.2.14.jar" />
+	<jar src="resources/lib/mysql-connector-java-5.1.17.jar" />
+	<jar src="resources/lib/ant-contrib-1.0b3.jar" />
+	<!-- The panels we want to use. The order will be respected. -->
+	<panels>
+		<panel classname="HelloPanel" />
+		<panel classname="HTMLLicencePanel" id="licence" />
+		<panel classname="HTMLInfoPanel" id="prerequisites" />
+		<panel classname="UserInputPanel" id="0" />
+		<panel classname="TargetPanel" id="target" />
+		<panel classname="PacksPanel" id="packs" />
+		<panel classname="UserInputPanel" id="1" />
+		<panel classname="UserInputPanel" id="2" />
+		<panel classname="UserInputPanel" id="3" />
+		<!--panel classname="UserInputPanel" id="4" / -->
+		<panel classname="SummaryPanel" />
+
+		<panel classname="InstallPanel" id="install" />
+		<panel classname="SimpleFinishPanel" id="finish" />
+	</panels>
+	<!-- Enable Ant Actions -->
+	<listeners>
+		<listener installer="AntActionInstallerListener" />
+	</listeners>
+	<!-- The packs section. -->
+	<packs>
+		<pack name="Application Files" required="yes" preselected="yes">
+			<description xml:space="preserve">Choose this pack to install Calipso and supporting files.</description>
+			<fileset dir="resources/app" targetdir="$INSTALL_PATH/$SORTAPPNAME" />
+			<fileset dir="resources/ant" targetdir="$INSTALL_PATH/$SORTAPPNAME/ant"
+				includes="**/build.xml,**/build.properties" />
+			<parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/build.xml"
+				type="xml" />
+			<parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/build.properties"
+				type="javaprop" />
+			<!-- Place tempararile, Ant will filter descriptors etc later -->
+			<fileset dir="resources/app-descriptors" targetdir="$INSTALL_PATH/$SORTAPPNAME/descriptors" />
+			<singlefile src="resources/calipso.properties.unset"
+				target="$INSTALL_PATH/$SORTAPPNAME/calipso.properties.unset" />
+			<!--parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/database-ds.xml" 
+				type="xml" /> <parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/auth-service.xml" 
+				type="xml" /> <parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/auth-config.xml" 
+				type="xml" /> <parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/services-ejb3.jar/META-INF/persistence.xml" 
+				type="xml" /> <parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/META-INF/application.xml" 
+				type="xml" /> <parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/META-INF/jboss-app.xml" 
+				type="xml" /> <parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/Calipso-${project.version}.ear/content-creator.war/WEB-INF/web.xml" 
+				type="xml" / -->
+		</pack>
+
+		<pack name="Database Setup" required="no" preselected="yes">
+			<description xml:space="preserve">Choose this pack to create or upgrade a new database for your installation.</description>
+			<!-- Copy Ant and supporting files for creating the database -->
+			<fileset dir="resources/ant" targetdir="$INSTALL_PATH/$SORTAPPNAME/ant" />
+			<!-- Perform filtering -->
+			<parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/build.xml"
+				type="xml" />
+			<parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/build.properties"
+				type="javaprop" />
+			<parsable
+				targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/sql/mysql/create_db_user.sql"
+				type="plain" />
+			<parsable
+				targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/sql/mysql/drop_create_db.sql"
+				type="plain" />
+			<parsable targetfile="$INSTALL_PATH/$SORTAPPNAME/ant/sql/mysql/drop_db.sql"
+				type="plain" />
+		</pack>
+	</packs>
+</installation>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="eprocurement" default="bad.target" basedir="../">
+	<description>Build file for database installation. </description>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+	<filter filtersfile="${base.path}/ant/build.properties" />
+	<property environment="env" />
+	<tstamp />
+	<property name="db.type" value="mysql" />
+	<property name="sql.scripts.dir" location="${base.path}/ant/sql/${db.type}" />
+	<property name="war.dir" location="${base.path}/calipso-${application.war.version}.war" />
+	<property name="descriptors.dir" location="${base.path}/descriptors" />
+
+	<target name="bad.target">
+		<echo message="No target has been specified." />
+	</target>
+
+	<!-- create database -->
+	<target name="install.db.pack" description="Install Database Pack">
+		<if>
+			<equals arg1="${create.db}" arg2="create-new" />
+			<then>
+				<echo message="Creating database using: ${server.uri}" />
+
+				<!-- classpathref="project.classpath" -->
+				<sql driver="${database.driver}" url="${server.uri}" userid="${database.username}" password="${database.password}" onerror="continue" keepformat="true">
+					<transaction src="${sql.scripts.dir}/drop_create_db.sql" />
+				</sql>
+				<echo message="Database created." />
+			</then>
+			<else>
+				<echo message="Skipping database creation..." />
+			</else>
+		</if>
+		
+		<if>
+			<equals arg1="${create.db.user}" arg2="true" />
+			<then>
+				<echo message="Creating database user using: ${server.uri}" />
+				<sql driver="${database.driver}" url="${server.uri}" userid="${database.username}" password="${database.password}" onerror="continue" keepformat="true">
+					<transaction src="${sql.scripts.dir}/create_db_user.sql" />
+				</sql>
+				<echo message="Database user created." />
+			</then>
+			<else>
+				<echo message="Skipping database user creation..." />
+			</else>
+		</if>
+	</target>
+
+
+	<target name="install.newadmin.pack" description="Install New System Administrator Account Pack">
+		<if>
+			<not>
+				<equals arg1="${admin.email}" arg2="" />
+			</not>
+			<then>
+				<echo message="Creating New Administrator Account using: ${server.uri}" />
+				<sql driver="${database.driver}" url="${server.uri}" userid="${database.username}" password="${database.password}" onerror="continue" keepformat="true">
+					<transaction>
+						INSERT INTO `users` (`id`, `vn`, `username`, `hash`, `email`, `name`) VALUES
+						('5eb86eb2-f96a-407d-9e47-a80e8c97c26f', 4, 'admin', 0xc5ffff1da8f2dac7e1f7d52a3e9c0027f15f6fbf7e9c22b22de2f49a9378483a, '${admin.email}', 'System Administrator');
+					</transaction>
+				</sql>
+				<echo message="New Administrator Account created." />
+			</then>
+			<else>
+				<echo message="Skipping Administrator Account creation..." />
+			</else>
+		</if>
+	</target>
+	<target name="install.application.pack" description="Install Application Pack Descriptors">
+		<copy todir="${war.dir}" filtering="true" overwrite="true">
+			<fileset dir="${descriptors.dir}" />
+		</copy>
+		<move file="${base.path}/calipso.properties.unset" tofile="${base.path}/calipso.properties" filtering="true" overwrite="true" />
+		<!-- update the context -->
+		<propertyfile file="${war.dir}/WEB-INF/classes/build.properties">
+			<entry key="calipso.home" operation="=" value="${base.path}" />
+		</propertyfile>
+	</target>
+
+</project>

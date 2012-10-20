@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<userInput>
+	<panel order="0">
+		<createForPack name="Application Files" />
+		<field type="title" size="1" bold="true" txt="Application Context Name" />
+		<field type="staticText" bold="true"
+			txt="Please enter a Context Name for your application. The Context Name will be appended to your target installation directory and used as a convention for your Database and Database User name. " />
+		<field type="divider" align="bottom" />
+		<field type="rule" variable="SORTAPPNAME">
+			<spec txt="Context Name" size="15" layout="AN:25:25" id="SORTAPPNAME"
+				set="0:calipso" resultFormat="displayFormat" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The context name field is mandatory." />
+		</field>
+
+	</panel>
+	<panel order="1">
+		<createForPack name="Database Setup" />
+		<field type="title" size="1" bold="true" txt="Database Installation Mode" />
+		<field type="staticText" bold="true"
+			txt="Please backup your database before installing or you are risking a PERMANENT DATA LOSS. Path setting records will reflect this installation. A physical filestore must be copied manually in case of upgrade." />
+		<field type="radio" variable="ANTTARGETCREATEDB">
+			<description align="left" txt="Database Installation Mode."
+				id="ANTTARGETCREATEDB" />
+			<spec>
+				<choice txt="Database does not exist, create it from scratch"
+					id="radio.label.1" value="create-new" />
+				<choice txt="Database exists but is empty, contains no tables/records"
+					id="radio.label.2" value="create-structure-only" set="true" />
+				<!--choice txt="Database exists, requires upgrade" id="radio.label.3"
+					value="upgrade" /-->
+			</spec>
+		</field>
+	</panel>
+
+	<panel order="2">
+		<createForPack name="Database Setup" />
+		<field type="title" size="1" bold="true" txt="Database Server Information" />
+		<field type="staticText" bold="true"
+			txt="Please enter the administrator account information used to access the database during the installation." />
+		<field type="divider" align="bottom" />
+		<field type="rule" variable="DBROOTUSERNAME">
+			<spec txt="Admin Username" size="15" layout="AN:25:25" id="DBROOTUSERNAME"
+				set="0:root" resultFormat="displayFormat" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The database username field is mandatory. In a default MySQL installation that would be 'root'." />
+		</field>
+		<field type="password" variable="DBROOTPASSWORD">
+			<spec>
+				<pwd txt="Admin Password" id="DBROOTPASSWORD" size="25" />
+			</spec>
+		</field>
+		<field type="space" />
+		<field type="staticText" bold="true"
+			txt="Please enter the details for the Database Server used. Must be running and accesible for the installation to complete." />
+		<field type="rule" variable="DBSERVERNAME">
+			<spec txt="Database Server Name" layout="AN:25:25" set="0:localhost"
+				id="DBSERVERNAME" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The server name field is mandatory. If MySQL is installed in your machine, use 'localhost'." />
+		</field>
+		<field type="rule" variable="DBSERVERPORT">
+			<spec txt="Database Server Port" layout="N:5:5" set="0:3306"
+				id="DBSERVERPORT" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The server port number field is mandatory. By default, MySQL uses '3306'." />
+		</field>
+	</panel>
+
+
+	<panel order="3">
+		<createForPack name="Application Files" />
+		<createForPack name="Database Setup" />
+		<field type="title" size="1" bold="true"
+			txt="Application Database Information" />
+		<field type="staticText" bold="true"
+			txt="Please enter the user account information used to access the database for this application. The account can be created if you wish." />
+		<field type="divider" align="bottom" />
+		<field type="rule" variable="DBUSERNAME">
+			<spec txt="Database Username" layout="AN:25:25" id="DBUSERNAME"
+				set="0:$SORTAPPNAME" resultFormat="displayFormat" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The database username field is mandatory. In a default MySQL installation that would be 'root'." />
+		</field>
+		<field type="password" variable="DBPASSWORD">
+			<spec>
+				<pwd txt="Database Password" id="DBPASSWORD" size="25" />
+			</spec>
+		</field>
+		<field type="check" variable="ANTTARGETCREATEDBUSER" condition="!db-setup-selected">
+			<spec txt="User does not exist, create it" id="ANTTARGETCREATEDBUSER"
+				true="true" false="" set="true" />
+		</field>
+		<field type="rule" variable="DBNAME">
+			<spec txt="Database Name" size="15" layout="AN:25:25" id="DBNAME"
+				set="0:$SORTAPPNAME" resultFormat="displayFormat" />
+			<validator class="com.izforge.izpack.util.NotEmptyValidator"
+				txt="The database name field is mandatory. " />
+		</field>
+	</panel>
+
+	<!--panel order="4">
+		<createForPack name="New Admin Setup" />
+		<field type="title" size="1" bold="true" txt="Administrator Details." />
+		<field type="staticText" bold="true"
+			txt="Please review and update the default System Administrator drtails. The default username and password can only change after you login. " />
+		<field type="divider" align="bottom" />
+		<field type="staticText" txt="Username: admin" />
+		<field type="staticText" txt="Password: Admin1234!" />
+		<field type="text" align="left" variable="ANTTARGETADMINEMAIL">
+			<spec txt="Email" size="25" />
+		</field>
+	</panel-->
+</userInput>

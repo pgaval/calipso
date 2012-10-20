@@ -1,0 +1,8 @@
+#Tue Nov 02 15:43:26 EET 2010
+database.username=@dbusername@
+database.password=@dbpassword@
+locale.default=en
+database.driver=com.mysql.jdbc.Driver
+hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+database.uri=@database.uri@	
+hibernate.show_sql=false

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antactions>
+   <pack name="Database Setup">
+       <antcall order="afterpacks"
+               buildfile="$INSTALL_PATH/$SORTAPPNAME/ant/build.xml"
+               logfile="$INSTALL_PATH/$SORTAPPNAME/ant/antlog.txt"
+               verbose="no">
+            <propertyfile path="$INSTALL_PATH/$SORTAPPNAME/ant/build.properties" />
+        	<target name="install.db.pack" />
+       </antcall>
+   </pack>
+   <pack name="Application Files">
+       <antcall order="afterpacks"
+               buildfile="$INSTALL_PATH/$SORTAPPNAME/ant/build.xml"
+               logfile="$INSTALL_PATH/$SORTAPPNAME/ant/antlog.txt"
+               verbose="yes">
+            <propertyfile path="$INSTALL_PATH/$SORTAPPNAME/ant/build.properties" />
+        	<target name="install.application.pack" />
+       </antcall>
+   </pack>
+</antactions> 
