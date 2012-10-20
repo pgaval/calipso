@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>gr.abiss.calipso</groupId>
+		<version>2.3.0-SNAPSHOT</version>
+		<artifactId>calipso-parent</artifactId>
+	</parent>
+	<artifactId>calipso-common</artifactId>
+	<packaging>jar</packaging>
+	<name>Calipso Common</name>
+	<description>
+        Calipso is the ideal department and team collaboration system for your organization. 
+        Calipso is used to help teams maximize their throuput, improve quality, reduce rework 
+        and meet project deadlines. Features include customizable workflows, field level 
+        permissions, e-mail and LDAP integration, asset management, file attachments and a 
+        detailed history view.
+    </description>
+	<url>http://calipso.abiss.gr</url>
+
+	<licenses>
+		<license>
+			<name>The GNU Affero General Public License, Version 3</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
+		</license>
+	</licenses>
+	<distributionManagement>
+		<site>
+			<id>dev.abiss.gr</id>
+			<url>scp://dev.abiss.gr/opt/coolstack/apache2/dev_abiss_gr/calipso</url>
+		</site>
+	</distributionManagement>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/*.class</exclude>
+					<exclude>**/messages_*.properties</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/messages_*.properties</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<!-- for Wicket HTML files -->
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.html</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+	</build>
+</project>
