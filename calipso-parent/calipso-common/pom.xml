@@ -9,27 +9,6 @@
 	<artifactId>calipso-common</artifactId>
 	<packaging>jar</packaging>
 	<name>Calipso Common</name>
-	<description>
-        Calipso is the ideal department and team collaboration system for your organization. 
-        Calipso is used to help teams maximize their throuput, improve quality, reduce rework 
-        and meet project deadlines. Features include customizable workflows, field level 
-        permissions, e-mail and LDAP integration, asset management, file attachments and a 
-        detailed history view.
-    </description>
-	<url>http://calipso.abiss.gr</url>
-
-	<licenses>
-		<license>
-			<name>The GNU Affero General Public License, Version 3</name>
-			<url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
-		</license>
-	</licenses>
-	<distributionManagement>
-		<site>
-			<id>dev.abiss.gr</id>
-			<url>scp://dev.abiss.gr/opt/coolstack/apache2/dev_abiss_gr/calipso</url>
-		</site>
-	</distributionManagement>
 	<build>
 		<resources>
 			<resource>
@@ -56,5 +35,48 @@
 				<filtering>false</filtering>
 			</resource>
 		</resources>
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-license-plugin</artifactId>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<version>1.8.0</version>
+				<configuration>
+					<header>../etc/header-agpl3-changes.txt</header>
+					<validHeaders>
+						<validHeader>../etc/header-agpl3.txt</validHeader>
+					</validHeaders>
+					<failIfMissing>true</failIfMissing>
+					<strictCheck>false</strictCheck>
+					<includes>
+						<include>**/src/**/*.java</include>
+					</includes>
+					<!-- excludes> <exclude>LICENSE.txt</exclude> <exclude>NOTICE.txt</exclude> 
+						<exclude>src/test/data/**</exclude> <exclude>src/test/integration/**</exclude> 
+						<exclude>src/test/resources/**</exclude> </excludes -->
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<inherited>true</inherited>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+		</plugins>
 	</build>
 </project>

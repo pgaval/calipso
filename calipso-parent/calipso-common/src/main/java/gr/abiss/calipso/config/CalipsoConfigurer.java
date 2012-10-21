@@ -46,6 +46,8 @@ import java.io.Writer;
 import java.util.Properties;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.util.Log;
 import org.springframework.beans.factory.BeanCreationException;
@@ -124,11 +126,30 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
     private void configureCalipso(ConfigurableListableBeanFactory beanFactory) throws Exception {
         String calipsoHome = null;
         InputStream is = this.getClass().getResourceAsStream("/calipso-init.properties");
-        //ClassPathResource jtracInitResource = new ClassPathResource("calipso-init.properties");
-        // calipsoService-init.properties assumed to exist
         Properties props = loadProps(is);
         logger.info("found 'calipso-init.properties' on classpath, processing...");
         calipsoHome = props.getProperty("calipso.home");
+        if(calipsoHome.equals("${calipso.home}")){
+        	calipsoHome = null;
+        }
+        if (StringUtils.isBlank(calipsoHome)) {
+            logger.info("valid 'calipso.home' property not available in 'calipso-init.properties', trying system properties.");
+            calipsoHome = System.getProperty("calipso.home");
+            if (StringUtils.isNotBlank(calipsoHome)) {
+                logger.info("'calipso.home' property initialized from system properties as '" + calipsoHome + "'");
+            }
+        }
+        if (StringUtils.isBlank(calipsoHome)) {
+            logger.info("valid 'calipso.home' property not available in system properties, trying servlet init paramters.");
+            calipsoHome = servletContext.getInitParameter("calipso.home");
+            if (StringUtils.isNotBlank(calipsoHome)) {
+                logger.info("Servlet init parameter 'calipso.home' exists: '" + calipsoHome + "'");
+            }
+        }
+        if (StringUtils.isBlank(calipsoHome)) {
+            calipsoHome = System.getProperty("user.home") + "/.calipso";
+            logger.warn("Servlet init paramter  'calipso.home' does not exist.  Will use 'user.home' directory '" + calipsoHome + "'");
+        }
         if (StringUtils.isNotBlank(calipsoHome) && !calipsoHome.equals("${calipso.home}")) {
             logger.info("'calipso.home' property initialized from 'calipso-init.properties' as '" + calipsoHome + "'");
         }
@@ -139,7 +160,7 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
             }
         };
         //File[] messagePropsFiles = jtracInitResource.getFile().getParentFile().listFiles(ff);
-        String locales = "en,el";
+        String locales = props.getProperty("calipso.locales", "en,el");
 //        for(File f : messagePropsFiles) {
 //            int endIndex = f.getName().indexOf('.');
 //            String localeCode = f.getName().substring(9, endIndex);
@@ -148,55 +169,19 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
         logger.info("locales available configured are '" + locales + "'");
         props.setProperty("calipso.locales", locales);
         //======================================================================
-        if (calipsoHome == null) {
-            logger.info("valid 'calipso.home' property not available in 'calipso-init.properties', trying system properties.");
-            calipsoHome = System.getProperty("calipso.home");
-            if (calipsoHome != null) {
-                logger.info("'calipso.home' property initialized from system properties as '" + calipsoHome + "'");
-            }
-        }
-        if (calipsoHome == null) {
-            logger.info("valid 'calipso.home' property not available in system properties, trying servlet init paramters.");
-            calipsoHome = servletContext.getInitParameter("calipso.home");
-            if (calipsoHome != null) {
-                logger.info("Servlet init parameter 'calipso.home' exists: '" + calipsoHome + "'");
-            }
-        }
-        if (calipsoHome == null) {
-            calipsoHome = System.getProperty("user.home") + "/.calipso";
-            logger.warn("Servlet init paramter  'calipso.home' does not exist.  Will use 'user.home' directory '" + calipsoHome + "'");
-        }
+        
         //======================================================================
-        File homeFile = new File(calipsoHome);
-        if (!homeFile.exists()) {
-            homeFile.mkdir();
-            logger.info("directory does not exist, created '" + homeFile.getPath() + "'");
-            if (!homeFile.exists()) {
-                String message = "invalid path '" + homeFile.getAbsolutePath() + "', try creating this directory first.  Aborting.";
-                logger.error(message);
-                throw new Exception(message);
-            }
-        } else {
-            logger.info("directory already exists: '" + homeFile.getPath() + "'");
-        }
-        props.setProperty("calipso.home", homeFile.getAbsolutePath());
+
+        File calipsoHomeDir = new File(calipsoHome);
+        createIfNotExisting(calipsoHomeDir);
+        props.setProperty("calipso.home", calipsoHomeDir.getAbsolutePath());
         //======================================================================
         File attachmentsFile = new File(calipsoHome + "/attachments");
-        if (!attachmentsFile.exists()) {
-            attachmentsFile.mkdir();
-            logger.info("directory does not exist, created '" + attachmentsFile.getPath() + "'");
-        } else {
-            logger.info("directory already exists: '" + attachmentsFile.getPath() + "'");
-        }
+        createIfNotExisting(attachmentsFile);
         File indexesFile = new File(calipsoHome + "/indexes");
-        if (!indexesFile.exists()) {
-            indexesFile.mkdir();
-            logger.info("directory does not exist, created '" + indexesFile.getPath() + "'");
-        } else {
-            logger.info("directory already exists: '" + indexesFile.getPath() + "'");
-        }
+        createIfNotExisting(indexesFile);
         //======================================================================
-        File propsFile = new File(homeFile.getPath() + "/calipso.properties");
+        File propsFile = new File(calipsoHomeDir, "calipso.properties");
         if (!propsFile.exists()) {
             logger.info("properties file does not exist, creating '" + propsFile.getPath() + "'");
             propsFile.createNewFile();
@@ -227,7 +212,7 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
         }
         //======================================================================
         
-        String version = "2.2.0";
+        String version = getClass().getPackage().getImplementationVersion();
         String timestamp = "0000";
 //        ClassPathResource versionResource = new ClassPathResource("calipso-version.properties");
 //        if(versionResource.exists()) {
@@ -238,8 +223,6 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
 //        } else {
 //            logger.info("did not find 'calipso-version.properties' on classpath");
 //        }
-        logger.info("calipso.version = '" + version + "'");
-        logger.info("calipso.timestamp = '" + timestamp + "'");
         props.setProperty("calipso.version", version);
         props.setProperty("calipso.timestamp", timestamp);
         
@@ -261,6 +244,15 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
         setLocation(fsr);
         Log.info("Calipso configured, calling postProcessBeanFactory with:" + beanFactory);
     }
+
+	private void createIfNotExisting(File attachmentsFile) {
+		if (!attachmentsFile.exists()) {
+            attachmentsFile.mkdir();
+            logger.info("directory does not exist, created '" + attachmentsFile.getPath() + "'");
+        } else {
+            logger.info("directory already exists: '" + attachmentsFile.getPath() + "'");
+        }
+	}
 
     private Properties loadProps(File file) throws Exception {
         InputStream is = null;
