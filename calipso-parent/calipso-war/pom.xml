@@ -9,77 +9,6 @@
 	<artifactId>calipso-war</artifactId>
 	<packaging>war</packaging>
 	<name>Calipso WAR</name>
-	<description>
-        Calipso is the ideal department and team collaboration system for your organization. 
-        Calipso is used to help teams maximize their throughput, improve quality, reduce rework 
-        and meet project deadlines. Features include customizable workflows, field level 
-        permissions, e-mail and LDAP integration, asset management, file attachments and a 
-        detailed history view.
-    </description>
-	<url>http://calipso.abiss.gr</url>
-	 <scm>
-        <url>http://code.google.com/p/calipso/source/browse</url>
-        <connection>scm:svn:http://calipso.googlecode.com/svn/trunk/calipso-war/</connection>
-        <developerConnection>scm:svn:https://calipso.googlecode.com/svn/trunk/calipso-war/</developerConnection>
-    </scm>
-	<licenses>
-		<license>
-			<name>The GNU Affero General Public License, Version 3</name>
-			<url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
-		</license>
-	</licenses>
-	<distributionManagement>
-		<site>
-			<id>dev.abiss.gr</id>
-			<url>scp://dev.abiss.gr/opt/coolstack/apache2/dev_abiss_gr/calipso</url>
-		</site>
-	</distributionManagement>
-	<repositories>
-		<!--repository>
-			<id>openqa.org</id>
-			<name>selenium snapshot</name>
-			<url>http://nexus.openqa.org/content/repositories/releases</url>
-		</repository-->
-		<repository>
-			<id>jboss</id>
-			<name>JBoss repository</name>
-			<url>http://repository.jboss.org/maven2</url>
-		</repository>
-		<repository>
-			<id>java.net</id>
-			<name>java.net repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<!-- pluginRepository> <id>Wakaleo Repository</id> <url>http://maven.wakaleo.com/repos/</url> 
-			</pluginRepository> <pluginRepository> <id>jtrac.info</id> <name>custom ant 
-			integration plugin</name> <url>http://j-trac.sourceforge.net/repository</url> 
-			</pluginRepository>
-		<pluginRepository>
-			<id>mc-release</id>
-			<name>Local Maven repository of releases</name>
-			<url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>mc-snapshot</id>
-			<name>Local Maven repository of snapshots</name>
-			<url>http://mc-repo.googlecode.com/svn/maven2/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</pluginRepository -->
-	</pluginRepositories>
-	
 	<reporting>
 		<plugins>
 			<plugin>
@@ -124,7 +53,7 @@
 		<finalName>calipso</finalName>
 		<!-- outputDirectory>${project.build.outputDirectory}</outputDirectory -->
 		<filters>
-			<filter>build.properties</filter>
+			<filter>../build.properties</filter>
 		</filters>
 		<resources>
 			<resource>
@@ -152,101 +81,7 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-		      <groupId>org.codehaus.mojo</groupId>
-			  <artifactId>buildnumber-maven-plugin</artifactId>
-			<version>1.0</version>
-		      <executions>
-		        <execution>
-		          <phase>validate</phase>
-		          <goals>
-		            <goal>create</goal>
-		          </goals>
-		        </execution>
-		      </executions>
-		    </plugin>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<additionalProjectnatures>
-						<projectnature>wicketbench.wicketnature</projectnature>
-					</additionalProjectnatures>
-					<additionalBuildcommands>
-						<buildcommand>wicketbench.associatedMarkupAuditor</buildcommand>
-					</additionalBuildcommands>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-license-plugin</artifactId>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<version>1.8.0</version>
-				<configuration>
-					<header>src/etc/header-agpl3-changes.txt</header>
-					<validHeaders>
-						<validHeader>src/etc/header-agpl3.txt</validHeader>
-					</validHeaders>
-					<failIfMissing>true</failIfMissing>
-					<strictCheck>false</strictCheck>
-					<includes>
-						<include>src/**/*.java</include>
-					</includes>
-					<!-- excludes> <exclude>LICENSE.txt</exclude> <exclude>NOTICE.txt</exclude> 
-						<exclude>src/test/data/**</exclude> <exclude>src/test/integration/**</exclude> 
-						<exclude>src/test/resources/**</exclude> </excludes -->
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<debug>true</debug>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-			<!--plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>native2ascii-maven-plugin</artifactId> 
-				<executions> <execution> <goals> <goal>native2ascii</goal> </goals> <configuration> 
-				<encoding>${project.build.sourceEncoding}</encoding> <src>src/main/resources</src> 
-				<includes>**/messages*.properties</includes> </configuration> </execution> 
-				</executions> </plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<webXml>src/main/webapp/WEB-INF/web.xml</webXml> 
-					<archive>
-						<manifestEntries>
-							<Implementation-Build>${buildNumber}</Implementation-Build>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
@@ -274,9 +109,83 @@
 					</systemProperties>
 				</configuration>
 				<dependencies>
-					<dependency><groupId>mysql</groupId><artifactId>mysql-connector-java</artifactId><version>5.1.17</version></dependency>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>5.1.17</version>
+					</dependency>
 				</dependencies>
 			</plugin>
+			
+			<plugin>
+				<artifactId>maven-license-plugin</artifactId>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<version>1.8.0</version>
+				<configuration>
+					<header>../etc/header-agpl3-changes.txt</header>
+					<validHeaders>
+						<validHeader>../etc/header-agpl3.txt</validHeader>
+					</validHeaders>
+					<failIfMissing>true</failIfMissing>
+					<strictCheck>false</strictCheck>
+					<includes>
+						<include>**/src/**/*.java</include>
+					</includes>
+					<!-- excludes> <exclude>LICENSE.txt</exclude> <exclude>NOTICE.txt</exclude> 
+						<exclude>src/test/data/**</exclude> <exclude>src/test/integration/**</exclude> 
+						<exclude>src/test/resources/**</exclude> </excludes -->
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<additionalProjectnatures>
+						<projectnature>wicketbench.wicketnature</projectnature>
+					</additionalProjectnatures>
+					<additionalBuildcommands>
+						<buildcommand>wicketbench.associatedMarkupAuditor</buildcommand>
+					</additionalBuildcommands>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<archive>
+						<manifestEntries>
+                 			<version>${project.version}</version>
+							<Implementation-Build>${buildNumber}</Implementation-Build>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			
+		<groupId>gr.abiss.calipso</groupId>
+		<version>${project.version}</version>
+		<artifactId>calipso-common</artifactId>
+		</dependency>
+	</dependencies>
 </project>
