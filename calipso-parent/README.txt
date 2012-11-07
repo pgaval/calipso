@@ -34,11 +34,11 @@
 #       mvn org.apache.maven.plugins:maven-eclipse-plugin:2.6:clean org.apache.maven.plugins:maven-eclipse-plugin:2.6:eclipse -DdownloadSources=true -DdownloadJavadocs=true
 #
 # 5) Build the project:
-#       mvn clean install -DskipTests=true
+#       mvn clean install -Dmaven.test.skip=true
 #
 # 6) Navigate in the WAR module folder and run it on Jetty:
 #       cd calipso-war
-#       mvn jetty:run -DskipTests=true
+#       mvn jetty:run -Dmaven.test.skip=true
 #
 # 7) Fire up a browser and go to http://localhost:8080/calipso
 #
