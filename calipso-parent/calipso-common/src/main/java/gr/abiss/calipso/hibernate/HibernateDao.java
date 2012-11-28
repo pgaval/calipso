@@ -1898,8 +1898,9 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	*/
         try { 
+        	schemaHelper.updateSchema();
             List results = getHibernateTemplate().find("from User user where user.id = 1");
-            //schemaHelper.updateSchema();
+            
         } catch (Exception e) {
             logger.warn("expected database schema does not exist, will create. Error is: " + e.getMessage());
             schemaHelper.updateSchema();

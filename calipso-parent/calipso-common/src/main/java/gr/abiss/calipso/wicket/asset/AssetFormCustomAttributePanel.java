@@ -261,9 +261,10 @@ public class AssetFormCustomAttributePanel extends BasePanel {
 		else if (attribute.getFormType().equals(AssetTypeCustomAttribute.FORM_TYPE_OPTIONS_TREE)) {
 			fragment = new Fragment("customAttributes", "treeField", this);
 			logger.info("PROCESSING tree select attribute: "+attribute.getName());
+			List<CustomAttributeLookupValue> customAttributeLookupValues = getCalipso().findLookupValuesByCustomAttribute(attribute);
 			TreeChoice treeChoice = new TreeChoice(
 					"customAttribute.allowedLookupValues.id", 
-					new PropertyModel(attribute, "lookupValue"), null, attribute, getCalipso());
+					new PropertyModel(attribute, "lookupValue"), customAttributeLookupValues, attribute);
 			treeChoice.setType(CustomAttributeLookupValue.class);
 			attributeValueList.add(new AttributeValue(treeChoice, attribute));
 			// for all-cases-logic to apply later on, i.e. set mandatory, labels etc.

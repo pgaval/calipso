@@ -441,9 +441,9 @@ public class CustomFieldsFormPanel extends BasePanel {
 										&& item.getCustomValue(field) != null){
 									customAttribute.setLookupValue(getCalipso().loadCustomAttributeLookupValue(NumberUtils.createLong(item.getCustomValue(field).toString())));
 								}
+								List<CustomAttributeLookupValue> customAttributeLookupValues = getCalipso().findLookupValuesByCustomAttribute(customAttribute);
+								TreeChoice choice = new TreeChoice("field", new PropertyModel<CustomAttributeLookupValue>(field, "customAttribute.lookupValue"), customAttributeLookupValues, customAttribute);
 								
-								TreeChoice choice = new TreeChoice("field", new PropertyModel(field, "customAttribute.lookupValue"), null, customAttribute, getCalipso());
-								choice.setType(CustomAttributeLookupValue.class);
 								// TODO: temp, make configurable in space field form for 1520
 								int attrId = customAttribute.getId().intValue();
 								choice.setVisibleMenuLinks(attrId == 3 || attrId == 4 || attrId == 16 || attrId == 17);
@@ -455,7 +455,7 @@ public class CustomFieldsFormPanel extends BasePanel {
 								f.add(border);
 								//border.add(new ErrorHighlighter(choice));
 								border.add(choice);
-								choice.setModel(model.bind(field.getName().getText()));
+								//choice.setModel(model.bind(field.getName().getText()));
 								//border.add(model.bind(choice, field.getName().getText()));
 								listItem.add(f.setRenderBodyOnly(true));
 								label =new SimpleFormComponentLabel("label", choice);
@@ -575,9 +575,9 @@ public class CustomFieldsFormPanel extends BasePanel {
 							label =new SimpleFormComponentLabel("label", choice);
 						} else if (field.getName().getType() == 6) {
 							// date picker
-							Fragment f = new Fragment("field", "dateFragment", CustomFieldsFormPanel.this);
+							Fragment fragment = new Fragment("field", "dateFragment", CustomFieldsFormPanel.this);
 							// add HTML description through velocity
-							addVelocityTemplatePanel(f, "htmlDescriptionContainer", "htmlDescription", field.getCustomAttribute().getHtmlDescription(), null, true);
+							addVelocityTemplatePanel(fragment, "htmlDescriptionContainer", "htmlDescription", field.getCustomAttribute().getHtmlDescription(), null, true);
 							
 							
 							if(item.getId() == 0 && item.getValue(field.getName()) == null  
@@ -602,8 +602,8 @@ public class CustomFieldsFormPanel extends BasePanel {
 							// i8n
 							calendar.setLabel(new ResourceModel(i18nedFieldLabelResourceKey));
 
-							f.add(calendar);
-							listItem.add(f.setRenderBodyOnly(true));
+							fragment.add(calendar);
+							listItem.add(fragment.setRenderBodyOnly(true));
 							label =new SimpleFormComponentLabel("label", calendar);
 							
 						}
@@ -965,9 +965,9 @@ public class CustomFieldsFormPanel extends BasePanel {
 						 */
 						
 						// drop down list
-							final Fragment f = new Fragment("field", "dropDown", CustomFieldsFormPanel.this);
+							final Fragment fragment = new Fragment("field", "dropDown", CustomFieldsFormPanel.this);
 							// add HTML description through velocity
-							addVelocityTemplatePanel(f, "htmlDescriptionContainer", "htmlDescription", field.getCustomAttribute().getHtmlDescription(), null, true);
+							addVelocityTemplatePanel(fragment, "htmlDescriptionContainer", "htmlDescription", field.getCustomAttribute().getHtmlDescription(), null, true);
 							if(field.getCustomAttribute() == null){
 								field.setCustomAttribute(getCalipso().loadItemCustomAttribute(getCurrentSpace(), field.getName().getText()));
 							}
@@ -1002,7 +1002,7 @@ public class CustomFieldsFormPanel extends BasePanel {
 									lookupValues, new IChoiceRenderer<CustomAttributeLookupValue>() {
 										public Object getDisplayValue(
 												CustomAttributeLookupValue o) {
-											return f.getString(o.getNameTranslationResourceKey());
+											return fragment.getString(o.getNameTranslationResourceKey());
 										}
 
 										public String getIdValue(
@@ -1017,11 +1017,11 @@ public class CustomFieldsFormPanel extends BasePanel {
 							choice.setLabel(new ResourceModel(i18nedFieldLabelResourceKey));
 							choice.setRequired(valueRequired);
 							WebMarkupContainer border = new WebMarkupContainer("border");
-							f.add(border);
+							fragment.add(border);
 							border.add(new ErrorHighlighter(choice));
 							//border.add(model.bind(choice, field.getName().getText()));
 							border.add(choice);
-							listItem.add(f.setRenderBodyOnly(true));
+							listItem.add(fragment.setRenderBodyOnly(true));
 							label =new SimpleFormComponentLabel("label", choice);
 							return label;
 					}

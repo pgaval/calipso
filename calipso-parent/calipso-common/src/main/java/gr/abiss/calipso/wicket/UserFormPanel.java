@@ -361,7 +361,7 @@ public class UserFormPanel extends BasePanel {
             
         	// allow selection of an organization if the user is new or checked by an admin
         	if(user.getId() == 0 || getPrincipal().isGlobalAdmin()){ 
-        		Fragment newOrganizationFragment = new Fragment("organizationArea","newOrganizationFragment", this);
+        		Fragment newOrganizationFragment = new Fragment("organizationArea","newOrganizationFragment", UserFormPanel.this);
         		add(newOrganizationFragment);
         		// load All organization
         		List<Organization> organizationList = getCalipso().findAllOrganizations();
@@ -387,13 +387,13 @@ public class UserFormPanel extends BasePanel {
         		if(user.getOrganization()!=null){
             		// get user's organization name
             		// For all spaces admin's default organization, and organization id is null
-        			Fragment editOrganizationFragment = new Fragment("organizationArea","editOrganizationFragment", this);
+        			Fragment editOrganizationFragment = new Fragment("organizationArea","editOrganizationFragment", UserFormPanel.this);
             		add(editOrganizationFragment);
         			Organization org = getCalipso().loadOrganization(user.getOrganization().getId());
         			editOrganizationFragment.add(new OrganizationViewLink("organization",getBreadCrumbModel(), org));
         		}
         		else{
-        			Fragment noOrganizationFragment = new Fragment("organizationArea", "noOrganizationFragment", this);
+        			Fragment noOrganizationFragment = new Fragment("organizationArea", "noOrganizationFragment", UserFormPanel.this);
         			add(noOrganizationFragment);
         			noOrganizationFragment.add(new Label("noOrganizationLabel", new ResourceModel("organization.noOrganization")));
         		}

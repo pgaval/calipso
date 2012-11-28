@@ -20,10 +20,8 @@
 
 package gr.abiss.calipso.wicket.components.formfields;
 
-import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.CustomAttribute;
 import gr.abiss.calipso.domain.CustomAttributeLookupValue;
-import gr.abiss.calipso.wicket.ComponentUtils;
 
 import java.util.List;
 
@@ -36,7 +34,6 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -50,9 +47,9 @@ import org.apache.wicket.markup.html.tree.WicketTreeModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.springframework.util.CollectionUtils;
+import org.apache.wicket.util.convert.IConverter;
 
-public class TreeChoice extends FormComponentPanel implements IHeaderContributor {
+public class TreeChoice extends FormComponentPanel<CustomAttributeLookupValue> implements IHeaderContributor {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -64,6 +61,7 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
 	
 	//private CustomAttributeLookupValue optionValue;
 
+	
 	boolean visibleMenuLinks = false;
 	private List<CustomAttributeLookupValue> optionValues;
 
@@ -94,7 +92,7 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
 	}
 
 	@SuppressWarnings("unused")
-	private TreeChoice(String id, IModel model) {
+	private TreeChoice(String id, IModel<?> model) {
 		super(id, null);
 	}
 
@@ -105,16 +103,13 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
 	 * @param model
 	 * @param lookupValues 
 	 */
-	@SuppressWarnings("unchecked")
-	public TreeChoice(String id, IModel<CustomAttributeLookupValue> model, List<CustomAttributeLookupValue> lookupValues, CustomAttribute attribute, CalipsoService calipso) {
+	public TreeChoice(String id, IModel<CustomAttributeLookupValue> model, List<CustomAttributeLookupValue> lookupValues, CustomAttribute attribute) {
 		// we keep the selected as our model and the list of all options in a collection
 		super(id, model);
+		this.setType(CustomAttributeLookupValue.class);
 		this.attributeNameTranslationResourceKey = attribute != null ? attribute.getNameTranslationResourceKey() : null;
 		this.optionValues = lookupValues;
-		// load values if empty
-		if(CollectionUtils.isEmpty(this.optionValues)){
-			this.optionValues = calipso.findLookupValuesByCustomAttribute(attribute);
-		}
+		
 		// fix validation messages
 		//this.setLabel(new ResourceModel(optionValue.getAttribute().getNameTranslationResourceKey()));
 		CustomAttributeLookupValue optionValue = (CustomAttributeLookupValue) this.getModel().getObject();
@@ -133,6 +128,12 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
 		}
 		tree.setRootLess(true);
 		
+	}
+	
+	@Override
+	public IConverter<CustomAttributeLookupValue> getConverter(Class type){
+		logger.info("returning converter...");
+		return new CustomAttributeLookupValueConverter(this.optionValues, this);
 	}
 	
 
@@ -219,7 +220,7 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
 				getTree().updateTree(target);
 			}
 		});*/
-		StaticLink helpLink = new StaticLink("helpLink", new Model(new StringBuffer("/calipso/").append(attributeNameTranslationResourceKey).append(".").append(Session.get().getLocale().getLanguage()).append(".html").toString())); 
+		StaticLink helpLink = new StaticLink("helpLink", new Model<String>(new StringBuffer("/calipso/").append(attributeNameTranslationResourceKey).append(".").append(Session.get().getLocale().getLanguage()).append(".html").toString())); 
 		//helpLink.add(new Label("helpLinkLabel", ComponentUtils.localize(this, "help")).setRenderBodyOnly(true));
 		treeMenuLinks.add(helpLink);
 		add(treeMenuLinks.setVisible(this.visibleMenuLinks && attributeNameTranslationResourceKey != null));
@@ -354,7 +355,6 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
 		/**
 		 * {@inheritdoc}
 		 */
-        @SuppressWarnings("unchecked")
 		protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
             if (node instanceof DefaultMutableTreeNode) {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
@@ -366,7 +366,9 @@ public class TreeChoice extends FormComponentPanel implements IHeaderContributor
                 		TreeChoice.this.setModelObject(null);
                 	}
                 	else{
-                		TreeChoice.this.setModelObject(nodeUserObject);	
+                		// TODO: form some reason this was not calling our converter so...
+                		TreeChoice.this.setModelObject(nodeUserObject);
+                		//TreeChoice.this.setConvertedInput(nodeUserObject);
                 	}
                 	//target.addComponent(fieldContainer);
                 }

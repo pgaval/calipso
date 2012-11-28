@@ -550,7 +550,7 @@ public class ItemList extends BasePanel {
                             Name name = ch.getName();
                             if(name == ID) {
                             	final String UniqueRefId = item.getUniqueRefId();
-                                Fragment refIdFrag = new Fragment("column", "refId", this);
+                                Fragment refIdFrag = new Fragment("column", "refId", ItemList.this);
                                 listItem.add(refIdFrag);
 
                                 Link refIdLink = new BreadCrumbLink("refId", getBreadCrumbModel()){

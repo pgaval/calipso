@@ -1,5 +1,5 @@
 <wicket:panel>           
-<!-- begin:UserFormPanel.html Calipso -->
+<!-- begin:UserFormPanel.html JABS-->
 <div class="section">
 	<div class="heading-container1">
 		<h1><wicket:message key="user_form.userDetails"/></h1>		
@@ -64,7 +64,7 @@
 						<tr><td class="label"><label wicket:id="alternativePhoneLabel">user_form.alternativePhone</label></td><td><input type="text" wicket:id="user.alternativePhone" /></td></tr>
 						<tr><td class="label"><label wicket:id="faxLabel">user_form.fax</label></td><td><input type="text" wicket:id="user.fax" /></td></tr>
 		            </tbody>
-		            <tbody><div wicket:id="organizationArea"></div></tbody>
+		            <tbody><wicket:container wicket:id="organizationArea"></wicket:container></tbody>
 		            <tbody>
 		            <tr>
 		                <td class="label">
@@ -144,7 +144,7 @@
 	</div>
 </div>
 <!-- end:UserFormPanel.html -->
-</wicket:panel>
+
 <wicket:fragment wicket:id="newOrganizationFragment">
 	<tr>
 		<td class="label"><label wicket:id="organizationLabel">user_form.organization</label></td>
@@ -165,3 +165,24 @@
 		<td><span wicket:id="noOrganizationLabel"></span></td>
 	</tr>
 </wicket:fragment>
+</wicket:panel>
+<!--wicket:fragment wicket:id="newOrganizationFragment">
+	<tr>
+		<td class="label"><label wicket:id="organizationLabel">user_form.organization</label></td>
+		<td><select wicket:id="user.organization"></select></td>
+	</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="editOrganizationFragment">
+	<tr>
+		<td class="label">
+			<wicket:message key="user_form.organization" />
+		</td>    
+		<td wicket:id="organization"></td>                                   
+</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="noOrganizationFragment">
+	<tr>
+		<td></td>
+		<td><span wicket:id="noOrganizationLabel"></span></td>
+	</tr>
+</wicket:fragment-->
