@@ -106,6 +106,7 @@ public class Space extends AbstractI18nResourceTranslatable implements Serializa
 	}
     
     private long id;
+    private Boolean published = Boolean.FALSE;
     private int version;
     private Integer type;
     private String prefixCode;
@@ -189,8 +190,22 @@ public class Space extends AbstractI18nResourceTranslatable implements Serializa
     public void setId(long id) {
         this.id = id;
     }
+    
 
-    public Integer getType() {
+	@Override
+	public String getI18nId() {
+		return new Long(this.getId()).toString();
+	}
+
+    public Boolean getPublished() {
+		return published;
+	}
+
+	public void setPublished(Boolean published) {
+		this.published = published;
+	}
+
+	public Integer getType() {
         return type;
     }
 
@@ -507,18 +522,7 @@ public class Space extends AbstractI18nResourceTranslatable implements Serializa
 			itemRenderingTemplate.setSpace(null);
 		}
 	}
-	
-	/**
-	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getNameTranslationResourceKey()
-	 */
-	public String getPropertyTranslationResourceKey(String name){
-		return new StringBuffer(getShortName(Space.class))
-		.append('.')
-		.append(this.getId())
-		.append('.')
-		.append(name)
-		.toString();
-	}
+
 
 	public void addAll(List<ItemRenderingTemplate> tmplList) {
 		if(CollectionUtils.isNotEmpty(tmplList)){

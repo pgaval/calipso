@@ -19,6 +19,7 @@
 
 package gr.abiss.calipso.domain.i18n;
 
+import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.I18nStringResource;
 
 import java.io.Serializable;
@@ -147,6 +148,20 @@ public abstract class AbstractI18nResourceTranslatable implements Serializable, 
 	/**
 	 * @see gr.abiss.calipso.domain.i18n.I18nResourceTranslatable#getPropertyTranslationResourceKey(java.lang.String)
 	 */
-	public abstract String getPropertyTranslationResourceKey(String name);
+	public String getPropertyTranslationResourceKey(String propertyName){
+		return new StringBuffer(getShortName(this.getClass()))
+		.append('.')
+		.append(this.getI18nId())
+		.append('.')
+		.append(propertyName)
+		.toString();
+	}
+	
+	/**
+	 * Implement to provide a string identifier
+	 * 
+	 * @return
+	 */
+	public abstract String getI18nId();
 
 }

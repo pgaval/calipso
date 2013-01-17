@@ -123,7 +123,7 @@ public class SpaceListPanel extends BasePanel {
                     listItem.add(sam);
                 }                                 
                 listItem.add(new Label("prefixCode", new PropertyModel(space, "prefixCode")));
-                listItem.add(new Label("name", localize(space.getNameTranslationResourceKey())));
+                listItem.add(new Label("name", localize(space)));
 
                 //Edit ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 listItem.add(new BreadCrumbLink("edit", getBreadCrumbModel()){
@@ -133,7 +133,6 @@ public class SpaceListPanel extends BasePanel {
 					protected IBreadCrumbParticipant getParticipant(String componentId){
            	 			Space temp = getCalipso().loadSpace(space.getId());
            	 			//temp.getMetadata().getXmlString();  // hack to override lazy loading
-           	 			temp.getSpaceGroup().getName();
            	 			return new SpacePanelLanguageSupport(componentId, getBreadCrumbModel(), temp);
            	 		}
            	 	});
@@ -153,8 +152,10 @@ public class SpaceListPanel extends BasePanel {
            	 			return new SpaceAllocatePanel(componentId, getBreadCrumbModel(), space.getId());
            	 		}
            	 	});
-
-              //Asset ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                
+                //published ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                listItem.add(new Label("published", new PropertyModel(space, "published")));
+                //Asset ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 if (space.isAssetEnabled() && (user.isGlobalAdmin() || user.isSpaceAdmin(space))){
                 	listItem.add(new BreadCrumbLink("asset", breadCrumbModel){
 						private static final long serialVersionUID = 1L;

@@ -160,7 +160,7 @@ public class User implements UserDetails, Serializable, IUser {
     	List<SpaceRole> spaceRolesList = new ArrayList<SpaceRole>();
     	for (UserSpaceRole userSpaceRole : userSpaceRoles){
     		SpaceRole spaceRole = userSpaceRole.getSpaceRole();
-    		if (spaceRole.getSpace()!=null && spaceRole.getSpace().getId() == spId){
+    		if (spaceRole != null && spaceRole.getSpace()!=null && spaceRole.getSpace().getId() == spId){
     			spaceRolesList.add(spaceRole);
     		}
     	}
@@ -183,7 +183,7 @@ public class User implements UserDetails, Serializable, IUser {
     	boolean hasRegularRole = false;
     	for (UserSpaceRole userSpaceRole : userSpaceRoles){
     		SpaceRole spaceRole = userSpaceRole.getSpaceRole();
-    		if (spaceRole.getSpace()!=null 
+    		if (spaceRole != null && spaceRole.getSpace()!=null 
     				&& spaceRole.getSpace().equals(space)
     				&& (spaceRole.getRoleType().equals(RoleType.REGULAR_USER)
     						|| spaceRole.getRoleType().equals(RoleType.SPACE_ADMINISTRATOR))){
@@ -243,7 +243,7 @@ public class User implements UserDetails, Serializable, IUser {
 //            if (s == space || (s != null && s.equals(space))) {
 //                roleKeys.add(usr.getSpaceRole().getRoleCode());
 //            }
-        	if (usr.getSpaceRole().getSpace()!=null && (usr.getSpaceRole().getSpace()==space || usr.getSpaceRole().getSpace().equals(space))){
+        	if (usr.getSpaceRole() != null && usr.getSpaceRole().getSpace()!=null && (usr.getSpaceRole().getSpace()==space || usr.getSpaceRole().getSpace().equals(space))){
 	        	if (!usr.getSpaceRole().getRoleType().equals(RoleType.ADMINISTRATOR)){
 	        		roleKeys.add(usr.getSpaceRole().getRoleCode());
 	        	}
@@ -282,7 +282,7 @@ public class User implements UserDetails, Serializable, IUser {
     public Set<Space> getSpaces() {
         Set<Space> spaces = new HashSet<Space>(userSpaceRoles.size());
         for (UserSpaceRole usr : userSpaceRoles) {
-            if (usr.getSpaceRole().getSpace() != null) {
+            if (usr.getSpaceRole() != null && usr.getSpaceRole().getSpace() != null) {
                 spaces.add(usr.getSpaceRole().getSpace());
             }
         }
@@ -291,7 +291,7 @@ public class User implements UserDetails, Serializable, IUser {
 
     public boolean isAllocatedToSpace(long spaceId) {
         for (UserSpaceRole userSpaceRole : userSpaceRoles) {
-            if (userSpaceRole.getSpaceRole().getSpace() != null && userSpaceRole.getSpaceRole().getSpace().getId() == spaceId) {
+            if (userSpaceRole.getSpaceRole() != null && userSpaceRole.getSpaceRole().getSpace() != null && userSpaceRole.getSpaceRole().getSpace().getId() == spaceId) {
                 return true;
             }
         }
@@ -396,7 +396,7 @@ public class User implements UserDetails, Serializable, IUser {
      */
     public Collection<UserSpaceRole> getSpaceRolesNoGlobal(){
         for(UserSpaceRole usr : userSpaceRoles) {
-            if(usr.getSpaceRole().getSpace() != null) {
+            if(usr.getSpaceRole() != null && usr.getSpaceRole().getSpace() != null) {
             	SpaceRole sr = usr.getSpaceRole();
             	Space space = sr.getSpace();
             	if(StringUtils.isNotBlank(space.getName())){

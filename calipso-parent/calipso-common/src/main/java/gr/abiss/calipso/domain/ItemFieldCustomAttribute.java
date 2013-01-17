@@ -40,7 +40,7 @@ public class ItemFieldCustomAttribute extends CustomAttribute implements Seriali
 	 * Please make proper use of logging, see http://www.owasp.org/index.php/Category:Logging_and_Auditing_Vulnerability
 	 */
 	private static final Logger logger = Logger.getLogger(ItemFieldCustomAttribute.class);
-
+	protected static final String NAME = "name";
 
 	private String fieldName = null;
 	private boolean showInSearchResults = false;
@@ -167,16 +167,24 @@ public class ItemFieldCustomAttribute extends CustomAttribute implements Seriali
     
 
 	}
+	
 	/**
-	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getNameTranslationResourceKey()
+	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getPropertyTranslationResourceKey(String)
 	 */
 	public String getPropertyTranslationResourceKey(String name) {
-		return new StringBuffer("Space")
-		.append('.')
-		.append(this.getSpace().getId())
-		.append('.')
-		.append(this.getFieldName())
-		.toString();
+		String key = null;
+		if(NAME.equals(name)){
+			key = new StringBuffer("Space")
+			.append('.')
+			.append(this.getSpace().getId())
+			.append('.')
+			.append(this.getFieldName())
+			.toString();
+		}
+		else{
+			key = super.getPropertyTranslationResourceKey(name);
+		}
+		return key;
 	}
 	
 	public void removeAll(Collection<CustomAttributeLookupValue> toRemove) {

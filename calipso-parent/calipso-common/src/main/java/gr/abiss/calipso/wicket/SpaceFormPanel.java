@@ -206,6 +206,7 @@ public class SpaceFormPanel extends BasePanel {
 			this.copyFrom = copyFrom;
 		}
 
+		@SuppressWarnings("serial")
 		public SpaceForm(String id, final Space space) {
 
 			super(id, space);
@@ -237,8 +238,9 @@ public class SpaceFormPanel extends BasePanel {
 			if(MapUtils.isEmpty(space.getNameTranslations())){
 				space.setNameTranslations(getCalipso().getNameTranslations(space));	
 			}
-			add(new ListView("nameTranslations", space.getSupportedLanguages()){
-				protected void populateItem(ListItem listItem) {
+			add(new ListView<Language>("nameTranslations", space.getSupportedLanguages()){
+
+				protected void populateItem(ListItem<Language> listItem) {
 					Language language = (Language) listItem.getModelObject();
 					TextField description = new TextField("name");
 					// name translations are required.
@@ -250,7 +252,7 @@ public class SpaceFormPanel extends BasePanel {
 					description.setLabel(new ResourceModel("language."+language.getId()));
 					listItem.add(new SimpleFormComponentLabel("languageLabel", description));
 				}
-			});
+			}.setReuseItems(true));
 
 			// prefix Code =====================================================
 			TextField prefixCode = new TextField("space.prefixCode");
@@ -427,7 +429,7 @@ public class SpaceFormPanel extends BasePanel {
 						}
 					});
 				}
-			});
+			}.setDefaultFormProcessing(false));
 
             add(new Button("apply") {
                 @Override
@@ -440,7 +442,7 @@ public class SpaceFormPanel extends BasePanel {
         				}
         			});
 				}
-            }.setVisible(space.getId() > 0));
+            }.setVisible(false));
             
 			add(new Button("next"){
 				/* (non-Javadoc)
@@ -458,6 +460,9 @@ public class SpaceFormPanel extends BasePanel {
 						Space spaceFrom = calipso.loadSpace(copyFrom.getId());
 						SpaceUtils.copySpace(calipso, spaceFrom, SpaceForm.this.getSpace());
 						logger.debug("Space roles: "+space.getSpaceRoles());
+					}
+					if(space.getSpaceGroup().getId() == null){
+						space.getSpaceGroup().getAdmins().add(getPrincipal());
 					}
 					activate(new IBreadCrumbPanelFactory() {
 						public BreadCrumbPanel create(String componentId,
@@ -560,7 +565,7 @@ public class SpaceFormPanel extends BasePanel {
 	            }
 	        });
 
-			spaceGroupChoice.setEnabled(this.getSpace().getId() == 0);
+			spaceGroupChoice.setEnabled(this.getSpace().getSpaceGroup() == null);
 			spaceGroupChoice.setNullValid(false);
 			spaceGroupChoice.setRequired(true);
 			

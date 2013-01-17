@@ -178,16 +178,19 @@ public class SpaceRole implements Serializable{
 			return String.valueOf(this.description.hashCode()) + "_" + String.valueOf(this.hashCode());
 		}		
 	}
-
+	
 	@Override
-	public boolean equals(Object object) {
-		//Not yet created => Compare codes 
-		if (this.id==0){
-			return (((SpaceRole)object).getRoleCode().equals(this.getRoleCode()));
-		}
-
-		return (((SpaceRole)object).getId()==this.id);
+	public boolean equals(Object obj) {
+	    if (this == obj)
+	        return true;
+	    if (obj == null)
+	        return false;
+	    if (!(obj instanceof SpaceRole))
+	        return false;
+	    final SpaceRole other = (SpaceRole) obj;
+	    return this.getRoleCode().equals(other.getRoleCode());
 	}
+	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)

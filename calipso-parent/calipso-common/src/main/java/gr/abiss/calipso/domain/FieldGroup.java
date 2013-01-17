@@ -130,6 +130,11 @@ public class FieldGroup extends AbstractI18nResourceTranslatable implements Comp
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	@Override
+	public String getI18nId() {
+		return this.getId();
+	}
 /*
 	public String getUuid() {
 		return uuid;
@@ -144,18 +149,6 @@ public class FieldGroup extends AbstractI18nResourceTranslatable implements Comp
 
 	public void setPriority(short priority) {
 		this.priority = priority;
-	}
-
-	/**
-	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getNameTranslationResourceKey()
-	 */
-	public String getPropertyTranslationResourceKey(String propertyName){
-		return new StringBuffer(getShortName(FieldGroup.class))
-		.append('.')
-		.append(this.getId())
-		.append('.')
-		.append(propertyName)
-		.toString();
 	}
 
 	public void addField(Field field) {

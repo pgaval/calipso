@@ -580,9 +580,13 @@
 		<property name="description" column="sr_descr" />
 		<property name="roleCode" column="sr_role_code" unique="true"/>
 		<property name="roleTypeId" column="sr_role_type_id" />
-		<set name="userSpaceRoles" cascade="all" inverse="true">
+		<set name="userSpaceRoles" cascade="all-delete-orphan" inverse="true">
 			<key column="usr_srid" />
 			<one-to-many class="UserSpaceRole" />
+		</set>
+		<set name="roleSpaceStdFields" cascade="all-delete-orphan" inverse="true">
+			<key column="rsf_srid" />
+			<one-to-many class="RoleSpaceStdField" />
 		</set>
 		<!-- templates map using template type and ID for key-value pairs -->
         <map name="itemRenderingTemplates" table="spacerole_item_templates" lazy="true" inverse="false" cascade="all"><!--   order-by="description asc" -->
@@ -598,6 +602,8 @@
 		</id>
 		<many-to-one name="user" column="usr_user_id" />
 		<many-to-one name="spaceRole" column="usr_srid" lazy="false" />
+		
+		
 	</class>
 
 	<class name="RoleSpaceStdField" table="role_space_fields">
@@ -637,6 +643,9 @@
 		<property name="closingDate" column="closing_date" type="timestamp" />
 		<property name="prefixCode" column="prefix_code" unique="true" length="10" />
 		
+		<property name="published" type="boolean">
+			<column name="published" not-null="true" default="0" />
+		</property>
 		<property name="itemSummaryEnabled" type="boolean">
 			<column name="titles_enabled" not-null="true" default="1" />
 		</property>
@@ -653,6 +662,10 @@
 		<many-to-one name="metadata" column="metadata_id" cascade="all" lazy="proxy" />
 		<many-to-one name="spaceGroup" column="spacegroup_id" lazy="false" cascade="all" />
 
+		<set name="spaceRoles" cascade="all-delete-orphan" inverse="true">
+			<key column="sr_space_id" />
+			<one-to-many class="SpaceRole" />
+		</set>
 		<list name="supportedLanguages" table="space_languages" inverse="false">
 			<key column="sl_space_id" not-null="true"/>
 			<list-index column="sl_sort_order"/>
@@ -808,7 +821,10 @@
 		<property name="name" type="string" column="ca_name" />
 		<property name="formType" type="java.lang.Integer" column="ca_ftype"/>
 		<property name="dataType" type="string" column="ca_dtype" />
-		
+		<property name="mappingKey" type="string" column="ca_mapping" />
+		<property name="version" type="integer" not-null="true">
+			<column name="ca_version" default="0"/>
+		</property>
 		<!-- 
 		used for rendering, attributeGroupIndex corresponds to a fieldset and it's rendering order,  
 		attributeIndex specifies the field rendering order within the fieldset
@@ -824,10 +840,10 @@
 		</property>
 		<property name="defaultStringValue" type="string" column="ca_default_value" />
 		<many-to-one name="validationExpression" class="ValidationExpression" lazy="false" not-null="true" column="ca_validation_expr" />
-		<set name="allowedLookupValues" inverse="true" cascade="all-delete-orphan" order-by="lkv_show_order asc" lazy="false">
+		<bag name="allowedLookupValues" inverse="true" cascade="all" lazy="false" order-by="listindex asc">
 			<key column="lkv_caid" />
 			<one-to-many class="CustomAttributeLookupValue" />
-		</set>
+		</bag>
 		<joined-subclass name="ItemFieldCustomAttribute" table="item_field_custom_attributes" >
 			<key column="ca_id"/>
 			<property name="fieldName" type="string" not-null="true"  column="field_name" />
@@ -855,6 +871,8 @@
 			<generator class="native" />
 		</id>
 		<property name="value" type="string" column="lkv_value"/>
+		<property name="listIndex" type="integer" column="listIndex"/>
+		<property name="active" type="boolean" column="lkv_active"/>
 		<property name="showOrder" type="integer" column="lkv_show_order"/>
 		<property name="level" type="integer">
 			<column  name="lkv_level" default="1" />

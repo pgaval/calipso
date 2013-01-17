@@ -34,11 +34,13 @@
 	        	<input type="submit" class="button" wicket:id="add" wicket:message="value:space_fields.addField"/>                
 	        
 		    </fieldset>
-	        <p>
-	        	<input type="submit" class="button" wicket:id="back" wicket:message="value:back"/>                
-	        	<input type="submit" class="button" wicket:id="apply" wicket:message="value:apply"/>                 
-	        	<input type="submit" class="button" wicket:id="next" wicket:message="value:next"/>                
-	        </p>
+	        
+			<div class="submit-controls">
+				<input type="submit" class="submit-to-previous" wicket:id="back" wicket:message="value:back" />            
+		        <input type="submit" class="submit-to-same" wicket:id="apply" wicket:message="value:apply"/>  
+				<input type="submit" class="submit-to-next" wicket:id="next" wicket:message="value:next" />
+				<br class="clear" />
+			</div>
 	        
 		        <table wicket:id="spaceFields" cellspacing="0">
 		        	<thead>

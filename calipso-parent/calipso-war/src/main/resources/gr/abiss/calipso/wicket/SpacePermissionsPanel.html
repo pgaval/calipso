@@ -1,3 +1,46 @@
+<wicket:head>
+<script language="javascript">
+
+// Set the default "show" mode to that specified by W3C DOM
+// compliant browsers
+
+var showMode = 'table-cell';
+var previousColumn = "show-states-cell";
+// However, IE5 at least does not render table cells correctly
+// using the style 'table-cell', but does when the style 'block'
+// is used, so handle this
+
+if (document.all) showMode='block';
+
+// This is the function that actually does the manipulation
+
+function toggleVis(name, skipPrevious){
+	// Once the cells and checkbox object has been retrieved
+	// the show hide choice is simply whether the checkbox is
+	// checked or clear
+
+	if(!skipPrevious){
+		toggleVis(previousColumn, true);
+		previousColumn = name;
+
+	}
+	// get the name of cells to toggle
+	name = name.substring(5);
+	// Next find all the table cells by using the DOM function
+	// getElementsByName passing in the constructed name of
+	// the cells, derived from the checkbox name
+
+	cells = document.getElementsByName(name);
+	// Apply the style to the CSS display property for the cells
+
+	mode = skipPrevious ? 'none' : showMode;
+	if(cells){
+		for(j = 0; j < cells.length; j++) cells[j].style.display = mode;
+	}
+}
+
+</script>
+</wicket:head>
 <wicket:panel>
 <!-- begin:SpacePermissionsPanel.html -->
 <div class="section">
@@ -10,12 +53,18 @@
 	</div>
 	<div class="section-body">
 		<p class="help-message"><wicket:message key="SpacePermissionsPanel.help"/></p>
-		<form wicket:id="form">                
-		<table class="dashboard" cellspacing="0">
-		    <tr class="center instructions">
+
+		<form wicket:id="form">    
+<select  onchange="toggleVis(this.options[this.selectedIndex].value)">
+	<option value="show-states-cell"><wicket:message key="space_roles.state"/></option>
+	<option value="show-tmpls-cell"><wicket:message key="space_roles.state.template"/></option>
+	<option wicket:id="field-group-selection" value="show-fields-group-cell"><span wicket:id="field-group-selection-label"></span></option>
+</select>      
+		<table class="dashboard" cellspacing="0" id="workflow-table">
+		    <!-- tr class="center instructions">
 		        <td colspan="5"/>
-		        <td wicket:id="statesColspan"><br /><strong><wicket:message key="space_roles.nextAllowedState"/></strong></td>
-		        <td wicket:id="fieldsColspan">   
+		        <td name="states-cell" wicket:id="statesColspan"><br /><strong><wicket:message key="space_roles.nextAllowedState"/></strong></td>
+		        <td name="fields-cell" wicket:id="fieldsColspan">   
 		            <strong><wicket:message key="space_roles.fieldLevelPermissions"/></strong><br/>
 		            <span style="font-weight:normal">
 		                <img src="resources/field-mandatory.gif"/><wicket:message key="space_roles.mandatory"/>
@@ -25,15 +74,15 @@
 		                <img src="resources/field-hidden.gif"/><wicket:message key="space_roles.hidden"/>
 		            </span>
 		        </td>       
-		    </tr>
+		    </tr-->
 		    <tr class="center alt">
 		        <th><wicket:message key="space_roles.state"/></th>
 		        <th><input type="image" wicket:id="addState" src="../resources/add.gif"/></th>
 		        <th><wicket:message key="space_roles.role"/></th>
 		        <th><input type="image" wicket:id="addRole" src="../resources/add.gif"/></th>
-		        <th><wicket:message key="space_roles.state.template"/></th>
-		        <th wicket:id="stateHeads"><span wicket:id="state"></span></th>
-		        <th wicket:id="fieldHeads" class="selected"><span wicket:id="field"></span></th>                        
+		        <th name="tmpls-cell" class="hide"><wicket:message key="space_roles.state.template"/></th>
+		        <th name="states-cell" wicket:id="stateHeads"><span wicket:id="state"></span></th>
+		        <th name="fields-cell" wicket:id="fieldHeads" class="selected hide"><span wicket:id="field"></span></th>                        
 		    </tr>
 		    <tbody wicket:id="states" class="roles">
 		        <tr wicket:id="roles">
@@ -41,9 +90,9 @@
 		            <td wicket:id="editState"><input type="image" wicket:id="editState" src="../resources/edit.gif"/></td>
 		            <td wicket:id="role" class="transition"></td>
 		            <td><input type="image" wicket:id="editRole" src="../resources/edit.gif"/></td>
-		            <td><select wicket:id="roleStateTemplate"></select></td>
-		            <td wicket:id="stateHeads"><input type="image" wicket:id="state"/></td>
-		            <td wicket:id="fieldHeads" class="info"><select class="states" type="image" wicket:id="field"/></td>
+		            <td name="tmpls-cell" class="hide"><select wicket:id="roleStateTemplate"></select></td>
+		            <td name="states-cell" wicket:id="stateHeads"><input type="image" wicket:id="state"/></td>
+		            <td name="fields-cell" wicket:id="fieldHeads" class="info hide"><select class="states" type="image" wicket:id="field"/></td>
 		        </tr>
 		    </tbody>
 		</table>
@@ -74,12 +123,14 @@
 			</tr>
 			</tbody>
 		</table>
-	
+		<div class="submit-controls">
+			<input type="submit" class="submit-to-previous" wicket:id="back" wicket:message="value:back"/>               
+			<input type="submit" class="submit-to-same" wicket:id="apply" wicket:message="value:apply"/>               
+			<input type="submit" class="submit-to-close" wicket:id="finish" wicket:message="value:finish"/>
+			<br class="clear" />
+		</div>
 	
 		<p>
-		<input type="submit" class="button" wicket:id="back" wicket:message="value:back"/>               
-		<input type="submit" class="button" wicket:id="apply" wicket:message="value:apply"/>               
-		<input type="submit" class="button" wicket:id="finish" wicket:message="value:finish"/> 
 		</p>
 	    <div wicket:id="workflow" class="workflow"></div>
 		</form>

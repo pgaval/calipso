@@ -254,7 +254,7 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		type.setEnabled(this.assetTypeCanBeModified);
 		type.setOutputMarkupId(true);
 		add(type);
-		type.setModel(model);
+		type.setModel(new PropertyModel(model.getObject(), "formType"));
 		// form label for form type
 		type.setLabel(new ResourceModel("asset.customAttributes.type"));
 		

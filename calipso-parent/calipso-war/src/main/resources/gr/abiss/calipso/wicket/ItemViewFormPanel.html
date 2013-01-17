@@ -1,8 +1,3 @@
-
-
-
-
-
 <wicket:head>
 <script language="javascript" type="text/javascript" src="resources/js/tiny_mce/tiny_mce.js"></script>
 <script language="javascript" type="text/javascript">
@@ -104,14 +99,16 @@ tinyMCE.init({
 		        </tbody>
 				</table>
 			</fieldset>
-			<p><!-- input type="submit" class="button" wicket:id="preview" wicket:message="value:preview"/-->
+			
+			<div class="submit-controls">
+			<!-- input type="submit" class="button" wicket:id="preview" wicket:message="value:preview"/-->
 				<input type="submit" class="submit-to-cancel" wicket:id="cancelButton" />
-				<input type="submit" class="button" wicket:id="previousButton" wicket:message="value:previous" />
-				<input type="submit" class="button" wicket:id="nextButton" />
-				<select wicket:id="status" />
-				<input type="submit" class="button" wicket:id="submitButton" wicket:message="value:save" />
-				
-			</p>
+				<input type="submit" class="submit-to-previous" wicket:id="previousButton" wicket:message="value:previous" />
+				<input type="submit" class="submit-to-next" wicket:id="nextButton" />
+				<select class="submit-to-select" wicket:id="status" />
+				<input type="submit" class="submit-to-same" wicket:id="submitButton" wicket:message="value:save" />
+				<br class="clear" />
+			</div>
 	</form>
 	    </div>
     </div>

@@ -36,6 +36,7 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 	private AssetTypeCustomAttribute assetTypeCustomAttribute;
 
 	private String name;
+	private String mappingKey;
 	private ValuePair active;
 	private ValuePair mandatory;
 	private Integer formType;
@@ -48,6 +49,11 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 		this.sortFieldName = "name";
 		this.assetTypeCustomAttribute = new AssetTypeCustomAttribute();
 	}
+	public AssetTypeCustomAttributeSearch(int pageSize) {
+		super(pageSize);
+		this.sortFieldName = "name";
+		this.assetTypeCustomAttribute = new AssetTypeCustomAttribute();
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +63,10 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 		if (this.name!=null){
 			this.assetTypeCustomAttribute.setName(name);
 			criteria.add(Restrictions.ilike("name", this.assetTypeCustomAttribute.getName(), MatchMode.START));
+		}
+		if (this.mappingKey!=null){
+			this.assetTypeCustomAttribute.setMappingKey(mappingKey);
+			criteria.add(Restrictions.eq("mappingKey", this.assetTypeCustomAttribute.getMappingKey()));
 		}
 		
 		if (this.formType!=null){
@@ -151,6 +161,12 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 	
 	//---------------------------------------------------------------------------------------------
 
+	public String getMappingKey() {
+		return mappingKey;
+	}
+	public void setMappingKey(String mappingKey) {
+		this.mappingKey = mappingKey;
+	}
 	public Integer getFormType() {
 		return formType;
 	}

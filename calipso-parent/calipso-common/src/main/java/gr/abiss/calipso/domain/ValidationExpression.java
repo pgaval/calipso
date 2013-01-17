@@ -130,6 +130,12 @@ public class ValidationExpression extends AbstractI18nResourceTranslatable imple
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+
+	@Override
+	public String getI18nId() {
+		return this.getId().toString();
+	}
 	/**
 	 * @return the name
 	 */
@@ -155,18 +161,4 @@ public class ValidationExpression extends AbstractI18nResourceTranslatable imple
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
-
-
-	/**
-	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getNameTranslationResourceKey()
-	 */
-	public String getPropertyTranslationResourceKey(String name) {
-		return new StringBuffer(getShortName(ValidationExpression.class))
-		.append('.')
-		.append(this.getId())
-		.append('.')
-		.append(name)
-		.toString();
-	}
-	
 }

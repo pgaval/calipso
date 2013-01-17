@@ -60,6 +60,12 @@
 								</td>
 								<td><textarea wicket:id="htmlDescriptionTextArea"></textarea></td>
 							</tr>
+							<tr>
+								<td class="label">
+									<label wicket:id="mappingKeyLabel">htmlDescription</label>
+								</td>
+								<td><textarea wicket:id="mappingKeyTextArea"></textarea></td>
+							</tr>
 						</tbody>
 						<tbody>
 							<span wicket:id="extraFields"></span>
@@ -87,9 +93,10 @@
 						</tbody>
 					</table>
 				</fieldset>
-				<p>
-					<input type="submit" class="button" wicket:id="done" wicket:message="value:space_field_form.done" />
-				</p>
+				<div class="submit-controls">
+					<input type="submit" class="submit-to-same" wicket:id="done" wicket:message="value:space_field_form.done" />
+					<br class="clear" />
+				</div>
 			</form>
 		</div>
 	</div>

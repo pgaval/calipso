@@ -37,6 +37,7 @@
 package gr.abiss.calipso.wicket;
 
 import gr.abiss.calipso.domain.Field;
+import gr.abiss.calipso.domain.FieldGroup;
 import gr.abiss.calipso.domain.ItemRenderingTemplate;
 import gr.abiss.calipso.domain.Role;
 import gr.abiss.calipso.domain.RoleSpaceStdField;
@@ -48,6 +49,7 @@ import gr.abiss.calipso.domain.StdField;
 import gr.abiss.calipso.domain.StdFieldMask;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.util.BreadCrumbUtils;
+import gr.abiss.calipso.util.SpaceUtils;
 import gr.abiss.calipso.wicket.components.renderers.WorkflowRenderer;
 import gr.abiss.calipso.wicket.components.viewLinks.EditLinkPanel;
 import gr.abiss.calipso.wicket.form.AbstractSpaceform;
@@ -57,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,13 +103,14 @@ import com.inmethod.grid.datagrid.DataGrid;
 import com.inmethod.grid.datagrid.DefaultDataGrid;
 
 public class SpacePermissionsPanel extends BasePanel {
-	
-	private static final Logger logger = Logger.getLogger(SpacePermissionsPanel.class);
-	
+
+	private static final Logger logger = Logger
+			.getLogger(SpacePermissionsPanel.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private Space space;
-	private boolean isNewSpace;
+	// private boolean isNewSpace;
 	private final List<RoleSpaceStdField> roleSpaceFields;
 	private Map<String, SpaceRole> spaceRoleMap = new HashMap<String, SpaceRole>();
 
@@ -114,6 +118,7 @@ public class SpacePermissionsPanel extends BasePanel {
 
 	/**
 	 * Called when creating or editing a new Space.
+	 * 
 	 * @param id
 	 * @param breadCrumbModel
 	 * @param space
@@ -121,19 +126,19 @@ public class SpacePermissionsPanel extends BasePanel {
 	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
 			Space space) {
 		super(id, breadCrumbModel);
-		List<Field> fieldList = space.getMetadata().getFieldList();
+		// List<Field> fieldList = space.getMetadata().getFieldList();
 
 		this.space = space;
-		this.isNewSpace = isNewSpace();
+		// this.isNewSpace = isNewSpace();
 
 		// load any roles already persisted for the space
 		// add or remove guest/anonymous roles
-		// according to previous screens, 
+		// according to previous screens,
 		// also add a Regular User role if needed
-		initSpaceSpaceRoles();
-		
+		SpaceUtils.initSpaceSpaceRoles(getCalipso(), space);
+
 		rolesMap = space.getMetadata().getRolesMap();
-		if (space.getRoleSpaceStdFields() != null) {
+		if (CollectionUtils.isNotEmpty(space.getRoleSpaceStdFields())) {
 			roleSpaceFields = new ArrayList<RoleSpaceStdField>(
 					space.getRoleSpaceStdFields());
 		} else {
@@ -146,59 +151,58 @@ public class SpacePermissionsPanel extends BasePanel {
 	}
 
 	// ---------------------------------------------------------------------------------------------
-	
+
 	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
 			Space space, List<RoleSpaceStdField> roleSpaceFields) {
 		super(id, breadCrumbModel);
 		List<Field> fieldList = space.getMetadata().getFieldList();
 
 		this.space = space;
-		this.isNewSpace = isNewSpace();
+		// this.isNewSpace = isNewSpace();
 
 		// check any guest/anonymous permissions that were
 		// added/removed after initial initRoles call
-		initSpaceSpaceRoles();
-		
+		SpaceUtils.initSpaceSpaceRoles(getCalipso(), space);
+
 		rolesMap = space.getMetadata().getRolesMap();
 		this.roleSpaceFields = roleSpaceFields;
 		initSpaceRolesMap();
-		
+
 		setupVisuals();
 
 		add(new SpacePermissionsForm("form", this.space));
 	}
-
 
 	// ---------------------------------------------------------------------------------------------
 
-	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
-			List<SpaceRole> spaceRolesList, Space space) {
-		super(id, breadCrumbModel);
-		this.space = space;
-		logger.debug("Constructor 4, space roles: "+space.getSpaceRoles());
-		this.isNewSpace = this.space.getId() == 0;
-
-		// check any guest/anonymous permissions that were
-		// added/removed after initial initRoles call
-		initSpaceSpaceRoles();
-
-		rolesMap = space.getMetadata().getRolesMap();
-		
-		if (space.getRoleSpaceStdFields() != null) {
-			roleSpaceFields = new ArrayList<RoleSpaceStdField>(
-					space.getRoleSpaceStdFields());
-		} else {
-			roleSpaceFields = getCalipso().findSpaceFieldsBySpace(space);
-		}
-
-		//this.spaceRolesList = spaceRolesList;
-
-		initSpaceRolesMap();
-
-		setupVisuals();
-
-		add(new SpacePermissionsForm("form", this.space));
-	}
+//	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
+//			List<SpaceRole> spaceRolesList, Space space) {
+//		super(id, breadCrumbModel);
+//		this.space = space;
+//		logger.info("Constructor 4, space roles: " + space.getSpaceRoles());
+//		// this.isNewSpace = this.space.getId() == 0;
+//
+//		// check any guest/anonymous permissions that were
+//		// added/removed after initial initRoles call
+//		initSpaceSpaceRoles();
+//
+//		rolesMap = space.getMetadata().getRolesMap();
+//
+//		if (space.getRoleSpaceStdFields() != null) {
+//			roleSpaceFields = new ArrayList<RoleSpaceStdField>(
+//					space.getRoleSpaceStdFields());
+//		} else {
+//			roleSpaceFields = getCalipso().findSpaceFieldsBySpace(space);
+//		}
+//
+//		// this.spaceRolesList = spaceRolesList;
+//
+//		initSpaceRolesMap();
+//
+//		setupVisuals();
+//
+//		add(new SpacePermissionsForm("form", this.space));
+//	}
 
 	// ---------------------------------------------------------------------------------------------
 	/**
@@ -207,14 +211,14 @@ public class SpacePermissionsPanel extends BasePanel {
 	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
 			SpaceRole spaceRole) {
 		super(id, breadCrumbModel);
-		logger.debug("Constructor 5");
+		logger.info("Constructor 5");
 
 		this.space = spaceRole.getSpace();
-		this.isNewSpace = isNewSpace();
+		// this.isNewSpace = isNewSpace();
 
 		rolesMap = this.space.getMetadata().getRolesMap();
 
-		if (this.space.getRoleSpaceStdFields() != null) {
+		if (CollectionUtils.isNotEmpty(space.getRoleSpaceStdFields())) {
 			roleSpaceFields = new ArrayList<RoleSpaceStdField>(
 					this.space.getRoleSpaceStdFields());
 		} else {
@@ -222,11 +226,11 @@ public class SpacePermissionsPanel extends BasePanel {
 		}
 		initSpaceRolesMap();
 
-		if(this.space.getSpaceRoles() != null && this.space.getSpaceRoles().contains(spaceRole)){
+		if (this.space.getSpaceRoles() != null
+				&& this.space.getSpaceRoles().contains(spaceRole)) {
 			// do nothing, name is updated by reference
-			//this.space.getSpaceRoles().add(spaceRole);
-		}
-		else{
+			// this.space.getSpaceRoles().add(spaceRole);
+		} else {
 			this.space.getMetadata().addRole(spaceRole.getRoleCode());
 			this.space.add(spaceRole);
 		}
@@ -238,137 +242,23 @@ public class SpacePermissionsPanel extends BasePanel {
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	/**
-	 * Load persisted SpaceRole instances for the given Space,
-	 * add or remove Regular, Guest and Anonymous roles as needed
-	 * according to previous screens
-	 */
-	private void initSpaceSpaceRoles() {
-		logger.debug("initSpaceSpaceRoles, space.getSpaceRoles():"+space.getSpaceRoles());
-		// load persisted roles for space if any
-		if(space.getSpaceRoles() == null){
-			List<SpaceRole> roleList = getCalipso().findSpaceRolesForSpace(space);
-			if(roleList != null && !roleList.isEmpty()){
-				Set<SpaceRole> spaceRolesSet = new HashSet<SpaceRole>();
-				spaceRolesSet.addAll(roleList);
-				space.setSpaceRoles(spaceRolesSet);
-			}
-		}
-		
-		Set<RoleType> roleTypes = new HashSet<RoleType>();
-		// if a new space, add the regular user role
-		if (space.getSpaceRoles() == null || space.getSpaceRoles().isEmpty()) {
-			// Set up a pre-defined regular user role work flow
-			SpaceRole regularUserRole = new SpaceRole(space,
-					RoleType.REGULAR_USER.getDescription(),
-					RoleType.REGULAR_USER);
-			this.space.add(regularUserRole);
-			space.getMetadata().initRegularUserRole(regularUserRole.getRoleCode());
-
-			//logger.debug("This is a new Space, added a regular user role with roleCode:"+regularUserRole.getRoleCode());
-			
-		} else {
-			//logger.debug("This is not a new Space, update guest/anonymous according to previous page");
-			boolean addTypeInRoleTypes;
-			Set<SpaceRole> rolesToRemove = new HashSet<SpaceRole>();
-			for (SpaceRole spaceRole : space.getSpaceRoles()) {
-				RoleType roleType = spaceRole.getRoleType();
-						
-				addTypeInRoleTypes = true;
-				// remove if the user went back and changed "Allow guest" or
-				// "Allow anonymous" to false
-				//logger.debug("Going over role with type: "+roleType);
-				if (!space.isGuestAllowed() && roleType.equals(RoleType.GUEST)) {
-					//logger.debug("Removing GUEST Role with roleCode: "+spaceRole.getRoleCode());
-					//space.remove(spaceRole);
-					rolesToRemove.add(spaceRole);
-					// TODO: usefull?
-					space.getMetadata().removeRole(spaceRole.getRoleCode());
-					addTypeInRoleTypes = false;
-				} 
-				if (!space.isAnonymousAllowed() && roleType.equals(RoleType.ANONYMOUS)) {
-					//logger.debug("Removing ANONYMOUS Role with roleCode: "+spaceRole.getRoleCode());
-					//space.remove(spaceRole);
-					rolesToRemove.add(spaceRole);
-					// TODO: usefull?
-					space.getMetadata().removeRole(spaceRole.getRoleCode());
-					addTypeInRoleTypes = false;
-				}
-				// otherwise let the code bellow know this role exists already
-				if(addTypeInRoleTypes) {
-					roleTypes.add(roleType);
-					//logger.debug("Added in RoleTypes:"+roleType);
-				}
-			}
-			// Remove SpaceRoles outside the for loop to avoid ConcurrentModificationException 
-			space.removeSpaceRoles(rolesToRemove);
-		}
-		
-		//logger.debug("roleTypes: "+roleTypes);
-
-		// Set up guest role and work flow if needed and missing
-		if (space.isGuestAllowed()){
-			if(!roleTypes.contains(RoleType.GUEST)) {
-				SpaceRole guestUserRole = new SpaceRole(space,
-						RoleType.GUEST.getDescription(), RoleType.GUEST);
-				//logger.debug("Adding GUEST Role with roleCode: "+guestUserRole.getRoleCode());
-				this.space.add(guestUserRole);
-				this.space.getMetadata().initGuestUserRole(
-						guestUserRole.getRoleCode());
-			}
-			else{
-				//logger.debug("There is already a GUEST Role");
-			}
-		}
-		// Set up anonymous role and work flow if needed and missing
-		if (space.isAnonymousAllowed()){
-			if(!roleTypes.contains(RoleType.ANONYMOUS)) {
-				SpaceRole anonymousUserRole = new SpaceRole(space,
-						RoleType.ANONYMOUS.getDescription(),
-						RoleType.ANONYMOUS);
-				//logger.debug("Adding ANONYMOUS Role with roleCode: "+anonymousUserRole.getRoleCode());
-				this.space.add(anonymousUserRole);
-				this.space.getMetadata().initGuestUserRole(
-						anonymousUserRole.getRoleCode());
-			}
-		}
-		
-		// setup admin if missing
-		// /Set up "Space Administrator" role
-		if(!roleTypes.contains(RoleType.SPACE_ADMINISTRATOR)) {
-			SpaceRole spaceAdministrator = new SpaceRole(space, 
-					RoleType.SPACE_ADMINISTRATOR.getDescription(), 
-					RoleType.SPACE_ADMINISTRATOR);
-			this.space.add(spaceAdministrator);
-			this.space.getMetadata().initRegularUserRole(spaceAdministrator.getRoleCode());
-			//logger.debug("Adding SPACE_ADMINISTRATOR Role with roleCode: "+spaceAdministrator.getRoleCode());
-		}
-		else{
-			//logger.debug("Skipped adding SPACE_ADMINISTRATOR Role as it already exists");
-		}
-		
-	}
+	
 
 	// ---------------------------------------------------------------------------------------------
 
 	private void initSpaceRolesMap() {
 		// reset map
 		// TODO: remove this map as well
-		//logger.debug("Clearing spaceRoleMap, size:"+spaceRoleMap.size());
+		// logger.debug("Clearing spaceRoleMap, size:"+spaceRoleMap.size());
 		spaceRoleMap.clear();
 		for (SpaceRole spaceRole : this.space.getSpaceRoles()) {
-			//if(!spaceRole.getRoleType().equals(RoleType.SPACE_ADMINISTRATOR)){
-				spaceRoleMap.put(spaceRole.getRoleCode(), spaceRole);
-			//}
+			// if(!spaceRole.getRoleType().equals(RoleType.SPACE_ADMINISTRATOR)){
+			spaceRoleMap.put(spaceRole.getRoleCode(), spaceRole);
+			// }
 		}
-		//logger.debug("Initialized spaceRoleMap, size:"+spaceRoleMap.size()+", spaceRoleMap: "+spaceRoleMap);
+		// logger.debug("Initialized spaceRoleMap, size:"+spaceRoleMap.size()+", spaceRoleMap: "+spaceRoleMap);
 	}
 
-	// ---------------------------------------------------------------------------------------------
-
-	private boolean isNewSpace() {
-		return this.space.getId() == 0;
-	}
 
 	// ---------------------------------------------------------------------------------------------
 
@@ -379,7 +269,7 @@ public class SpacePermissionsPanel extends BasePanel {
 
 	private void setupVisuals() {
 		// label / heading =================================================
-		add(new Label("label", localize(space.getNameTranslationResourceKey()) + " (" + space.getPrefixCode()
+		add(new Label("label", localize(space) + " (" + space.getPrefixCode()
 				+ ")"));
 
 		// cancel ==========================================================
@@ -420,33 +310,84 @@ public class SpacePermissionsPanel extends BasePanel {
 					String componentId, IModel rowModel) {
 
 				EditLinkPanel editContainer = new EditLinkPanel("edit");
-				AjaxLink newTemplateLink = getEditTemplateModalLink((ItemRenderingTemplate) rowModel.getObject(), space,
-						templatesGridContainer, this.getGrid(), editTemplateModal);
+				AjaxLink newTemplateLink = getEditTemplateModalLink(
+						(ItemRenderingTemplate) rowModel.getObject(), space,
+						templatesGridContainer, this.getGrid(),
+						editTemplateModal);
 				editContainer.add(newTemplateLink);
 				return editContainer;
 			}
 		}
 
-
 		private CalipsoFeedbackMessageFilter filter;
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "serial" })
 		public SpacePermissionsForm(String id, final Space space) {
 
 			super(id, space);
+			RequestCycle rc = RequestCycle.get();
+			final List<Role> roles = new ArrayList<Role>(space.getMetadata()
+					.getRoleList());
+			final AttributeModifier editImgSrcModifier = new AttributeModifier(
+					"src", UrlUtils.rewriteToContextRelative(
+							"../resources/edit.gif", rc));
+			final AttributeModifier addImgSrcModifier = new AttributeModifier(
+					"src", UrlUtils.rewriteToContextRelative(
+							"../resources/add.gif", rc));
+			final AttributeModifier rowspan = new AttributeModifier("rowspan",
+					roles.size() + "");
+			final AttributeModifier yes = new AttributeModifier("src",
+					UrlUtils.rewriteToContextRelative(
+							"../resources/status-green.gif", rc));
+			final AttributeModifier no = new AttributeModifier("src",
+					UrlUtils.rewriteToContextRelative(
+							"../resources/status-grey.gif", rc));
+			// Mask-states
+			final AttributeModifier readonly = new AttributeModifier("src",
+					UrlUtils.rewriteToContextRelative(
+							"../resources/field-readonly.gif", rc));
+			final AttributeModifier mandatory = new AttributeModifier("src",
+					UrlUtils.rewriteToContextRelative(
+							"../resources/field-mandatory.gif", rc));
+			final AttributeModifier mandatoryIfEmpty = new AttributeModifier(
+					"src", UrlUtils.rewriteToContextRelative(
+							"../resources/field-mandatory-if.gif", rc));
+			final AttributeModifier optional = new AttributeModifier("src",
+					UrlUtils.rewriteToContextRelative(
+							"../resources/field-optional.gif", rc));
+			final AttributeModifier hidden = new AttributeModifier("src",
+					UrlUtils.rewriteToContextRelative(
+							"../resources/field-hidden.gif", rc));
+			final AttributeModifier altClass = new AttributeModifier("class",
+					"alt");
+			// view selection form
+			// "fields-group-"+field.getGroupId()
+			add(new ListView("field-group-selection", space.getMetadata()
+					.getFieldGroups()) {
+				protected void populateItem(ListItem listItem) {
+					FieldGroup fieldGroup = (FieldGroup) listItem
+							.getModelObject();
+
+					listItem.add(new Label("field-group-selection-label",
+							fieldGroup.getName()).setRenderBodyOnly(true));
+					listItem.add(new AttributeModifier("value",
+							"show-fields-group-" + fieldGroup.getId()));
+				}
+			});
+
 			// states colspan
 			// ---------------------------------------------------------------------
 			final Map<Integer, String> statesMap = space.getMetadata()
 					.getStatesMap();
-			AttributeModifier statesColspan = new AttributeModifier(
-					"colspan", (statesMap.size() - 1) + "");
+			AttributeModifier statesColspan = new AttributeModifier("colspan",
+					(statesMap.size() - 1) + "");
 			add(new WebMarkupContainer("statesColspan").add(statesColspan));
 			// fields colspan
 			// ---------------------------------------------------------------------
 			// list of custom field that user selected
 			final List<Field> fields = space.getMetadata().getFieldList();
-			AttributeModifier fieldsColspan = new AttributeModifier(
-					"colspan", fields.size() + "");
+			AttributeModifier fieldsColspan = new AttributeModifier("colspan",
+					fields.size() + "");
 			add(new WebMarkupContainer("fieldsColspan").add(fieldsColspan));
 			// add state
 			// --------------------------------------------------------------------------
@@ -461,7 +402,8 @@ public class SpacePermissionsPanel extends BasePanel {
 						}
 					});
 				}
-			});
+			}.add(addImgSrcModifier));
+
 			// add role
 			// ---------------------------------------------------------------------------
 			add(new Button("addRole") {
@@ -476,7 +418,7 @@ public class SpacePermissionsPanel extends BasePanel {
 						}
 					});
 				}
-			});
+			}.add(addImgSrcModifier));
 			// states col headings
 			// ----------------------------------------------------------------
 			final List<Integer> stateKeysNoNew = new ArrayList(
@@ -490,43 +432,25 @@ public class SpacePermissionsPanel extends BasePanel {
 			});
 			// fields col headings
 			// ----------------------------------------------------------------
-			add(new ListView("fieldHeads", fields) {
-				protected void populateItem(ListItem listItem) {
+			add(new ListView<Field>("fieldHeads", fields) {
+				protected void populateItem(ListItem<Field> listItem) {
 					Field f = (Field) listItem.getModelObject();
-					listItem.add(new Label("field", 
-							localize(space, f.getName().getText())));
+					listItem.add(new Label("field", localize(space, f.getName()
+							.getText())));
+					listItem.add(new AttributeModifier("name", "fields-group-"
+							+ f.getGroupId()));//
 				}
 			});
+
 			// rows init
 			// --------------------------------------------------------------------------
-			final List<Role> roles = new ArrayList(space.getMetadata()
-					.getRoleList());
+
 			// final Map<String, Role> rolesMap =
 			// space.getMetadata().getRolesMap();
-			
-			final AttributeModifier rowspan = new AttributeModifier(
-					"rowspan", roles.size() + "");
-			RequestCycle rc = RequestCycle.get();
-			final AttributeModifier yes = new AttributeModifier(
-					"src", UrlUtils.rewriteToContextRelative("../resources/status-green.gif", rc));
-			final AttributeModifier no = new AttributeModifier(
-					"src", UrlUtils.rewriteToContextRelative("../resources/status-grey.gif", rc));
-			// Mask-states
-			final AttributeModifier readonly = new AttributeModifier(
-					"src",  UrlUtils.rewriteToContextRelative("../resources/field-readonly.gif", rc));
-			final AttributeModifier mandatory = new AttributeModifier(
-					"src", UrlUtils.rewriteToContextRelative("../resources/field-mandatory.gif", rc));
-			final AttributeModifier mandatoryIfEmpty = new AttributeModifier(
-					"src", UrlUtils.rewriteToContextRelative("../resources/field-mandatory-if.gif", rc));
-			final AttributeModifier optional = new AttributeModifier(
-					"src", UrlUtils.rewriteToContextRelative("../resources/field-optional.gif", rc));
-			final AttributeModifier hidden = new AttributeModifier(
-					"src", UrlUtils.rewriteToContextRelative("../resources/field-hidden.gif", rc));
-			final AttributeModifier altClass = new AttributeModifier(
-					"class", "alt");
+
 			// -------------------------------------------------------------------------------------
 			List<Integer> stateKeys = new ArrayList(statesMap.keySet());
-			
+
 			add(new ListView("states", stateKeys) {
 				protected void populateItem(ListItem listItem) {
 					final boolean firstState = listItem.getIndex() == 0;
@@ -534,16 +458,18 @@ public class SpacePermissionsPanel extends BasePanel {
 							: "bdr-bottom";
 					final Integer stateKeyRow = (Integer) listItem
 							.getModelObject();
-					listItem.add(new ListView("roles", space.getSpaceRolesList/*WithoutSpaceAdmin*/()) {
+					listItem.add(new ListView("roles", space
+							.getSpaceRolesList/* WithoutSpaceAdmin */()) {
 						protected void populateItem(ListItem listItem) {
+							final SpaceRole spaceRole = (SpaceRole) listItem
+									.getModelObject();
+							spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
 							String roleClass = listItem.getIndex() % 2 == 1 ? " alt"
 									: "";
 							String lastRole = listItem.getIndex() == roles
 									.size() - 1 ? " bdr-bottom" : "";
 							listItem.add(new AttributeModifier("class",
 									"center" + roleClass + lastRole));
-							final SpaceRole spaceRole = (SpaceRole) listItem
-									.getModelObject();
 							// System.out.println("\n****" +
 							// spaceRole.getDescription());
 							if (listItem.getIndex() == 0) {
@@ -562,24 +488,23 @@ public class SpacePermissionsPanel extends BasePanel {
 											public BreadCrumbPanel create(
 													String componentId,
 													IBreadCrumbModel breadCrumbModel) {
-													SpaceStatePanel panel = new SpaceStatePanel(
-															componentId,
-															breadCrumbModel, space,
-															stateKeyRow);
-													return panel;
+												SpaceStatePanel panel = new SpaceStatePanel(
+														componentId,
+														breadCrumbModel, space,
+														stateKeyRow);
+												return panel;
 											}
 										};
 										activate(factory);
 									}
 								};
+								editStateButton.add(editImgSrcModifier);
 								editState.add(editStateButton);
-								/*if (stateKeyRow == State.NEW) { // user can
-																// customize
-																// state names,
-																// even for
-																// Closed
-									editStateButton.setVisible(false);
-								}*/
+								/*
+								 * if (stateKeyRow == State.NEW) { // user can
+								 * // customize // state names, // even for //
+								 * Closed editStateButton.setVisible(false); }
+								 */
 								listItem.add(editState);
 							} else {
 								listItem.add(new WebMarkupContainer("state")
@@ -604,13 +529,21 @@ public class SpacePermissionsPanel extends BasePanel {
 									});
 								}
 							};
+							editRoleButton.add(editImgSrcModifier);
 							listItem.add(editRoleButton);
-							
-							//-------------------------------------------------
+							//logger.info("space tempoates refreshed to "+space.getItemRenderingTemplates());
+							// -------------------------------------------------
 							// add template selection for state/spacerole combo
-							//-------------------------------------------------
+							// -------------------------------------------------
 							DropDownChoice<ItemRenderingTemplate> roleStateTemplateChoice = new DropDownChoice<ItemRenderingTemplate>(
-									"roleStateTemplate", new PropertyModel<ItemRenderingTemplate>(spaceRole, "itemRenderingTemplates["+stateKeyRow.shortValue()+"]"), space.getItemRenderingTemplates(), new IChoiceRenderer<ItemRenderingTemplate>() {
+									"roleStateTemplate",
+									new PropertyModel<ItemRenderingTemplate>(
+											spaceRole,
+											"itemRenderingTemplates["
+													+ stateKeyRow.shortValue()
+													+ "]"),
+									space.getItemRenderingTemplates(),
+									new IChoiceRenderer<ItemRenderingTemplate>() {
 										public Object getDisplayValue(
 												ItemRenderingTemplate tmpl) {
 											return tmpl.getDescription();
@@ -619,25 +552,30 @@ public class SpacePermissionsPanel extends BasePanel {
 										public String getIdValue(
 												ItemRenderingTemplate tmpl,
 												int i) {
-											return i+"";
+											return i + "";
 										}
-								});
+									});
 							roleStateTemplateChoice.setNullValid(true);
 							roleStateTemplateChoice.setRequired(false);
-							//CompoundPropertyModel model = new CompoundPropertyModel(spaceRole);
-							//model.bind(roleStateTemplateChoice, );
+							// CompoundPropertyModel model = new
+							// CompoundPropertyModel(spaceRole);
+							// model.bind(roleStateTemplateChoice, );
 							listItem.add(roleStateTemplateChoice);
-							
-							
-							// Do not allow name editing of SpaceAdmin or Guest roles for clarity
-							// TODO: allow name editing after adding some style or image to signify their 
+
+							// Do not allow name editing of SpaceAdmin or Guest
+							// roles for clarity
+							// TODO: allow name editing after adding some style
+							// or image to signify their
 							// true semantics
-							if (!firstState || !spaceRole.getRoleType().equals(RoleType.REGULAR_USER)) {
+							if (!firstState
+									|| !spaceRole.getRoleType().equals(
+											RoleType.REGULAR_USER)) {
 								editRoleButton.setVisible(false);
 							}
 							Role role = rolesMap.get(spaceRole.getRoleCode());
-							final State state = role != null ?role.getStates().get(stateKeyRow):null;
-							
+							final State state = role != null ? role.getStates()
+									.get(stateKeyRow) : null;
+
 							listItem.add(new ListView("stateHeads",
 									stateKeysNoNew) {
 								protected void populateItem(ListItem listItem) {
@@ -668,17 +606,17 @@ public class SpacePermissionsPanel extends BasePanel {
 
 										}
 									};
+
+									stateButton.add(editImgSrcModifier);
 									if (stateKeyRow == State.NEW
 											&& stateKeyCol != State.OPEN) {
 										stateButton.setVisible(false);
 									}
-									//logger.debug("spaceRole: "+spaceRole);
-									//logger.debug("spaceRole.getRoleCode(): "+spaceRole.getRoleCode());
-									//logger.debug("rolesMap.get(spaceRole.getRoleCode()): "+rolesMap.get(spaceRole.getRoleCode()));
-									//logger.debug("rolesMap.get(spaceRole.getRoleCode()).getStates(): "+rolesMap.get(spaceRole.getRoleCode()).getStates());
-									
-									
-											
+									// logger.debug("spaceRole: "+spaceRole);
+									// logger.debug("spaceRole.getRoleCode(): "+spaceRole.getRoleCode());
+									// logger.debug("rolesMap.get(spaceRole.getRoleCode()): "+rolesMap.get(spaceRole.getRoleCode()));
+									// logger.debug("rolesMap.get(spaceRole.getRoleCode()).getStates(): "+rolesMap.get(spaceRole.getRoleCode()).getStates());
+
 									if (state != null
 											&& state.getTransitions().contains(
 													stateKeyCol)) {
@@ -691,44 +629,58 @@ public class SpacePermissionsPanel extends BasePanel {
 							});
 							listItem.add(new ListView("fieldHeads", fields) {
 								protected void populateItem(ListItem listItem) {
+									final Field field = (Field) listItem
+											.getModelObject();
+									listItem.add(new AttributeModifier("name",
+											"fields-group-"
+													+ field.getGroupId()));
 									if (roles.size() == 1
 											&& listItem.getIndex() % 2 == 0) {
 										listItem.add(altClass);
 									}
-									final Field field = (Field) listItem
-											.getModelObject();
-									final DropDownChoice maskChoice = new DropDownChoice("field", 
-										new Model() {
-											@Override
-											public Serializable getObject() {
-												return state.getFields().get(field.getName());
-											}
-	
-											@Override
-											public void setObject(Serializable object) {
-												state.getFields().put(field.getName(), (Integer) object);
-											}
-										}, 
-										State.MASK_KEYS,
-										new IChoiceRenderer() {
-											public Object getDisplayValue(Object object) {
-												return localize("State."+object.toString()+".name");
-												
-											}
-											public String getIdValue(Object id,
-													int index) {
-												return id.toString();
-											}
-										}
-									);
-//									maskChoice.setType(Integer.class);
-									maskChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-								        protected void onUpdate(AjaxRequestTarget target) {
-								        	//logger.info("model object: "+maskChoice.getModelObject());
-											target.addComponent(SpacePermissionsForm.this);
-								        	//logger.info("model object after addComponent: "+maskChoice.getModelObject());
-								        }
-								    });
+									final DropDownChoice maskChoice = new DropDownChoice(
+											"field",
+											new Model() {
+												@Override
+												public Serializable getObject() {
+													return state.getFields()
+															.get(field
+																	.getName());
+												}
+
+												@Override
+												public void setObject(
+														Serializable object) {
+													state.getFields().put(
+															field.getName(),
+															(Integer) object);
+												}
+											}, State.MASK_KEYS,
+											new IChoiceRenderer() {
+												public Object getDisplayValue(
+														Object object) {
+													return localize("State."
+															+ object.toString()
+															+ ".name");
+
+												}
+
+												public String getIdValue(
+														Object id, int index) {
+													return id.toString();
+												}
+											});
+									// maskChoice.setType(Integer.class);
+									maskChoice
+											.add(new AjaxFormComponentUpdatingBehavior(
+													"onchange") {
+												protected void onUpdate(
+														AjaxRequestTarget target) {
+													// logger.info("model object: "+maskChoice.getModelObject());
+													target.addComponent(SpacePermissionsForm.this);
+													// logger.info("model object after addComponent: "+maskChoice.getModelObject());
+												}
+											});
 									listItem.add(maskChoice);
 								}
 							});
@@ -737,25 +689,28 @@ public class SpacePermissionsPanel extends BasePanel {
 				}
 			});
 
-			// space templates
-			if(space.getId() > 0){
-				List<ItemRenderingTemplate> tmplList = SpacePermissionsPanel.this.getCalipso().getItemRenderingTemplates(space);
-				space.setItemRenderingTemplates(tmplList);
-			}
-			final WebMarkupContainer templatesGridContainer = new WebMarkupContainer("templatesGridContainer");
+			final WebMarkupContainer templatesGridContainer = new WebMarkupContainer(
+					"templatesGridContainer");
 			templatesGridContainer.setOutputMarkupId(true);
-			final ListDataProvider listDataProvider = new ListDataProvider(space.getItemRenderingTemplates());
+			space.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().getItemRenderingTemplates(space));
+			
+			final ListDataProvider listDataProvider = new ListDataProvider(
+					space.getItemRenderingTemplates());
 
-			final ModalWindow editTemplateModal = new ModalWindow("templateModal");
-			List<IGridColumn> cols = (List) Arrays.asList(  
-				new PropertyColumn(new Model("Name"), "description"),
-				new PropertyColumn(new Model("Priority"), "priority"),  
-				new PropertyColumn(new Model("Hide overview"), "hideOverview"),  
-				new PropertyColumn(new Model("Hide history"), "hideHistory"), 
-				new EditLinkColumn("edit", null, editTemplateModal, space,
-						templatesGridContainer));
+			final ModalWindow editTemplateModal = new ModalWindow(
+					"templateModal");
+			List<IGridColumn> cols = (List) Arrays
+					.asList(new PropertyColumn(new Model("Name"), "description"),
+							new PropertyColumn(new Model("Priority"),
+									"priority"), new PropertyColumn(new Model(
+									"Hide overview"), "hideOverview"),
+							new PropertyColumn(new Model("Hide history"),
+									"hideHistory"), new EditLinkColumn("edit",
+									null, editTemplateModal, space,
+									templatesGridContainer));
 
-			final DataGrid grid = new DefaultDataGrid("templatesGrid", new DataProviderAdapter(listDataProvider), cols);
+			final DataGrid grid = new DefaultDataGrid("templatesGrid",
+					new DataProviderAdapter(listDataProvider), cols);
 			grid.setSelectToEdit(false);
 			grid.setClickRowToSelect(true);
 			grid.setAllowSelectMultiple(false);
@@ -765,10 +720,11 @@ public class SpacePermissionsPanel extends BasePanel {
 			templatesGridContainer.add(editTemplateModal);
 			AjaxLink newTemplateLink = getEditTemplateModalLink(space,
 					templatesGridContainer, grid, editTemplateModal);
-		    add(newTemplateLink);
+			add(newTemplateLink);
 			// Standard (common for all spaces) fields and roles
 			// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			final List<StdField> stdFieldsList = getCalipso().loadAllStdFields();
+			final List<StdField> stdFieldsList = getCalipso()
+					.loadAllStdFields();
 
 			// Setup head (list of fields)
 			add(new ListView("stdFieldHeads", stdFieldsList) {
@@ -785,7 +741,8 @@ public class SpacePermissionsPanel extends BasePanel {
 			// WebMarkupContainer("rolesPermissions").setVisible(false));
 
 			// List of Roles
-			add(new ListView("rolesPermissions", space.getSpaceRolesList/*WithoutSpaceAdmin*/()) {
+			add(new ListView("rolesPermissions",
+					space.getSpaceRolesList/* WithoutSpaceAdmin */()) {
 				@Override
 				protected void populateItem(ListItem rolePermissionListItem) {
 					// final Role role =
@@ -876,20 +833,23 @@ public class SpacePermissionsPanel extends BasePanel {
 			add(new Button("apply") {
 				@Override
 				public void onSubmit() {
-					activate(new IBreadCrumbPanelFactory(){
+					activate(new IBreadCrumbPanelFactory() {
 
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
-							BreadCrumbUtils.removePreviousBreadCrumbPanel(breadCrumbModel);
-							return new SpacePermissionsPanel(componentId, breadCrumbModel, persistChanges());
+							BreadCrumbUtils
+									.removePreviousBreadCrumbPanel(breadCrumbModel);
+							return new SpacePermissionsPanel(componentId,
+									breadCrumbModel, persistChanges());
 						}
 					});
 				}
 			});
-					
+
 			add(new Button("finish") {
 				@Override
 				public void onSubmit() {
+					boolean isNewSpace = !space.getPublished();
 					persistChanges();
 					if (isNewSpace) {
 						isNewSpace = false; // after the user allocation, we
@@ -928,8 +888,7 @@ public class SpacePermissionsPanel extends BasePanel {
 					}
 				}
 			});
-			
-			
+
 			// TODO: fix issue when creating a new space that extends an
 			// existing
 
@@ -941,114 +900,148 @@ public class SpacePermissionsPanel extends BasePanel {
 					.setEscapeModelStrings(false));
 		}
 
-
 		private AjaxLink getEditTemplateModalLink(final Space space,
 				final WebMarkupContainer templatesGridContainer,
 				final DataGrid grid, final ModalWindow editTemplateModal) {
-			AjaxLink newTemplateLink = new AjaxLink("newTemplateLink", new ResourceModel("edit")){
-		            public void onClick(AjaxRequestTarget target){
-		            	// TODO: add row to grid?
-		            	final ItemRenderingTemplate tpl;
-		            	if(CollectionUtils.isNotEmpty(grid.getSelectedItems())){
-		            		tpl = (ItemRenderingTemplate) ((IModel)grid.getSelectedItems().iterator().next()).getObject();
-		            	}
-		            	else{
-		            		tpl = new ItemRenderingTemplate();
-		            		tpl.setDescription("new");
-		            		tpl.setSpace(space);
-		            	}
-		            	
-		            	editTemplateModal.setContent(new EditItemRenderingTemplatePanel("content", editTemplateModal, tpl){
-							@Override
-							protected void persist(AjaxRequestTarget target,
-									Form form) {
-								if(CollectionUtils.isEmpty(space.getItemRenderingTemplates())
-										|| !space.getItemRenderingTemplates().contains(tpl)){
-            	            		space.add(tpl);
-	            	            	logger.info("added new template to space");
-            	            	}
+			AjaxLink newTemplateLink = new AjaxLink("newTemplateLink",
+					new ResourceModel("edit")) {
+				public void onClick(AjaxRequestTarget target) {
+					// TODO: add row to grid?
+					final ItemRenderingTemplate tpl;
+					if (CollectionUtils.isNotEmpty(grid.getSelectedItems())) {
+						tpl = (ItemRenderingTemplate) ((IModel) grid
+								.getSelectedItems().iterator().next())
+								.getObject();
+					} else {
+						tpl = new ItemRenderingTemplate();
+						tpl.setDescription("new");
+						tpl.setSpace(space);
+					}
 
-            	            	//update grid
-            	                if (target != null) {
-            	                	target.addComponent(templatesGridContainer);
-            	                }
-								
-							}
-		            	});
-		            	editTemplateModal.setTitle(this.getLocalizer().getString("presentation.templates", this));
-		            	editTemplateModal.show(target);
-		            	//target.appendJavaScript("tinyMCE.execCommand('mceAddControl', false, 'templateText');");
-		            }
-		        };
+					editTemplateModal
+							.setContent(new EditItemRenderingTemplatePanel(
+									"content", editTemplateModal, tpl) {
+								@Override
+								protected void persist(
+										AjaxRequestTarget target, Form form) {
+									if (CollectionUtils.isEmpty(space
+											.getItemRenderingTemplates())
+											|| !space
+													.getItemRenderingTemplates()
+													.contains(tpl)) {
+										space.add(tpl);
+										logger.info("added new template to space");
+									}
+
+									// update grid
+									if (target != null) {
+										target.addComponent(templatesGridContainer);
+									}
+
+								}
+							});
+					editTemplateModal.setTitle(this.getLocalizer().getString(
+							"presentation.templates", this));
+					editTemplateModal.show(target);
+					// target.appendJavaScript("tinyMCE.execCommand('mceAddControl', false, 'templateText');");
+				}
+			};
 			return newTemplateLink;
 		}
-		private AjaxLink getEditTemplateModalLink(final ItemRenderingTemplate tpl, final Space space,
+
+		private AjaxLink getEditTemplateModalLink(
+				final ItemRenderingTemplate tpl, final Space space,
 				final WebMarkupContainer templatesGridContainer,
 				final AbstractGrid grid, final ModalWindow editTemplateModal) {
-			AjaxLink newTemplateLink = new AjaxLink("link", new ResourceModel("edit")){
-		            public void onClick(AjaxRequestTarget target){
-		            	
-		            	
-		            	editTemplateModal.setContent(new EditItemRenderingTemplatePanel("content", editTemplateModal, tpl){
-							@Override
-							protected void persist(AjaxRequestTarget target,
-									Form form) {
-								if(CollectionUtils.isEmpty(space.getItemRenderingTemplates())
-										|| !space.getItemRenderingTemplates().contains(tpl)){
-            	            		space.add(tpl);
-	            	            	logger.info("added new template to space");
-            	            	}
+			AjaxLink newTemplateLink = new AjaxLink("link", new ResourceModel(
+					"edit")) {
+				public void onClick(AjaxRequestTarget target) {
 
-            	            	//update grid
-            	                if (target != null) {
-            	                	target.addComponent(templatesGridContainer);
-            	                }
-								
-							}
-		            	});
-		            	editTemplateModal.setTitle(this.getLocalizer().getString("presentation.templates", this));
-		            	editTemplateModal.show(target);
-		            	//target.appendJavaScript("tinyMCE.execCommand('mceAddControl', false, 'templateText');");
-		            }
-		        };
+					editTemplateModal
+							.setContent(new EditItemRenderingTemplatePanel(
+									"content", editTemplateModal, tpl) {
+								@Override
+								protected void persist(
+										AjaxRequestTarget target, Form form) {
+									if (CollectionUtils.isEmpty(space
+											.getItemRenderingTemplates())
+											|| !space
+													.getItemRenderingTemplates()
+													.contains(tpl)) {
+										space.add(tpl);
+										logger.info("added new template to space");
+									}
+
+									// update grid
+									if (target != null) {
+										target.addComponent(templatesGridContainer);
+									}
+
+								}
+							});
+					editTemplateModal.setTitle(this.getLocalizer().getString(
+							"presentation.templates", this));
+					editTemplateModal.show(target);
+					// target.appendJavaScript("tinyMCE.execCommand('mceAddControl', false, 'templateText');");
+				}
+			};
 			return newTemplateLink;
 		}
-		
 
 		private Space persistChanges() {
 			Space space = this.getSpace();
-			boolean isNewSpace = space.getId() == 0;
-			for (SpaceRole spaceRole : space.getSpaceRolesList()/*getSpaceRolesListWithoutSpaceAdmin()*/) {
-				for (RoleSpaceStdField roleSpaceStdField : roleSpaceFields) {
-					spaceRole.add(roleSpaceStdField);
-				}
+			boolean isNewSpace = !space.getPublished();
+			
+			for (SpaceRole spaceRole : space.getSpaceRolesList()) {
+				Set<RoleSpaceStdField> spaceRoleStdFieldsSet = new HashSet<RoleSpaceStdField>();
+				spaceRoleStdFieldsSet.addAll(roleSpaceFields);
+				spaceRole.setRoleSpaceStdFields(spaceRoleStdFieldsSet);
+//				for (RoleSpaceStdField roleSpaceStdField : roleSpaceFields) {
+//					spaceRole.add(roleSpaceStdField);
+//				}
 				space.add(spaceRole);
 				spaceRole.setSpace(space);
 			}
 
 			// add creator as space group admin if group is new
-			if(space.getSpaceGroup().getId() == null){
-				space.getSpaceGroup().addAdmin(getPrincipal());
-			}
+//			if (isNewSpace || space.getSpaceGroup().getId() == null) {
+////				if(space.getSpaceGroup().getId() != null){
+////					space.getSpaceGroup().setAdmins(getCalipso().loadSpaceGroupAdmins(space.getSpaceGroup().getId()));
+////				}
+//				space.getSpaceGroup().addAdmin(getPrincipal());
+//			}
+			//space.setPublished(true);
 			space = getCalipso().storeSpace(space);
 			// add creator as space admin if space is new
-			if(isNewSpace){
-				Space persistedSpace = getCalipso().loadSpace(space.getPrefixCode());
-				SpaceRole spaceAdminRole = null;
-				for (SpaceRole spaceRole : persistedSpace.getSpaceRolesList()) {
-					if(spaceRole.getRoleType().equals(RoleType.SPACE_ADMINISTRATOR)){
-						spaceAdminRole = spaceRole;
-						break;
-					}
-				}
-				User u = getCalipso().loadUser(getPrincipal().getId());
-				getCalipso().storeUserSpaceRole(u, spaceAdminRole);
-				refreshPrincipal(u);
-			}
+//			try {
+				if (!isNewSpace) {
 
-			// current user may be allocated to this space, and e.g.
-			// name could have changed
-			refreshPrincipal();
+					Space persistedSpace = getCalipso().loadSpace(
+							space.getPrefixCode());
+					SpaceRole spaceAdminRole = null;
+					for (SpaceRole spaceRole : persistedSpace
+							.getSpaceRolesList()) {
+						if (spaceRole.getRoleType().equals(
+								RoleType.SPACE_ADMINISTRATOR)) {
+							spaceAdminRole = spaceRole;
+							break;
+						}
+					}
+					if(spaceAdminRole != null){
+						User u = getCalipso().loadUser(getPrincipal().getId());
+						getCalipso().storeUserSpaceRole(u, spaceAdminRole);
+						refreshPrincipal(u);
+					}
+
+					// current user may be allocated to this space, and e.g.
+					// name could have changed
+					refreshPrincipal();
+				}
+
+//			} catch (Exception e) {
+//				logger.error(e);e.printStackTrace();
+//			}
+
 			return space;
 		}
 	}

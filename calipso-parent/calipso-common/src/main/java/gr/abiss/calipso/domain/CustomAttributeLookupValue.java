@@ -44,6 +44,7 @@ public class CustomAttributeLookupValue extends AbstractI18nResourceTranslatable
 	 * 
 	 */
 	private long id;
+	private boolean active = true;
 	private CustomAttribute attribute;
 	private CustomAttributeLookupValue parent;
 	// this should be renamed to description, 
@@ -53,6 +54,7 @@ public class CustomAttributeLookupValue extends AbstractI18nResourceTranslatable
 	private String value;
 	private int showOrder;
 	private int level = 1;
+	private int listIndex = 0;
 	private Set<CustomAttributeLookupValue> children;
 	
 	public CustomAttributeLookupValue() {
@@ -89,6 +91,35 @@ public class CustomAttributeLookupValue extends AbstractI18nResourceTranslatable
 	 */
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public int getListIndex() {
+		return listIndex;
+	}
+
+
+
+	public void setListIndex(int listIndex) {
+		this.listIndex = listIndex;
+	}
+
+
+
+	public boolean isActive() {
+		return active;
+	}
+
+
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+
+
+	@Override
+	public String getI18nId() {
+		return this.getId()+"";
 	}
 
 
@@ -139,18 +170,6 @@ public class CustomAttributeLookupValue extends AbstractI18nResourceTranslatable
 		this.showOrder = showOrder;
 	}
 	
-
-	/**
-	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getNameTranslationResourceKey()
-	 */
-	public String getPropertyTranslationResourceKey(String name){
-		return new StringBuffer(getShortName(CustomAttributeLookupValue.class))
-		.append('.')
-		.append(this.getId())
-		.append('.')
-		.append(name)
-		.toString();
-	}
 
 	
 	@Override
@@ -234,7 +253,8 @@ public class CustomAttributeLookupValue extends AbstractI18nResourceTranslatable
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
-			.append("id", this.getId())
+		.append("id", this.getId())
+			.append("name", this.getName())
 			.append("showOrder", this.getShowOrder())
 			.append("level", this.getLevel())
 			.append("value", this.getValue())

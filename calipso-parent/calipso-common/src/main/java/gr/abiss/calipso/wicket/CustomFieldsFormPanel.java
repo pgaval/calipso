@@ -96,12 +96,15 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.Response;
@@ -440,9 +443,9 @@ public class CustomFieldsFormPanel extends BasePanel {
 										&& customAttribute.getLookupValue() == null
 										&& item.getCustomValue(field) != null){
 									customAttribute.setLookupValue(getCalipso().loadCustomAttributeLookupValue(NumberUtils.createLong(item.getCustomValue(field).toString())));
+									customAttribute.setAllowedLookupValues( getCalipso().findActiveLookupValuesByCustomAttribute(customAttribute));
 								}
-								List<CustomAttributeLookupValue> customAttributeLookupValues = getCalipso().findLookupValuesByCustomAttribute(customAttribute);
-								TreeChoice choice = new TreeChoice("field", new PropertyModel<CustomAttributeLookupValue>(field, "customAttribute.lookupValue"), customAttributeLookupValues, customAttribute);
+								TreeChoice choice = new TreeChoice("field", new PropertyModel<CustomAttributeLookupValue>(field, "customAttribute.lookupValue"), customAttribute.getAllowedLookupValues(), customAttribute);
 								
 								// TODO: temp, make configurable in space field form for 1520
 								int attrId = customAttribute.getId().intValue();
@@ -926,10 +929,11 @@ public class CustomFieldsFormPanel extends BasePanel {
 
 						fileField.setRequired(valueRequired);
 						// i18n
-						fileField.setLabel(new ResourceModel(field.getName().getText().equalsIgnoreCase(Field.FIELD_TYPE_SIMPLE_ATTACHEMENT) ? Field.FIELD_TYPE_SIMPLE_ATTACHEMENT : i18nedFieldLabelResourceKey));
+						fileField.setLabel(new ResourceModel(StringUtils.isNotBlank(i18nedFieldLabelResourceKey)?i18nedFieldLabelResourceKey:Field.FIELD_TYPE_SIMPLE_ATTACHEMENT));//field.getName().getText().equalsIgnoreCase(Field.FIELD_TYPE_SIMPLE_ATTACHEMENT) ? Field.FIELD_TYPE_SIMPLE_ATTACHEMENT : i18nedFieldLabelResourceKey));
 
 						//f.add(model.bind(fileField, field.getName().getText()));
-						fileField.setModel(model.bind(field.getName().getText()));
+						fileField.setModel(new Model());
+						// List<FileUpload> fileUploads = new LinkedList<FileUpload>();
 						f.add(fileField);
 						listItem.add(f.setRenderBodyOnly(true));
 						label =new SimpleFormComponentLabel("label", fileField);
@@ -971,7 +975,7 @@ public class CustomFieldsFormPanel extends BasePanel {
 							if(field.getCustomAttribute() == null){
 								field.setCustomAttribute(getCalipso().loadItemCustomAttribute(getCurrentSpace(), field.getName().getText()));
 							}
-							final List<CustomAttributeLookupValue> lookupValues = getCalipso().findLookupValuesByCustomAttribute(field.getCustomAttribute());
+							final List<CustomAttributeLookupValue> lookupValues = getCalipso().findActiveLookupValuesByCustomAttribute(field.getCustomAttribute());
 							// preselect previous user choice from DB if available
 							Object preselected = item.getValue(field.getName());
 							if(preselected != null){

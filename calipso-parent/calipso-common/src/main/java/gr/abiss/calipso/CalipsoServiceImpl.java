@@ -97,6 +97,7 @@ import gr.abiss.calipso.mail.MailSender;
 import gr.abiss.calipso.plugins.state.AbstractStatePlugin;
 import gr.abiss.calipso.plugins.state.CopyItemInfoToAssetPlugin;
 import gr.abiss.calipso.util.AttachmentUtils;
+import gr.abiss.calipso.util.SpaceUtils;
 import gr.abiss.calipso.util.UserUtils;
 import gr.abiss.calipso.util.XmlUtils;
 import gr.abiss.calipso.wicket.regexp.ValidationExpressionSearch;
@@ -1366,127 +1367,182 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	public void storeUnpublishedSpace(Space space) {
+		this.dao.save(space);
+	}
+	
 	public Space storeSpace(Space space) {
-		// i18n step 1
-		space.setName(space.getNameTranslations().get(this.getDefaultLocale()));
-		if (space.getId() > 0) { // Edit Space
-			// Load space before save
-			Space oldSpace = dao.loadSpace(space.getId());
+		
+		try{
 
-			// Space Roles
-			// -------------------------------------------------------------------------
-			// Load Space Roles before save
-			List<SpaceRole> oldSpaceRolesList = dao
-					.findSpaceRolesForSpace(oldSpace);
-
-			// Assign Current Space Roles Set (if any) to a List
-			List<SpaceRole> spaceRolesList = new ArrayList<SpaceRole>();
-			if (space.getSpaceRoles() != null) {
-				spaceRolesList = new ArrayList<SpaceRole>(space.getSpaceRoles());
+			// i18n step 1
+//			logger.info("space: "+space);
+			space.setPublished(true);
+			if(MapUtils.isNotEmpty(space.getNameTranslations()) 
+					&& StringUtils.isNotBlank(space.getNameTranslations().get(this.getDefaultLocale()))){
+				space.setName(space.getNameTranslations().get(this.getDefaultLocale()));
 			}
+//			if (space.getId() > 0 && space.getPublished()) { // Edit Space
+				// Load space before save
+				/*Space oldSpace = dao.loadSpace(space.getId());
 
-			// Role Space Role Std Fields
-			// ----------------------------------------------------------
-			// Load Role Space Std Fields before save
-			List<RoleSpaceStdField> oldRoleSpaceStdFieldsList = dao
-					.findSpaceFieldsBySpace(oldSpace);
+				// Space Roles
+				// -------------------------------------------------------------------------
+				// Load Space Roles before save
+				List<SpaceRole> oldSpaceRolesList = dao
+						.findSpaceRolesForSpace(oldSpace);
 
-			// Assign Current Role Space Std Fields Set (if any) to a List
-			List<RoleSpaceStdField> roleSpaceStdFieldsSet = new ArrayList<RoleSpaceStdField>();
-			if (space.getRoleSpaceStdFields() != null) {
-				roleSpaceStdFieldsSet = new ArrayList<RoleSpaceStdField>(
-						space.getRoleSpaceStdFields());
-			}
+				// Assign Current Space Roles Set (if any) to a List
+				List<SpaceRole> spaceRolesList = new ArrayList<SpaceRole>();
+				if (space.getSpaceRoles() != null) {
+					spaceRolesList = new ArrayList<SpaceRole>(space.getSpaceRoles());
+				}*/
 
-			// Store new Space Roles
-			// ---------------------------------------------------------------
-			List<RoleSpaceStdField> roleSpaceStdFieldsList = new ArrayList<RoleSpaceStdField>();
-			if (space.getSpaceRoles() != null) {
-				for (SpaceRole spaceRole : space.getSpaceRoles()) {
-					if (spaceRole.getRoleSpaceStdFields() != null) {
-						for (RoleSpaceStdField roleSpaceStdField : spaceRole
-								.getRoleSpaceStdFields()) {
-							roleSpaceStdFieldsList.add(roleSpaceStdField);
+				// Role Space Role Std Fields
+				// ----------------------------------------------------------
+				// Load Role Space Std Fields before save
+//				List<RoleSpaceStdField> oldRoleSpaceStdFieldsList = dao
+//						.findSpaceFieldsBySpace(oldSpace);
+
+				// Assign Current Role Space Std Fields Set (if any) to a List
+//				List<RoleSpaceStdField> roleSpaceStdFieldsSet = new ArrayList<RoleSpaceStdField>();
+//				if (space.getRoleSpaceStdFields() != null) {
+//					roleSpaceStdFieldsSet = new ArrayList<RoleSpaceStdField>(
+//							space.getRoleSpaceStdFields());
+//				}
+
+				// Store new Space Roles
+				// ---------------------------------------------------------------
+				/*List<RoleSpaceStdField> roleSpaceStdFieldsList = new ArrayList<RoleSpaceStdField>();
+				if (space.getSpaceRoles() != null) {
+					for (SpaceRole spaceRole : space.getSpaceRoles()) {
+						if (spaceRole.getRoleSpaceStdFields() != null) {
+							for (RoleSpaceStdField roleSpaceStdField : spaceRole
+									.getRoleSpaceStdFields()) {
+								roleSpaceStdFieldsList.add(roleSpaceStdField);
+							}
+						}
+						dao.storeSpaceRole(spaceRole);
+					}
+				}
+
+				// Store Role Space Std Fields
+				// ---------------------------------------------------------
+				for (RoleSpaceStdField roleSpaceStdField : roleSpaceStdFieldsList) {
+					dao.storeRoleSpaceStdField(roleSpaceStdField);
+				}
+				*/
+				// Remove unused Role Space Std Fields
+				// -------------------------------------------------
+				// if (oldRoleSpaceStdFieldsList!=null){
+				// for (RoleSpaceStdField roleSpaceStdField :
+				// oldRoleSpaceStdFieldsList){
+				// if (!roleSpaceStdFieldsSet.contains(roleSpaceStdField)){
+				// dao.removeRoleSpaceStdField(roleSpaceStdField);
+				// }//if
+				// }//for
+				// }//if
+
+				// Remove unused Space Roles
+				// -----------------------------------------------------------
+//				if (oldSpaceRolesList != null) {
+//					for (SpaceRole spaceRole : oldSpaceRolesList) {
+//						if (!spaceRolesList.contains(spaceRole)
+//								&& !spaceRole.getRoleType().equals(
+//										RoleType.SPACE_ADMINISTRATOR)) {
+//							removeSpaceRole(spaceRole);
+//						}
+//					}// for
+//				}// if
+				dao.saveOrUpdateTranslations(space);
+				space = dao.storeSpace(space);
+				space.getSpaceGroup();
+//			} else {
+//				
+//				space  = dao.storeSpace(space);
+	//
+//				// Store Space Roles
+//				// -------------------------------------------------------------------
+//				logger.info("storing roles for new space: "+space.getSpaceRoles());
+//				List<RoleSpaceStdField> roleSpaceStdFieldsList = new ArrayList<RoleSpaceStdField>();
+//				if (space.getSpaceRoles() != null) {
+//					for (SpaceRole spaceRole : space.getSpaceRoles()) {
+//						if (spaceRole.getRoleSpaceStdFields() != null) {
+//							for (RoleSpaceStdField roleSpaceStdField : spaceRole
+//									.getRoleSpaceStdFields()) {
+//								roleSpaceStdFieldsList.add(roleSpaceStdField);
+//							}
+//						}
+//						dao.storeSpaceRole(spaceRole);
+//					}
+//				}
+	//
+//				// Set up and save "Space Administrator" space role
+//				// SpaceRole spaceAdministrator = new SpaceRole(space,
+//				// RoleType.SPACE_ADMINISTRATOR.getDescription(),
+//				// RoleType.SPACE_ADMINISTRATOR);
+//				// dao.storeSpaceRole(spaceAdministrator);
+	//
+//				// Store Role Space Std Fields
+//				// ---------------------------------------------------------
+//				for (RoleSpaceStdField roleSpaceStdField : roleSpaceStdFieldsList) {
+//					dao.storeRoleSpaceStdField(roleSpaceStdField);
+//				}
+	//
+//			}
+
+			// i18n step 2
+			// TODO: make sure both space translations and customattribute translations use the same resource key 
+
+			//logger.info("Persisted space "+space.getId()+", updating translations: "+space.getTranslations());
+
+			//logger.info("Persisted space, updated translations... ");
+			List<Field> fields = space.getMetadata().getFieldList();
+			//logger.info("Persisted space, iterating for attribute mappings... ");
+			if(fields != null && fields.size() > 0){
+				for(Field field : fields){
+					if(field.getCustomAttribute() == null){
+						field.setCustomAttribute(loadItemCustomAttribute(space, field.getName().getText()));
+					}
+					ItemFieldCustomAttribute attribute = field.getCustomAttribute();
+
+					//logger.info("Persisted space, iterating field: "+field.getLabel()+", attribute: "+attribute);
+					if(attribute != null){
+						
+						saveOrUpdate(field, attribute);
+						if(StringUtils.isNotBlank(attribute.getMappingKey())){
+							//logger.info("Field has mapping key: "+attribute.getMappingKey());
+							// clone for assets
+							AssetTypeCustomAttributeSearch attrSearch = new AssetTypeCustomAttributeSearch(1);
+							attrSearch.setMappingKey(attribute.getMappingKey());
+							//attrSearch.setFormType(attribute.getFormType());
+							List<AssetTypeCustomAttribute> results = dao.findCustomAttributesMatching(attrSearch);
+							if(CollectionUtils.isEmpty(results)){
+								AssetTypeCustomAttribute assetTypeAttr = new AssetTypeCustomAttribute();
+								assetTypeAttr.setName(attribute.getName());
+								SpaceUtils.copy(this, space, field, assetTypeAttr);
+								//logger.info("Creating asset attribute '"+field.getLabel()+"' for missing key: "+attribute.getMappingKey());
+								storeCustomAttribute(assetTypeAttr);
+							}
+							else{
+								//logger.info("Asset attribute exists for mapping key: "+attribute.getMappingKey());
+							
+							}
 						}
 					}
-					dao.storeSpaceRole(spaceRole);
-				}
-			}
-
-			// Store Role Space Std Fields
-			// ---------------------------------------------------------
-			for (RoleSpaceStdField roleSpaceStdField : roleSpaceStdFieldsList) {
-				dao.storeRoleSpaceStdField(roleSpaceStdField);
-			}
-
-			// Remove unused Role Space Std Fields
-			// -------------------------------------------------
-			// if (oldRoleSpaceStdFieldsList!=null){
-			// for (RoleSpaceStdField roleSpaceStdField :
-			// oldRoleSpaceStdFieldsList){
-			// if (!roleSpaceStdFieldsSet.contains(roleSpaceStdField)){
-			// dao.removeRoleSpaceStdField(roleSpaceStdField);
-			// }//if
-			// }//for
-			// }//if
-
-			// Remove unused Space Roles
-			// -----------------------------------------------------------
-			if (oldSpaceRolesList != null) {
-				for (SpaceRole spaceRole : oldSpaceRolesList) {
-					if (!spaceRolesList.contains(spaceRole)
-							&& !spaceRole.getRoleType().equals(
-									RoleType.SPACE_ADMINISTRATOR)) {
-						removeSpaceRole(spaceRole);
+					else{
+						//logger.info("No attribute for field: "+field.getLabel());
+						
 					}
-				}// for
-			}// if
-			space = dao.storeSpace(space);
-		} else {// New Space
-			space  = dao.storeSpace(space);
-
-			// Store Space Roles
-			// -------------------------------------------------------------------
-			List<RoleSpaceStdField> roleSpaceStdFieldsList = new ArrayList<RoleSpaceStdField>();
-			if (space.getSpaceRoles() != null) {
-				for (SpaceRole spaceRole : space.getSpaceRoles()) {
-					if (spaceRole.getRoleSpaceStdFields() != null) {
-						for (RoleSpaceStdField roleSpaceStdField : spaceRole
-								.getRoleSpaceStdFields()) {
-							roleSpaceStdFieldsList.add(roleSpaceStdField);
-						}
-					}
-					dao.storeSpaceRole(spaceRole);
 				}
 			}
-
-			// Set up and save "Space Administrator" space role
-			// SpaceRole spaceAdministrator = new SpaceRole(space,
-			// RoleType.SPACE_ADMINISTRATOR.getDescription(),
-			// RoleType.SPACE_ADMINISTRATOR);
-			// dao.storeSpaceRole(spaceAdministrator);
-
-			// Store Role Space Std Fields
-			// ---------------------------------------------------------
-			for (RoleSpaceStdField roleSpaceStdField : roleSpaceStdFieldsList) {
-				dao.storeRoleSpaceStdField(roleSpaceStdField);
-			}
-
+			return space;
+		
 		}
-		// i18n step 2
-		// TODO: make sure both space translations and customattribute translations use the same resource key 
-		dao.saveOrUpdateTranslations(space);
-		List<Field> fields = space.getMetadata().getFieldList();
-		if(fields != null && fields.size() > 0){
-			for(Field field : fields){
-				CustomAttribute attribute = field.getCustomAttribute();
-				if(attribute != null){
-					
-					saveOrUpdate(field, attribute);
-				}
-			}
+		catch(Exception e){
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return space;
 	}
 
 
@@ -1498,12 +1554,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 /*
 		attribute.setName(attribute
 				.getNameTranslations().get(this.getDefaultLocale()));
-		// setup default validation expression if needed
-		if (attribute.getValidationExpression() == null) {
-			// set it to RexexpValidator.No_VALIDATION by default
-			attribute.setValidationExpression(this
-					.loadValidationExpression(1));
-		}
+			
 		// clear options if needed
 		if (!attribute.getFormType().equals(
 				AssetTypeCustomAttribute.FORM_TYPE_SELECT)
@@ -1534,33 +1585,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 				}
 				//this.loadI18nStringResource(new I18nStringIdentifier(attribute.getNameTranslationResourceKey(), this.getDefaultLocale()));	
 			}
-			if(attribute.getValidationExpression() == null){
-				attribute.setValidationExpression(dao.loadValidationExpression(1));
-			}
-			Integer formType = attribute.getFormType();
-			boolean hasOptions = (field != null && field.isDropDownType()) 
-					|| (formType != null && (formType.equals(CustomAttribute.FORM_TYPE_MULTISELECT)
-							|| formType.equals(CustomAttribute.FORM_TYPE_SELECT)
-							|| formType.equals(CustomAttribute.FORM_TYPE_OPTIONS_TREE)));
-			if(hasOptions){ 
-				
-				List<CustomAttributeLookupValue> oldLookupValues = this.dao.findAllLookupValuesByCustomAttribute(attribute);
-				if(oldLookupValues != null){
-					for(CustomAttributeLookupValue oldValue : oldLookupValues){
-						dao.removeLookupValue(oldValue);
-					}
-				}
-			}
-
-			dao.merge(attribute);
-			dao.saveOrUpdateTranslations(attribute);
-			// update option translations
-			if(hasOptions){
-				for (CustomAttributeLookupValue value : attribute
-						.getAllowedLookupValues()) {
-					this.storeLookupValue(value);
-				}
-			}
+			
 		}
 		else{
 			if(logger.isDebugEnabled()){
@@ -1793,20 +1818,19 @@ public class CalipsoServiceImpl implements CalipsoService {
 					.loadValidationExpression(1));
 		}
 		// clear options if needed
-		if (!assetTypeCustomAttribute.getFormType().equals(
-				AssetTypeCustomAttribute.FORM_TYPE_SELECT)
-				&& assetTypeCustomAttribute.getAllowedLookupValues() != null) {
+//		if (!assetTypeCustomAttribute.getFormType().equals(
+//				AssetTypeCustomAttribute.FORM_TYPE_SELECT)
+//				&& assetTypeCustomAttribute.getAllowedLookupValues() != null) {
 			// TODO: this throws LIE, implement a new calipsoService method
 			// instead
 			// assetTypeCustomAttribute.getAllowedLookupValues().clear();
 
-		}
+//		}
 		dao.storeCustomAttribute(assetTypeCustomAttribute);
+		logger.info("Saving custom attribute translations: "+assetTypeCustomAttribute.getTranslations());
 		dao.saveOrUpdateTranslations(assetTypeCustomAttribute);
 		// update option translations
-		if (assetTypeCustomAttribute.getFormType().equals(
-				AssetTypeCustomAttribute.FORM_TYPE_SELECT)
-				&& CollectionUtils.isNotEmpty(assetTypeCustomAttribute
+		if (CollectionUtils.isNotEmpty(assetTypeCustomAttribute
 						.getAllowedLookupValues())) {
 			for (CustomAttributeLookupValue value : assetTypeCustomAttribute
 					.getAllowedLookupValues()) {
@@ -1953,6 +1977,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 		//logger.info("findLookupValuesByCustomAttribute, attr: "+attr);
 		return dao.findLookupValuesByCustomAttribute(attr);
 	}
+	@Override
+	public List<CustomAttributeLookupValue> findActiveLookupValuesByCustomAttribute(
+			CustomAttribute attr) {
+		//logger.info("findLookupValuesByCustomAttribute, attr: "+attr);
+		return dao.findActiveLookupValuesByCustomAttribute(attr);
+	}
+	
+	
 	public List<CustomAttributeLookupValue> findAllLookupValuesByCustomAttribute(
 			CustomAttribute attr) {
 		//logger.info("findLookupValuesByCustomAttribute, attr: "+attr);
@@ -1982,12 +2014,8 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	public List<CustomAttributeLookupValue> findLookupValues(Space space, String fieldName){
 		ItemFieldCustomAttribute attr = this.dao.loadItemCustomAttribute(space, fieldName);
-		Set<CustomAttributeLookupValue> set = attr.getAllowedLookupValues();
-		List<CustomAttributeLookupValue> lookupValues = null;
-		if(set != null && set.size() > 0){
-			lookupValues = new ArrayList<CustomAttributeLookupValue>(set.size());
-			lookupValues.addAll(set);
-		}
+		List<CustomAttributeLookupValue> lookupValues = attr.getAllowedLookupValues();
+		
 		return lookupValues;
 	}
 	// //////////
@@ -2715,5 +2743,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 	@Override
 	public ItemRenderingTemplate getItemRenderingTemplateForUser(User user, Integer itemStatus, Long spaceId){
 		return dao.getItemRenderingTemplateForUser(user, itemStatus, spaceId);
+	}
+
+	@Override
+	public Map<String, RenderingTemplate> loadSpaceRoleTemplates(Long id) {
+		return id!=null && id.longValue() > 0?((SpaceRole)dao.get(SpaceRole.class, id)).getItemRenderingTemplates():new HashMap<String, RenderingTemplate>();
+	}
+	@Override
+	public Set<User> loadSpaceGroupAdmins(Long id) {
+		return ((SpaceGroup)dao.get(SpaceGroup.class, id)).getAdmins();
 	}
 }

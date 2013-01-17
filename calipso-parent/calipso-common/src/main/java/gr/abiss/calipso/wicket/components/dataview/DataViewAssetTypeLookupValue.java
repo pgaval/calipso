@@ -21,6 +21,7 @@ package gr.abiss.calipso.wicket.components.dataview;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import gr.abiss.calipso.CalipsoService;
@@ -44,7 +45,7 @@ public class DataViewAssetTypeLookupValue extends DataView {
 
 	private static final long serialVersionUID = 1L;
 	private DataProviderAssetTypeLookupValue dataProvider;
-	private LinkedList dataList;
+	private List<CustomAttributeLookupValue> dataList;
 
 	/**
 	 * @param id
@@ -56,12 +57,9 @@ public class DataViewAssetTypeLookupValue extends DataView {
 			DataProviderAssetTypeLookupValue dataProvider, int itemsPerPage) {
 		super(id, dataProvider, itemsPerPage);
 		this.dataProvider = dataProvider;
-		this.dataList = new LinkedList<CustomAttributeLookupValue>();
-		Set<CustomAttributeLookupValue> allowedLookupValues = this.dataProvider
+		this.dataList = this.dataProvider
 				.getAssetTypeCustomAttribute().getAllowedLookupValues();
-		if (CollectionUtils.isNotEmpty(allowedLookupValues)) {
-			this.dataList.addAll(allowedLookupValues);
-		}
+		
 	}
 
 	/**
@@ -74,12 +72,8 @@ public class DataViewAssetTypeLookupValue extends DataView {
 			DataProviderAssetTypeLookupValue dataProvider) {
 		super(id, dataProvider);
 		this.dataProvider = dataProvider;
-		this.dataList = new LinkedList<CustomAttributeLookupValue>();
-		Set<CustomAttributeLookupValue> allowedLookupValues = this.dataProvider
+		this.dataList = this.dataProvider
 				.getAssetTypeCustomAttribute().getAllowedLookupValues();
-		if (CollectionUtils.isNotEmpty(allowedLookupValues)) {
-			this.dataList.addAll(allowedLookupValues);
-		}
 	}
 
 	/**

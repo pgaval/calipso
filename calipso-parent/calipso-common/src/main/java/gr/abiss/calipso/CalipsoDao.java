@@ -210,6 +210,7 @@ public interface CalipsoDao {
     public AssetType loadAssetType(long id);
     public AssetType loadAssetTypeByName(String name);
     public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(CustomAttribute attr);
+    public List<CustomAttributeLookupValue> findActiveLookupValuesByCustomAttribute(CustomAttribute attr);
     public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(CustomAttribute attr, int level);
     
     public void storeAsset(Asset asset);

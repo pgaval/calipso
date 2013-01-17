@@ -223,7 +223,14 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     public List<ItemRenderingTemplate> getItemRenderingTemplates(Space space) {
     	//getHibernateTemplate().merge(space);
     	//return space.getItemRenderingTemplates();
-		return getHibernateTemplate().find("from ItemRenderingTemplate tmpl where tmpl.space.id = ?", new Object[] {space.getId()});
+		List<ItemRenderingTemplate> tmpls = space.getItemRenderingTemplates();
+		if(space.getId() > 0){
+			tmpls = getHibernateTemplate().find("from ItemRenderingTemplate tmpl where tmpl.space.id = ?", new Object[] {space.getId()});
+		}
+		if(tmpls == null){
+			tmpls = new LinkedList<ItemRenderingTemplate>();
+		}
+		return tmpls;
     }
 	
 
@@ -373,6 +380,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 //    }
 //    
     public Space storeSpace(Space space) {
+    	Map<String, Map<String, String>> translations = space.getId() > 0 ? space.getTranslations() :null;
+    	logger.info("storeSpace "+space.getId()+", translations: "+translations);
     	// get the field list before persisting or the custom attributes will be lost
     	List<Field> fieldList = space.getMetadata().getFieldList();
     	if(space.getId() > 0){
@@ -381,7 +390,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	        space.setMetadata(freshMeta);
     	}
     	// explicitly merge templates first or the cascade has bug https://hibernate.onjira.com/browse/HHH-3332
-    	if(space.getId() > 0){
+    	/*if(space.getId() > 0){
     		if(CollectionUtils.isNotEmpty(space.getItemRenderingTemplates())){
         		//logger.info("mergin templates: "+space.getItemRenderingTemplates());
         		for(ItemRenderingTemplate tmpl : space.getItemRenderingTemplates()){
@@ -404,10 +413,10 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         	}
         	space = (Space) getHibernateTemplate().merge(space);
     	}
-    	else{
+    	else{*/
     		List<ItemRenderingTemplate> templates = space.getItemRenderingTemplates();
     		space.setItemRenderingTemplates(null);
-        	getHibernateTemplate().save(space);
+        	getHibernateTemplate().update(space);
         	if(CollectionUtils.isNotEmpty(templates)){
         		for(ItemRenderingTemplate template : templates){
         			template.setSpace(space);
@@ -415,7 +424,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         		}
         	}
         		
-    	}
+    	/*}*/
         //logger.info("Saved space, updating metadataCache for space: "+space.getPrefixCode());
         // save custom attributes
         if(CollectionUtils.isNotEmpty(fieldList)){
@@ -427,20 +436,35 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         			if(attr.getValidationExpression() == null){
         				attr.setValidationExpression(noValidation);
         			}
-        			// keep translations to save later
-        			Map<String, Map<String,String>> lookupTranslations = new HashMap();
-        			if(CollectionUtils.isNotEmpty(attr.getAllowedLookupValues())){
-        				for(CustomAttributeLookupValue val : attr.getAllowedLookupValues()){
-        					lookupTranslations.put(val.getValue(), val.getNameTranslations());
+        			// keep lookup translations to save later
+        			List<CustomAttributeLookupValue> values = attr.getAllowedLookupValues();
+        			Map<String, Map<String, Map<String, String>>> attrLookupValuesTranslations = new HashMap<String, Map<String, Map<String, String>>>();
+        			if(CollectionUtils.isNotEmpty(values)){
+        				for (CustomAttributeLookupValue value : values) {
+        					Map<String, Map<String, String>> valueTranslations = value.getTranslations();
+        					if(MapUtils.isNotEmpty(valueTranslations)){
+        						attrLookupValuesTranslations.put(value.getListIndex()+"", value.getTranslations());
+        					}
         				}
         			}
+        			logger.info("storeSpace saved lookup attribue translations for later: "+attrLookupValuesTranslations);
+        			Map<String, Map<String, String>> attrTranslations = attr.getTranslations();
+        			logger.info("storeSpace saved lookup attribue translations for later: "+attrLookupValuesTranslations);
         			attr = (ItemFieldCustomAttribute) getHibernateTemplate().merge(attr);
+        			logger.info("attr translations after merge: "+attr.getTranslations());
+        			attr.setTranslations(attrTranslations);
+        			this.saveOrUpdateTranslations(attr);
         			field.setCustomAttribute(attr);
-        			// save translations
-        			if(CollectionUtils.isNotEmpty(lookupTranslations.keySet())){
-        				for(CustomAttributeLookupValue val : attr.getAllowedLookupValues()){
-        					val.setNameTranslations(lookupTranslations.get(val.getValue()));
-        					this.saveOrUpdateTranslations(val);
+        			// save lookup translations
+        			if(MapUtils.isNotEmpty(attrLookupValuesTranslations)){
+        				values = attr.getAllowedLookupValues();
+        				for (CustomAttributeLookupValue value : values) {
+        					Map<String, Map<String, String>> lookupTranslations = attrLookupValuesTranslations.get(value.getListIndex()+"");
+        					if(MapUtils.isNotEmpty(lookupTranslations)){
+        	        			logger.info("value translations after merge: "+value.getTranslations());
+        						value.setTranslations(lookupTranslations);
+        						this.saveOrUpdateTranslations(value);
+        					}
         				}
         			}
         		}
@@ -452,6 +476,12 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         		}
         		
         	}
+        }
+        this.merge(space);
+		logger.info("space translations after merge: "+space.getTranslations());
+        if(translations != null){
+        	space.setTranslations(translations);
+        	this.saveOrUpdateTranslations(space);
         }
         metadataCache.put(space.getId(), space.getMetadata());
         return space;
@@ -1004,7 +1034,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     
     public void saveOrUpdateTranslations(I18nResourceTranslatable nt){
     	Map<String,Map<String,String>> translationsMap = nt.getTranslations();
-    	//logger.info("Saving translations of: "+nt+", translations: "+translationsMap);
+    	logger.info("Saving translations of: "+nt.getName()+", translations: "+translationsMap);
     	if(MapUtils.isNotEmpty(translationsMap)){
     		for(String propertyName : translationsMap.keySet()){
     			Map<String,String> propNameTranslations = translationsMap.get(propertyName);
@@ -1012,7 +1042,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         			for(String locale : propNameTranslations.keySet()){
         				if(StringUtils.isNotBlank(propNameTranslations.get(locale))){
         					I18nStringIdentifier sid = new I18nStringIdentifier(nt.getPropertyTranslationResourceKey(propertyName), locale);
-        					//logger.info("Saving I18nStringResource with key: "+sid.getKey()+", locale: "+sid.getLocale()+", value: "+propNameTranslations.get(locale));
+        					logger.info("Saving I18nStringResource with key: "+sid.getKey()+", locale: "+sid.getLocale()+", value: "+propNameTranslations.get(locale));
         					merge(new I18nStringResource(sid, propNameTranslations.get(locale)));
         				}
         			}
@@ -1290,6 +1320,14 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 		return getHibernateTemplate().find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? and attVal.level = 1 order by attVal.showOrder ASC, attVal.id ASC", attr.getId());
 	}
 
+	/**
+	 * Get a list of all active level 1 (root) lookup values for a given CustomAttribute. They will contain their children. May return null or an empty List
+	 */
+	public List<CustomAttributeLookupValue> findActiveLookupValuesByCustomAttribute(CustomAttribute attr) {
+		return getHibernateTemplate().find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? and attVal.level = 1 and attVal.active = true order by attVal.showOrder ASC, attVal.id ASC", attr.getId());
+	}
+
+	
 	/**
 	 * Get a list of all lookup values matching the level for a given CustomAttribute. Only applies to Tree Options. May return null or an empty List
 	 */
@@ -1898,7 +1936,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	*/
         try { 
-        	schemaHelper.updateSchema();
+        	//schemaHelper.updateSchema();
             List results = getHibernateTemplate().find("from User user where user.id = 1");
             
         } catch (Exception e) {
@@ -2803,6 +2841,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * @see gr.abiss.calipso.CalipsoDao#loadI18nStringResource(gr.abiss.calipso.domain.I18nStringIdentifier)
 	 */
 	public I18nStringResource loadI18nStringResource(I18nStringIdentifier id) {
+		//logger.info("Looking for resource: "+id);
 		return (I18nStringResource) getHibernateTemplate().get(I18nStringResource.class, id);
 	}
 

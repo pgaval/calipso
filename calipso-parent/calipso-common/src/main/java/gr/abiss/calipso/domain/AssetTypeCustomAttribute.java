@@ -87,7 +87,6 @@ public class AssetTypeCustomAttribute extends CustomAttribute implements Seriali
 
 	public AssetTypeCustomAttribute() {
 	}
-	
 
 	public void add(AssetType assetType){
 		if (this.assetTypes==null){

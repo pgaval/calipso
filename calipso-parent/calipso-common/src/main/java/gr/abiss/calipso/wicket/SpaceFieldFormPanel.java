@@ -142,7 +142,7 @@ public class SpaceFieldFormPanel extends BasePanel {
 							.loadCountOfRecordsHavingFieldNotNull(space, field);
 				}
 				
-				logger.info("space is New: "+space.isNew()+", affectedCount: "+affectedCount);
+				//logger.info("space is New: "+space.isNew()+", affectedCount: "+affectedCount);
 				if (affectedCount > 0) {
 					final String heading = localize("space_field_delete.confirm")
 							+ " : "
@@ -166,19 +166,19 @@ public class SpaceFieldFormPanel extends BasePanel {
 									// this
 									// user may leave without committing
 									// metadata change
-									logger.info("bulkUpdateFieldToNull...");
+									//logger.info("bulkUpdateFieldToNull...");
 									getCalipso().bulkUpdateFieldToNull(space,
 											field);
 
-									logger.info("remove field from metadata...");
+									//logger.info("remove field from metadata...");
 									space.getMetadata().removeField(
 											field.getName().getText());
 
-									logger.info("delete custom attribute...");
+									//logger.info("delete custom attribute...");
 									getCalipso().removeItemCustomAttribute(space, field.getName().getText());
 
-									logger.info("save space...");
-									getCalipso().storeSpace(space);
+									//logger.info("save space...");
+									//getCalipso().storeSpace(space);
 									// synchronize metadata version or else if
 									// we save again we get Stale Object
 									// Exception
@@ -208,11 +208,11 @@ public class SpaceFieldFormPanel extends BasePanel {
 				}
 				else{
 
-					logger.info("space is new, removing attr from metadata only...");
+					//logger.info("space is new, removing attr from metadata only...");
 					// this is an unsaved space or there are no impacted items
 					space.getMetadata().removeField(field.getName().getText());
 
-					logger.info("delete custom attribute...");
+					//logger.info("delete custom attribute...");
 					getCalipso().removeItemCustomAttribute(space, field.getName().getText());
 
 					// setResponsePage(new SpaceFieldListPage(space, null,
@@ -279,20 +279,20 @@ public class SpaceFieldFormPanel extends BasePanel {
 			// label ===========================================================
 			ItemFieldCustomAttribute attribute = this.field.getCustomAttribute();
 			if(attribute == null){
-				logger.info("field has no custom attribute, loading from DB");
+				//logger.info("field has no custom attribute, loading from DB");
 				attribute = getCalipso().loadItemCustomAttribute(space, field.getName().getText());
 				if(attribute == null){
 					logger.info("DB has no custom attribute for field, creating new with name: "+field.getName().getText());
 					attribute = new ItemFieldCustomAttribute();
 					attribute.setSpace(space);
 					attribute.setFieldName(field.getName().getText());
-					attribute.setName(field.getName().getText());
+					attribute.setName("Space."+space.getId()+"."+field.getName().getText());
 					attribute.setEditable(true);
 				}
 				this.field.setCustomAttribute(attribute);
 
-				logger.info("added custom attribute to field: "+attribute);
-				logger.info("added custom attribute to field: "+field.getCustomAttribute());
+				//logger.info("added custom attribute to field: "+attribute);
+				//logger.info("added custom attribute to field: "+field.getCustomAttribute());
 			}
 			final String fieldInternalName = field.getName().getText();
 			if(MapUtils.isEmpty(space.getPropertyTranslations(fieldInternalName))){
@@ -374,11 +374,17 @@ public class SpaceFieldFormPanel extends BasePanel {
 			add(showInSearchResultsCheckbox);
 			add(new SimpleFormComponentLabel("showInSearchResultsLabel", showInSearchResultsCheckbox));
 
-			
+
 			TextArea htmlDescriptionTextArea = new TextArea("htmlDescriptionTextArea", new PropertyModel(attribute, "htmlDescription"));
 			htmlDescriptionTextArea.setLabel(new ResourceModel("htmlDescriptionLabel"));
 			add(htmlDescriptionTextArea);
 			add(new SimpleFormComponentLabel("htmlDescriptionLabel", htmlDescriptionTextArea));
+
+			TextArea mappingKeyTextArea = new TextArea("mappingKeyTextArea", new PropertyModel(attribute, "mappingKey"));
+			mappingKeyTextArea.setLabel(new ResourceModel("mappingKeyLabel"));
+			add(mappingKeyTextArea);
+			add(new SimpleFormComponentLabel("mappingKeyLabel", mappingKeyTextArea));
+			
 			
 			
 			// form label
@@ -402,10 +408,10 @@ public class SpaceFieldFormPanel extends BasePanel {
 //				add(new EmptyPanel("xmlConfigPanel"));
 //			}
 			if (field.getName().isFreeText()) {
-				logger.info("Validation expression before edit: "+field.getValidationExpression());
+				//logger.info("Validation expression before edit: "+field.getValidationExpression());
 				IModel validationModel = new PropertyModel(field, "validationExpression");
 
-				logger.info("Validation expression  model object before edit: "+validationModel.getObject());
+				//logger.info("Validation expression  model object before edit: "+validationModel.getObject());
 				add(new ValidationPanel("validPanel",validationModel, false));
 
 				// TODO: check fragment
@@ -457,8 +463,8 @@ public class SpaceFieldFormPanel extends BasePanel {
 				@Override
 				public void onSubmit() {
 
-					logger.info("field line count: "+field.getLineCount());
-					logger.info("field default value expression: "+field.getDefaultValueExpression());
+					//logger.info("field line count: "+field.getLineCount());
+					//logger.info("field default value expression: "+field.getDefaultValueExpression());
 					//logger.debug("submitting, space translations: "+space.getTranslations());
 					// update name based on translations
 					field.setLabel(space.getPropertyTranslations(field.getName().getText()).get(getCalipso().getDefaultLocale()));
@@ -484,10 +490,11 @@ public class SpaceFieldFormPanel extends BasePanel {
 					
 					CustomAttributeUtils.parseOptionsIntoAttribute(textAreaOptions, field.getCustomAttribute(), space.getSupportedLanguages());
 					
-					logger.info("edited, validationExpression: "+field.getValidationExpression());
+					//logger.info("edited, validationExpression: "+field.getValidationExpression());
 					// may be clone, overwrite anyway
 					space.getMetadata().add(field);
-					
+					//space = getCalipso().storeSpace(space);
+					logger.info("space translations: "+space.getTranslations());
 					activate(new IBreadCrumbPanelFactory() {
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {

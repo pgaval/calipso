@@ -54,7 +54,7 @@
 					</tr>
 					<tr>
 						<td class="label"><label wicket:id="closingDateLabel"></label></td>
-						<td><span class="customField"  wicket:id="space.closingDate"></span></td>
+						<td><span wicket:id="space.closingDate"></span></td>
 					</tr>
 					<tr>
 						<td class="label"><label wicket:id="spaceItemVisibilityChoiceLabel">space_form.visibility</label></td>
@@ -101,11 +101,12 @@
 				</table>
 				
 		</fieldset>
-		<p>
-			<input type="submit" class="button" wicket:id="back" wicket:message="value:back" />            
-	        <input type="submit" class="button" wicket:id="apply" wicket:message="value:apply"/>  
-			<input type="submit" class="button" wicket:id="next" wicket:message="value:next" />
-		</p>
+		<div class="submit-controls">
+			<input type="submit" class="submit-to-previous" wicket:id="back" wicket:message="value:back" />            
+	        <input type="submit" class="submit-to-same" wicket:id="apply" wicket:message="value:apply"/>  
+			<input type="submit" class="submit-to-next" wicket:id="next" wicket:message="value:next" />
+			<br class="clear" />
+		</div>
 	</form>
 	</div>
 	</div>

@@ -20,6 +20,7 @@
 package gr.abiss.calipso.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 
 import gr.abiss.calipso.CalipsoService;
+import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
+import gr.abiss.calipso.domain.CustomAttribute;
 import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.I18nStringResource;
@@ -40,6 +43,7 @@ import gr.abiss.calipso.domain.ItemRenderingTemplate;
 import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.domain.RenderingTemplate;
 import gr.abiss.calipso.domain.RoleSpaceStdField;
+import gr.abiss.calipso.domain.RoleType;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.SpaceRole;
 import gr.abiss.calipso.wicket.customattrs.CustomAttributeUtils;
@@ -153,6 +157,7 @@ public class SpaceUtils {
 			attrTo.setDefaultStringValue(attrFrom.getDefaultStringValue());
 			attrTo.setShowInSearchResults(attrFrom.isShowInSearchResults());
 			attrTo.setValidationExpression(attrFrom.getValidationExpression());
+			attrTo.setMappingKey(attrFrom.getMappingKey());
 			// copy lookup values
 			//List<CustomAttributeLookupValue> valuesFrom = calipso.findAllLookupValuesByCustomAttribute(attrFrom);
 			Map<String, String> nameTranslations = CustomAttributeUtils.preloadExistingLookupValues(calipso, attrFrom);
@@ -162,6 +167,177 @@ public class SpaceUtils {
 			logger.warn("Could not copy attrFrom: "+attrFrom+", to: "+attrTo);
 		}
 		
+	}
+	
+	public static void copy(CalipsoService calipso, Space space,
+			Field field, AssetTypeCustomAttribute attrTo) {
+		if(field != null && field.getCustomAttribute() != null && attrTo != null){
+			ItemFieldCustomAttribute attrFrom = field.getCustomAttribute();
+			Field.Name fieldName = field.getName();
+			if(field.getFieldType().equals(Field.FIELD_TYPE_DROPDOWN_HIERARCHICAL)){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_OPTIONS_TREE);
+			}
+			else if(fieldName.isOptionsType()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_SELECT);
+			}
+			else if(fieldName.isDecimalNumber()){
+				attrTo.setFormType(CustomAttribute.DATA_TYPE_DOUBLE);
+			}
+			else if(fieldName.isDate()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_DATE);
+			}
+			else if(fieldName.isOrganization()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_ORGANIZATION);
+			}
+			else if(fieldName.isUser()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_USER);
+			}
+			else if(fieldName.isCountry()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_COUNTRY);
+			}
+			else if(field.getName().getText().equals(Field.FIELD_TYPE_SIMPLE_ATTACHEMENT)){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_SIMPLE_ATTACHMENT);
+			}
+			else if(fieldName.isFile()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_FILE);
+			}
+			else /* if(fieldName.isFreeText())*/{
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_TEXTAREA);
+			}
+			
+			
+			
+			attrTo.setDataType(attrFrom.getDataType());
+			// copy custom attribute name translations
+			List<I18nStringResource> translations =  calipso.getNameTranslations(attrFrom);
+			attrTo.setNameTranslations(translations);
+			attrTo.setDefaultStringValue(attrFrom.getDefaultStringValue());
+			attrTo.setValidationExpression(attrFrom.getValidationExpression());
+			attrTo.setMappingKey(attrFrom.getMappingKey());
+			// copy lookup values
+			//List<CustomAttributeLookupValue> valuesFrom = calipso.findAllLookupValuesByCustomAttribute(attrFrom);
+			Map<String, String> nameTranslations = CustomAttributeUtils.preloadExistingLookupValues(calipso, attrFrom);
+
+			logger.warn("nameTranslations: "+nameTranslations);
+			CustomAttributeUtils.parseOptionsIntoAttribute(nameTranslations, attrTo, space.getSupportedLanguages());
+		}
+		else{
+			logger.warn("Could not copy attribute from field: "+field+", to: "+attrTo);
+		}
+		
+	}
+	
+	/**
+	 * Load persisted SpaceRole instances for the given Space, add or remove
+	 * Regular, Guest and Anonymous roles as needed according to previous
+	 * screens
+	 */
+	public static void initSpaceSpaceRoles(CalipsoService calipso,  Space space) {
+//		logger.info("initSpaceSpaceRoles1, space.getSpaceRoles():"
+//				+ space.getSpaceRoles());
+		// load persisted roles for space if any
+		//if (CollectionUtils.isEmpty(space.getSpaceRoles())) {
+			List<SpaceRole> roleList = calipso.findSpaceRolesForSpace(
+					space);
+			Set<SpaceRole> spaceRolesSet = new HashSet<SpaceRole>();
+			if (roleList != null && !roleList.isEmpty()) {
+				spaceRolesSet.addAll(roleList);
+			}
+			space.setSpaceRoles(spaceRolesSet);
+		//}
+		Set<RoleType> roleTypes = new HashSet<RoleType>();
+		// if a new space, add the regular user role
+		if (CollectionUtils.isEmpty(space.getSpaceRoles())) {
+			// Set up a pre-defined regular user role work flow
+			SpaceRole regularUserRole = new SpaceRole(space,
+					RoleType.REGULAR_USER.getDescription(),
+					RoleType.REGULAR_USER);
+			space.add(regularUserRole);
+			space.getMetadata().initRegularUserRole(
+					regularUserRole.getRoleCode());
+
+			logger.info("This is a new Space, added a regular user role with roleCode:"+regularUserRole.getRoleCode());
+
+		} else {
+			logger.info("This is not a new Space, update guest/anonymous according to previous page");
+			boolean addTypeInRoleTypes;
+			Set<SpaceRole> rolesToRemove = new HashSet<SpaceRole>();
+			for (SpaceRole spaceRole : space.getSpaceRoles()) {
+				RoleType roleType = spaceRole.getRoleType();
+
+				addTypeInRoleTypes = true;
+				// remove if the user went back and changed "Allow guest" or
+				// "Allow anonymous" to false
+				logger.info("Going over role with type: "+roleType);
+				if (!space.isGuestAllowed() && roleType.equals(RoleType.GUEST)) {
+					logger.info("Removing GUEST Role with roleCode: "+spaceRole.getRoleCode());
+					// space.remove(spaceRole);
+					rolesToRemove.add(spaceRole);
+					// TODO: usefull?
+					space.getMetadata().removeRole(spaceRole.getRoleCode());
+					addTypeInRoleTypes = false;
+				}
+				if (!space.isAnonymousAllowed()
+						&& roleType.equals(RoleType.ANONYMOUS)) {
+					logger.info("Removing ANONYMOUS Role with roleCode: "+spaceRole.getRoleCode());
+					// space.remove(spaceRole);
+					rolesToRemove.add(spaceRole);
+					// TODO: usefull?
+					space.getMetadata().removeRole(spaceRole.getRoleCode());
+					addTypeInRoleTypes = false;
+				}
+				// otherwise let the code bellow know this role exists already
+				if (addTypeInRoleTypes) {
+					roleTypes.add(roleType);
+					logger.info("Added in RoleTypes:"+roleType);
+				}
+			}
+			// Remove SpaceRoles outside the for loop to avoid
+			// ConcurrentModificationException
+			space.removeSpaceRoles(rolesToRemove);
+		}
+
+		logger.info("roleTypes: "+roleTypes);
+
+		// Set up guest role and work flow if needed and missing
+		if (space.isGuestAllowed()) {
+			if (!roleTypes.contains(RoleType.GUEST)) {
+				SpaceRole guestUserRole = new SpaceRole(space,
+						RoleType.GUEST.getDescription(), RoleType.GUEST);
+				logger.info("Adding GUEST Role with roleCode: "+guestUserRole.getRoleCode());
+				space.add(guestUserRole);
+				space.getMetadata().initGuestUserRole(
+						guestUserRole.getRoleCode());
+			} else {
+				logger.info("There is already a GUEST Role");
+			}
+		}
+		// Set up anonymous role and work flow if needed and missing
+		if (space.isAnonymousAllowed()) {
+			if (!roleTypes.contains(RoleType.ANONYMOUS)) {
+				SpaceRole anonymousUserRole = new SpaceRole(space,
+						RoleType.ANONYMOUS.getDescription(), RoleType.ANONYMOUS);
+				logger.info("Adding ANONYMOUS Role with roleCode: "+anonymousUserRole.getRoleCode());
+				space.add(anonymousUserRole);
+				space.getMetadata().initGuestUserRole(
+						anonymousUserRole.getRoleCode());
+			}
+		}
+
+		// setup admin if missing
+		// /Set up "Space Administrator" role
+		if (!roleTypes.contains(RoleType.SPACE_ADMINISTRATOR)) {
+			SpaceRole spaceAdministrator = new SpaceRole(space,
+					RoleType.SPACE_ADMINISTRATOR.getDescription(),
+					RoleType.SPACE_ADMINISTRATOR);
+			space.add(spaceAdministrator);
+			space.getMetadata().initRegularUserRole(
+					spaceAdministrator.getRoleCode());
+			logger.info("Adding SPACE_ADMINISTRATOR Role with roleCode: "+spaceAdministrator.getRoleCode());
+		} else {
+			logger.info("Skipped adding SPACE_ADMINISTRATOR Role as it already exists");
+		}
+
 	}
 
 }

@@ -49,17 +49,20 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 
+import gr.abiss.calipso.domain.ItemRenderingTemplate;
 import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.domain.Metadata;
 import gr.abiss.calipso.domain.RoleSpaceStdField;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.util.BreadCrumbUtils;
+import gr.abiss.calipso.util.SpaceUtils;
 import gr.abiss.calipso.wicket.BasePanel;
 import gr.abiss.calipso.wicket.CalipsoFeedbackMessageFilter;
 import gr.abiss.calipso.wicket.ConfirmPanel;
 import gr.abiss.calipso.wicket.CalipsoApplication;
 import gr.abiss.calipso.wicket.ErrorHighlighter;
 import gr.abiss.calipso.wicket.SpaceFormPanel;
+import gr.abiss.calipso.wicket.SpacePermissionsPanel;
 import gr.abiss.calipso.wicket.form.AbstractSpaceform;
 
 /**
@@ -90,8 +93,19 @@ public class SpacePanelLanguageSupport  extends BasePanel{
 	
 	public SpacePanelLanguageSupport(String id, IBreadCrumbModel breadCrumbModel, Space space) {
 		super(id, breadCrumbModel);
+
 		isEdit = space != null;
-		this.space = (space != null) ? space /* getCalipso().loadSpaceForEditing(space.getId())*/: new Space();
+		if(!isEdit){
+			space = new Space();
+			this.getCalipso().storeUnpublishedSpace(space);
+		}
+		else{
+			List<ItemRenderingTemplate> tmplList = this.getCalipso().getItemRenderingTemplates(space);
+			space.setItemRenderingTemplates(tmplList);
+		}
+		
+		//SpaceUtils.initSpaceSpaceRoles(getCalipso(), space);
+		this.space = space;
 		add(new SpaceForm("form", this.space));
 		getBackLinkPanel().makeCancel();
 	}

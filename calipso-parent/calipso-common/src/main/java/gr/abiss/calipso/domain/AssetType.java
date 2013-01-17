@@ -118,6 +118,13 @@ public class AssetType extends AbstractI18nResourceTranslatable implements Seria
 	public void setId(long id) {
 		this.id = id;
 	}
+	
+	
+
+	@Override
+	public String getI18nId() {
+		return new Long(this.getId()).toString();
+	}
 
 	/**
 	 * @return the name
@@ -214,17 +221,7 @@ public class AssetType extends AbstractI18nResourceTranslatable implements Seria
 		}//if
 	}//removeAllowedCustomAttributes
 	
-	/**
-	 * @see gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable#getNameTranslationResourceKey()
-	 */
-	public String getPropertyTranslationResourceKey(String propertyName){
-		return new StringBuffer(getShortName(AssetType.class))
-		.append('.')
-		.append(this.getId())
-		.append('.')
-		.append(propertyName)
-		.toString();
-	}
+
 	
 	@Override
 	public String toString() {

@@ -185,7 +185,7 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 				if(field.getName().isDropDownType()){
 					// Item field and Asset attribute options need to be in the same order
 					//calipsoService.loadCustomAttributeLookupValue
-					Set<CustomAttributeLookupValue> assetLookupValues = assetTypeAttr.getAllowedLookupValues();
+					List<CustomAttributeLookupValue> assetLookupValues = assetTypeAttr.getAllowedLookupValues();
 					
 					// we save the option index for Item (the option label is in the XML) 
 					// so we have to match the lookup value with the same index for the custom attribute

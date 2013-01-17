@@ -66,6 +66,8 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	public static final Integer FORM_TYPE_ASSET = new Integer(10);
 	public static final Integer FORM_TYPE_COUNTRY = new Integer(11);
 	public static final Integer FORM_TYPE_OPTIONS_TREE = new Integer(12);
+	public static final Integer FORM_TYPE_FILE = new Integer(13);
+	public static final Integer FORM_TYPE_SIMPLE_ATTACHMENT = new Integer(14);
 	
 	public static final List<Integer> FORM_TYPES;
 	static {
@@ -81,6 +83,8 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 		tmp.add(CustomAttribute.FORM_TYPE_ORGANIZATION);
 		tmp.add(CustomAttribute.FORM_TYPE_COUNTRY);
 		tmp.add(CustomAttribute.FORM_TYPE_ASSET);
+		tmp.add(CustomAttribute.FORM_TYPE_FILE);
+		tmp.add(CustomAttribute.FORM_TYPE_SIMPLE_ATTACHMENT);
 		FORM_TYPES = Collections.unmodifiableList(tmp);
 	}
 	protected static final String STRING = "java.lang.String";
@@ -93,7 +97,9 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	
 	/* persisted in table */
 	protected Long id = null;
+	protected Integer version = 0;
 	protected String name;
+	private String mappingKey = null;
 	protected Integer formType;
 	private String dataType;
 	protected ValidationExpression validationExpression;
@@ -110,7 +116,7 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	private Country countryValue;
 	private Asset assetValue;
 	private CustomAttributeLookupValue lookupValue;
-	protected Set<CustomAttributeLookupValue> allowedLookupValues = new HashSet<CustomAttributeLookupValue>();
+	protected List<CustomAttributeLookupValue> allowedLookupValues = new LinkedList<CustomAttributeLookupValue>();
 
 	public CustomAttribute() {
 		super();
@@ -200,7 +206,7 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 
 	public void add(CustomAttributeLookupValue lookupValue) {
 		if (this.getAllowedLookupValues() ==null){
-			this.allowedLookupValues = new LinkedHashSet<CustomAttributeLookupValue>();
+			this.allowedLookupValues = new LinkedList<CustomAttributeLookupValue>();
 		}
 		lookupValue.getAttribute().setId(this.id);
 		this.getAllowedLookupValues().add(lookupValue);
@@ -209,7 +215,9 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 
 	public void remove(CustomAttributeLookupValue lookupValue) {
 		if (this.getAllowedLookupValues() != null){
-			this.getAllowedLookupValues().remove(lookupValue);
+			//if(this.getAllowedLookupValues().remove(lookupValue)){
+				lookupValue.setActive(false);
+			//}
 		}
 	}
 	
@@ -241,6 +249,20 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	@Override
+	public String getI18nId() {
+		return this.getId().toString();
+	}
 
 	public String getName() {
 		return this.name;
@@ -251,6 +273,14 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getMappingKey() {
+		return mappingKey;
+	}
+
+	public void setMappingKey(String mappingKey) {
+		this.mappingKey = mappingKey;
 	}
 
 	/**
@@ -388,16 +418,17 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 
 	public boolean addAllowedLookupValue(CustomAttributeLookupValue value) {
 		if(this.getAllowedLookupValues() == null){
-			this.allowedLookupValues = new HashSet<CustomAttributeLookupValue>();
+			this.allowedLookupValues = new LinkedList<CustomAttributeLookupValue>();
 		}
 		value.setAttribute(this);
+		value.setListIndex(this.allowedLookupValues.size());
 		return this.getAllowedLookupValues().add(value);
 	}
 
 	/**
 	 * @param allowedLookupValues the allowedValues to set
 	 */
-	public void setAllowedLookupValues(Set<CustomAttributeLookupValue> allowedValues) {
+	public void setAllowedLookupValues(List<CustomAttributeLookupValue> allowedValues) {
 		this.allowedLookupValues = allowedValues;
 	}
 
@@ -417,7 +448,7 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	/**
 	 * @return the allowedLookupValues
 	 */
-	public Set<CustomAttributeLookupValue> getAllowedLookupValues() {
+	public List<CustomAttributeLookupValue> getAllowedLookupValues() {
 		return this.allowedLookupValues;
 	}
 

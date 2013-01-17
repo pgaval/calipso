@@ -61,6 +61,9 @@
 				<td wicket:id="active"></td>
 				<td wicket:id="edit" align="center"><a href="#" wicket:message="title:edit"><img src="resources/edit.gif"/></a></td>
 				<td wicket:id="add" align="center"></td>
+				
+<wicket:fragment wicket:id="addLink"><a wicket:id="link" href="#" wicket:message="title:asset.assetTypes.addCustomAttribute"><img src="resources/add.gif"/></a></wicket:fragment>
+<wicket:fragment wicket:id="removeLink"><a wicket:id="link" href="#" wicket:message="title:asset.assetTypes.removeCustomAttribute"><img src="resources/remove-alt.gif"/></a></wicket:fragment>
 			</tr>
 			<tr wicket:id="noData"><td colspan="6" class="noData"><wicket:message key="noData"/></td></tr>
 		</table>
@@ -68,6 +71,3 @@
 </div>
 <!-- end:AssetCustomAttributesPanel.html -->	
 </wicket:panel>
-
-<wicket:fragment wicket:id="addLink"><a wicket:id="link" href="#" wicket:message="title:asset.assetTypes.addCustomAttribute"><img src="resources/add.gif"/></a></wicket:fragment>
-<wicket:fragment wicket:id="removeLink"><a wicket:id="link" href="#" wicket:message="title:asset.assetTypes.removeCustomAttribute"><img src="resources/remove-alt.gif"/></a></wicket:fragment>

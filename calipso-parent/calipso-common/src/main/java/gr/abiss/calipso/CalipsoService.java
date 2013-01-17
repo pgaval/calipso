@@ -71,6 +71,7 @@ import gr.abiss.calipso.domain.PageDictionary;
 import gr.abiss.calipso.domain.PageDictionarySearch;
 import gr.abiss.calipso.domain.PageInforamaDocument;
 import gr.abiss.calipso.domain.PageInforamaDocumentSearch;
+import gr.abiss.calipso.domain.RenderingTemplate;
 import gr.abiss.calipso.domain.RoleSpaceStdField;
 import gr.abiss.calipso.domain.RoleType;
 import gr.abiss.calipso.domain.SavedSearch;
@@ -172,6 +173,7 @@ public interface CalipsoService extends UserDetailsService {
     CountsHolder loadCountsForUser(User user);
     Counts loadCountsForUserSpace(User user, Space space);
     //========================================================
+    void storeUnpublishedSpace(Space space);
     Space storeSpace(Space space);
     Space loadSpace(long id);
     Space loadSpace(String prefixCode);
@@ -397,6 +399,10 @@ public interface CalipsoService extends UserDetailsService {
 	 */
 	Metadata getCachedMetadataForSpace(Space space);
 	String getBaseUrl();
+	Set<User> loadSpaceGroupAdmins(Long id);
+	Map<String, RenderingTemplate> loadSpaceRoleTemplates(Long id);
+	List<CustomAttributeLookupValue> findActiveLookupValuesByCustomAttribute(
+			CustomAttribute attr);
 	
 
 }

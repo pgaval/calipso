@@ -38,6 +38,9 @@ public abstract class AbstractSearch extends Pagination implements Serializable{
 	public AbstractSearch(Component c){
 		this.setPageSize(ComponentUtils.getCalipso(c).getRecordsPerPage());
 	}//AbstractSearch
+	public AbstractSearch(int pageSize){
+		this.setPageSize(pageSize);
+	}//AbstractSearch
 	
 	//----------------------------------------------------------------------
 	

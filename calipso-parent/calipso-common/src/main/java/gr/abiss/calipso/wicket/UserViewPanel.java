@@ -36,6 +36,7 @@
 
 package gr.abiss.calipso.wicket;
 
+import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.wicket.components.viewLinks.OrganizationViewLink;
@@ -123,7 +124,8 @@ public class UserViewPanel extends BasePanel {
     	add(new Label("name", user.getName()));
     	add(new Label("lastname", user.getLastname()));
     	add(new Label("email", user.getEmail()));
-    	add(new Label("country", localize(user.getCountry())));
+    	Country c = user.getCountry();
+    	add(new Label("country", c!=null?localize(c):""));
     	add(new OrganizationViewLink("organization", breadCrumbModel, user.getOrganization()));
     	add(new Label("address", user.getAddress()));
     	add(new Label("phone", user.getPhone()));

@@ -165,6 +165,7 @@ img.link { border: 2px solid #2D7BB2 }
 /*----------------------------------
 *   Sections
 *----------------------------------*/
+.hide{display:none;}
 .section {
  margin: 0 0 20px 0;
  text-align:left;
@@ -568,6 +569,8 @@ button.small, .button-small { border-color: #CCCCCC;padding:1px 6px; }
  text-align: left;
 }
 .scrollable { height: 10em }
+
+div.submit-controls{margin:10px 0px;}
 td.submit-controls{
  white-space: nowrap;
  background-color: #F9F9F9;

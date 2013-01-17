@@ -281,7 +281,7 @@ public class SpaceFieldListPanel extends BasePanel {
                         }
                     };
                     upButton.add(new AttributeModifier(
-        					"src", UrlUtils.rewriteToContextRelative("../resources/up.gif", rc)));
+        					"src", UrlUtils.rewriteToContextRelative("resources/up.gif", rc)));
                     listItem.add(upButton);
 
                     Button downButton = new Button("down") {
@@ -308,7 +308,7 @@ public class SpaceFieldListPanel extends BasePanel {
                         }                        
                     };
                     downButton.add(new AttributeModifier(
-        					"src", UrlUtils.rewriteToContextRelative("../resources/down.gif", rc)));
+        					"src", UrlUtils.rewriteToContextRelative("resources/down.gif", rc)));
                     listItem.add(downButton);
                     
                     listItem.add(new Label("name", "("+field.getName().getText()+") "+localize(space, field.getName().getText())));
@@ -337,9 +337,9 @@ public class SpaceFieldListPanel extends BasePanel {
     								
     						if(attr != null){
 								List<CustomAttributeLookupValue> existingLookupValues = new LinkedList<CustomAttributeLookupValue>();
-								Set<CustomAttributeLookupValue> valueSet = attr.getAllowedLookupValues();
-								if(CollectionUtils.isNotEmpty(valueSet)){
-									existingLookupValues.addAll(valueSet);
+								List<CustomAttributeLookupValue> valuesList = attr.getAllowedLookupValues();
+								if(CollectionUtils.isNotEmpty(valuesList)){
+									existingLookupValues.addAll(valuesList);
 								}
 								else{
 									existingLookupValues = getCalipso().findLookupValuesByCustomAttribute(attr);
@@ -393,7 +393,7 @@ public class SpaceFieldListPanel extends BasePanel {
                         }
                     };
                     editButton.add(new AttributeModifier(
-        					"src", UrlUtils.rewriteToContextRelative("../resources/edit.gif", rc)));
+        					"src", UrlUtils.rewriteToContextRelative("resources/edit.gif", rc)));
                     
                     listItem.add(editButton);
                 }
@@ -447,7 +447,7 @@ public class SpaceFieldListPanel extends BasePanel {
 						Collection<CustomAttributeLookupValue> lookupValues) {
 					if(lookupValues != null && !lookupValues.isEmpty()){
 						for(CustomAttributeLookupValue root : lookupValues){
-							if(root.getLevel() == 1){
+							if(root.getLevel() == 1 && root.isActive()){
 								//logger.info("buildOptionsListFromRoots calling buildOptionsList with root: " + root);
 								buildOptionsList(optionsList, root);
 							}
@@ -545,7 +545,7 @@ public class SpaceFieldListPanel extends BasePanel {
 						}
 					});
 				}
-            }.setVisible(space.getId() > 0));
+            }.setVisible(false));
             
             add(new Button("next") {
                 @Override

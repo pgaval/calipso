@@ -78,7 +78,7 @@ public class UserSpaceRole implements GrantedAuthority, Serializable {
     
     public boolean isAbleToCreateNewItem() {
     	
-        if (this.spaceRole.getSpace() == null) {
+        if (this.spaceRole == null || this.spaceRole.getSpace() == null) {
             return false;
         }
         boolean userIsLoggedIn = (user !=null && user.getId()>0);
