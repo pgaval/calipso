@@ -68,6 +68,7 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	public static final Integer FORM_TYPE_OPTIONS_TREE = new Integer(12);
 	public static final Integer FORM_TYPE_FILE = new Integer(13);
 	public static final Integer FORM_TYPE_SIMPLE_ATTACHMENT = new Integer(14);
+	public static final Integer FORM_TYPE_TABULAR = new Integer(15);
 	
 	public static final List<Integer> FORM_TYPES;
 	static {
@@ -85,6 +86,7 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 		tmp.add(CustomAttribute.FORM_TYPE_ASSET);
 		tmp.add(CustomAttribute.FORM_TYPE_FILE);
 		tmp.add(CustomAttribute.FORM_TYPE_SIMPLE_ATTACHMENT);
+		tmp.add(CustomAttribute.FORM_TYPE_TABULAR);
 		FORM_TYPES = Collections.unmodifiableList(tmp);
 	}
 	protected static final String STRING = "java.lang.String";

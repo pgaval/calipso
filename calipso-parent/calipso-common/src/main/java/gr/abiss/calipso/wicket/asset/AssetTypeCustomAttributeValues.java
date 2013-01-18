@@ -20,6 +20,7 @@
 package gr.abiss.calipso.wicket.asset;
 
 import gr.abiss.calipso.domain.Asset;
+import gr.abiss.calipso.domain.CustomAttribute;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
 import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.CustomAttributeLookupValue;
@@ -84,7 +85,7 @@ public class AssetTypeCustomAttributeValues extends BasePanel {
 			protected void populateItem(ListItem listItem) {
 				KeyValuePair entry = (KeyValuePair) listItem.getModelObject();
 				AssetTypeCustomAttribute customAttr = (AssetTypeCustomAttribute) entry.getKey();
-				String sValue = (String) entry.getValue();
+				String sValue = CustomAttribute.FORM_TYPE_TABULAR.equals(customAttr.getFormType())?null:(String) entry.getValue();
 				
 				if (listItem.getIndex()%2==0){
 					listItem.add(sam);

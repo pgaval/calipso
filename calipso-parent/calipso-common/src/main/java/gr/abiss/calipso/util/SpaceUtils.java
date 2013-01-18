@@ -201,6 +201,9 @@ public class SpaceUtils {
 			else if(fieldName.isFile()){
 				attrTo.setFormType(CustomAttribute.FORM_TYPE_FILE);
 			}
+			else if(field.isMultivalue()){
+				attrTo.setFormType(CustomAttribute.FORM_TYPE_TABULAR);
+			}
 			else /* if(fieldName.isFreeText())*/{
 				attrTo.setFormType(CustomAttribute.FORM_TYPE_TEXTAREA);
 			}

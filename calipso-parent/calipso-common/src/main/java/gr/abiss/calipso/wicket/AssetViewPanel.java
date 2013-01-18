@@ -46,6 +46,7 @@ import gr.abiss.calipso.dto.KeyValuePair;
 import gr.abiss.calipso.util.ExcelUtils;
 import gr.abiss.calipso.util.PdfUtils;
 import gr.abiss.calipso.wicket.components.PdfRequestTarget;
+import gr.abiss.calipso.wicket.components.formfields.MultipleValuesTextField;
 import gr.abiss.calipso.wicket.components.viewLinks.AssetViewLink;
 import gr.abiss.calipso.wicket.components.viewLinks.OrganizationViewLink;
 import gr.abiss.calipso.wicket.components.viewLinks.UserViewLink;
@@ -179,10 +180,14 @@ public class AssetViewPanel extends BasePanel {
 					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", country!=null?localize(country):"").setEscapeModelStrings(false);
 					listItem.add(customAttributeValueLabel);
 					
-				} else {
+				} else if (customAttr.getFormType().equals(AssetTypeCustomAttribute.FORM_TYPE_TABULAR)) {
 					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", value).setEscapeModelStrings(false);
 					listItem.add(customAttributeValueLabel);
-				}
+					
+				} else {
+					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", MultipleValuesTextField.toHtmlSafeTable(value)).setEscapeModelStrings(false);
+					listItem.add(customAttributeValueLabel);
+				}// 
 
 			}// populateItem
 		};
