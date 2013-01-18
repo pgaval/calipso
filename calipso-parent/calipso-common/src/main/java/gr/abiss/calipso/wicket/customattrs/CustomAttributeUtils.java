@@ -126,6 +126,7 @@ public class CustomAttributeUtils {
 	public static void parseOptionsIntoAttribute(Map<String,String> optionsTextIput, CustomAttribute attribute, List<Language> languages) {
 		//logger.info("parseOptionsIntoAttribute, attribute: "+attribute);
 		// add options
+		attribute.setPersistedVersion(attribute.getVersion());
 		attribute.setVersion(attribute.getVersion()+1);
 		attribute.removeAllLookupValues();
 		List<CustomAttributeLookupValue> optionsList = new LinkedList<CustomAttributeLookupValue>();

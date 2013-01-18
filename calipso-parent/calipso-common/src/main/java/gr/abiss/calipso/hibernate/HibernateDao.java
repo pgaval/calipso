@@ -437,35 +437,37 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         				attr.setValidationExpression(noValidation);
         			}
         			// keep lookup translations to save later
-        			List<CustomAttributeLookupValue> values = attr.getAllowedLookupValues();
-        			Map<String, Map<String, Map<String, String>>> attrLookupValuesTranslations = new HashMap<String, Map<String, Map<String, String>>>();
-        			if(CollectionUtils.isNotEmpty(values)){
-        				for (CustomAttributeLookupValue value : values) {
-        					Map<String, Map<String, String>> valueTranslations = value.getTranslations();
-        					if(MapUtils.isNotEmpty(valueTranslations)){
-        						attrLookupValuesTranslations.put(value.getListIndex()+"", value.getTranslations());
-        					}
-        				}
-        			}
-        			logger.info("storeSpace saved lookup attribue translations for later: "+attrLookupValuesTranslations);
-        			Map<String, Map<String, String>> attrTranslations = attr.getTranslations();
-        			logger.info("storeSpace saved lookup attribue translations for later: "+attrLookupValuesTranslations);
-        			attr = (ItemFieldCustomAttribute) getHibernateTemplate().merge(attr);
-        			logger.info("attr translations after merge: "+attr.getTranslations());
-        			attr.setTranslations(attrTranslations);
-        			this.saveOrUpdateTranslations(attr);
-        			field.setCustomAttribute(attr);
-        			// save lookup translations
-        			if(MapUtils.isNotEmpty(attrLookupValuesTranslations)){
-        				values = attr.getAllowedLookupValues();
-        				for (CustomAttributeLookupValue value : values) {
-        					Map<String, Map<String, String>> lookupTranslations = attrLookupValuesTranslations.get(value.getListIndex()+"");
-        					if(MapUtils.isNotEmpty(lookupTranslations)){
-        	        			logger.info("value translations after merge: "+value.getTranslations());
-        						value.setTranslations(lookupTranslations);
-        						this.saveOrUpdateTranslations(value);
-        					}
-        				}
+        			if(attr.getVersion().intValue() > attr.getPersistedVersion().intValue()){
+        				List<CustomAttributeLookupValue> values = attr.getAllowedLookupValues();
+            			Map<String, Map<String, Map<String, String>>> attrLookupValuesTranslations = new HashMap<String, Map<String, Map<String, String>>>();
+            			if(CollectionUtils.isNotEmpty(values)){
+            				for (CustomAttributeLookupValue value : values) {
+            					Map<String, Map<String, String>> valueTranslations = value.getTranslations();
+            					if(MapUtils.isNotEmpty(valueTranslations)){
+            						attrLookupValuesTranslations.put(value.getListIndex()+"", value.getTranslations());
+            					}
+            				}
+            			}
+            			logger.info("storeSpace saved lookup attribue translations for later: "+attrLookupValuesTranslations);
+            			Map<String, Map<String, String>> attrTranslations = attr.getTranslations();
+            			logger.info("storeSpace saved lookup attribue translations for later: "+attrLookupValuesTranslations);
+            			attr = (ItemFieldCustomAttribute) getHibernateTemplate().merge(attr);
+            			logger.info("attr translations after merge: "+attr.getTranslations());
+            			attr.setTranslations(attrTranslations);
+            			this.saveOrUpdateTranslations(attr);
+            			field.setCustomAttribute(attr);
+            			// save lookup translations
+            			if(MapUtils.isNotEmpty(attrLookupValuesTranslations)){
+            				values = attr.getAllowedLookupValues();
+            				for (CustomAttributeLookupValue value : values) {
+            					Map<String, Map<String, String>> lookupTranslations = attrLookupValuesTranslations.get(value.getListIndex()+"");
+            					if(MapUtils.isNotEmpty(lookupTranslations)){
+            	        			logger.info("value translations after merge: "+value.getTranslations());
+            						value.setTranslations(lookupTranslations);
+            						this.saveOrUpdateTranslations(value);
+            					}
+            				}
+            			}
         			}
         		}
         		else{

@@ -307,11 +307,9 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 
 			if (history.getAssignedTo() != null) {
 				assignedToChoice.setVisible(true);
-				//hide.setVisible(false);
-			} else{
-				assignedToChoice.setVisible(true);
-				
-			}
+				hide.setVisible(false);
+			} else
+				assignedToChoice.setVisible(false);
 
 			assignedToChoice.setOutputMarkupId(true);
 			assignedToChoice.setNullValid(true);
@@ -368,19 +366,25 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			}
 			add(nextButton.setVisible(submitUtils.getNextState() != null));
 
-			boolean statusChoiceVisible = true;//submitUtils.isStateChangeAllowed();// && submitUtils.getSingleStateChangeAllowed() == null;
+
+			boolean statusChoiceVisible = submitUtils.isStateChangeAllowed() && submitUtils.getSingleStateChangeAllowed() == null;
 			Button submitButton = new Button("submitButton");
-			add(submitButton.setVisible(true));
-			
-			
+			add(submitButton.setVisible(statusChoiceVisible));
+
+			logger.info("states for dropdown: "+states);
+			logger.info("states for dropdown: "+statesMap);
 			
 			statusChoice = new IndicatingDropDownChoice("status", states,
-					new IChoiceRenderer() {
-						public Object getDisplayValue(Object o) {
+					new IChoiceRenderer<Integer>() {
+
+						@Override
+						public Object getDisplayValue(Integer o) {
 							return statesMap.get(o);
 						}
 
-						public String getIdValue(Object o, int i) {
+						@Override
+						public String getIdValue(Integer o, int index) {
+							// TODO Auto-generated method stub
 							return o.toString();
 						}
 					});
@@ -394,7 +398,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 					// logger.info("Selected status : " + selectedStatus);
 					if (selectedStatus == null) {
 						assignedToChoice.setVisible(true);
-						hide.setVisible(true);// changed to true
+						hide.setVisible(false);// changed to true
 					} else {
 						// if
 						// (selectedStatus==State.MOVE_TO_OTHER_SPACE){//Assign

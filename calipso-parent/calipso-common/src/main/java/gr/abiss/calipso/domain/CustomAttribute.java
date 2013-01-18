@@ -98,6 +98,7 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 	/* persisted in table */
 	protected Long id = null;
 	protected Integer version = 0;
+	protected Integer persistedVersion = 0;
 	protected String name;
 	private String mappingKey = null;
 	protected Integer formType;
@@ -257,6 +258,14 @@ public abstract class CustomAttribute extends AbstractI18nResourceTranslatable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	public Integer getPersistedVersion() {
+		return persistedVersion;
+	}
+
+	public void setPersistedVersion(Integer persistedVersion) {
+		this.persistedVersion = persistedVersion;
 	}
 
 	@Override
