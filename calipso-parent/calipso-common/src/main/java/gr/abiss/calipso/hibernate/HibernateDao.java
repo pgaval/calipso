@@ -420,7 +420,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         	if(CollectionUtils.isNotEmpty(templates)){
         		for(ItemRenderingTemplate template : templates){
         			template.setSpace(space);
-        			this.getHibernateTemplate().save(template);
+        			this.getHibernateTemplate().merge(template);
         		}
         	}
         		

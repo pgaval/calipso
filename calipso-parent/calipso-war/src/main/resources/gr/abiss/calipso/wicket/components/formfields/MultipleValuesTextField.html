@@ -9,8 +9,21 @@
 		<form wicket:id="addValueform">
 			<div wicket:id="feedback"></div>
 			<table>
+				<thead>
+					<tr class="heading">
+						<th wicket:id="subFieldsListView" class="bottom">
+							<label wicket:id="newValueLabel"></label>
+							<input type="text" wicket:id="newValueField" />
+							<span wicket:id="newValueHelp"></span><span>&nbsp;</span>
+						</th>
+						<td wicket:id="submitControls" class="right" colspan="">
+							<input type="submit" wicket:id="add" class="submit-to-add"  wicket:message="value:add" />
+							<input type="reset" wicket:id="reset"  wicket:message="value:reset" />
+						</td>
+					</tr>
+				</thead>
 				<tbody>
-					<tr wicket:id="row">
+					<tr wicket:id="row" class="multivalue">
 						<td wicket:id="cell">
 							<span wicket:id="cellValue" ></span>
 						</td>
@@ -19,19 +32,7 @@
 						</td>
 					</tr>
 				</tbody>
-				<tr>
-					<td wicket:id="subFieldsListView" class="bottom">
-						<label wicket:id="newValueLabel"></label>
-						<br />
-						<input type="text" wicket:id="newValueField" />
-						<br />
-						<span wicket:id="newValueHelp"></span><span>&nbsp;</span>
-					</td>
-					<td wicket:id="submitControls" class="right" colspan="">
-						<input type="submit" wicket:id="add" class="submit-to-add"  wicket:message="value:add" />
-						<input type="reset" wicket:id="reset"  wicket:message="value:reset" />
-					</td>
-				</tr>
+				
 				
 			</table>
 			

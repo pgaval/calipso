@@ -1,18 +1,31 @@
 <wicket:panel>
 <!-- begin:HeaderPanel.html -->
-	<div class="nav-header">
+	<div class="header">
 		<span class="fright">
 		    <a class="nav-header-link" wicket:id="user"><span wicket:id="user"></span></a>
-		    <a class="nav-header-link" wicket:id="dashboard"><img src="resources/header_icon_home_24x24.gif" wicket:message="alt:header.dashboard,title:header.dashboard" /></a>
-		    <a class="nav-header-link" wicket:id="search"><img src="resources/header_icon_search_24x24.gif" wicket:message="alt:header.search,title:header.search" /></a>
-		    <a class="nav-header-link" wicket:id="options"><img src="resources/header_icon_options_24x24.gif" wicket:message="alt:header.options,title:header.options" /></a>
-		    <a class="nav-header-link" wicket:id="logout"><img src="resources/header_icon_logout_24x24.gif" wicket:message="alt:header.logout,title:header.logout" /></a>
+		    <a class="nav-header-link" wicket:id="logout"><wicket:message key="header.logout" /></a>
 		    <a class="nav-header-link" wicket:id="register"><wicket:message key="header.register" /></a>
 		    <a class="nav-header-link" wicket:id="login"><wicket:message key="header.login" /></a>
 	    </span>
-	    <h1 class="main-logo"><img src="resources/img/logo.png" /></h1>
+	    <div class="clear">
+	    	<div class="logobox">
+	    		<h2 class="logo">
+					<a href="">
+						<span><wicket:message key="header.logo.imgtext" /></span>
+					</a>
+				</h2>
+	    	</div>
+	    </div>
 	</div>
 	<div class="clear"> </div>
+	
+	<div class="top_nav noindex">
+		<ul class="list-nav">
+			<li class="first"><a class="nav-header-link" wicket:id="dashboard"><wicket:message key="header.dashboard" /></a></li>
+		    <li><a class="nav-header-link" wicket:id="search"><wicket:message key="header.search" /></a></li>
+		    <li><a class="nav-header-link" wicket:id="options"><wicket:message key="header.options" /></a></li>
+		</ul>
+	</div>
 	<!--div class="menu-h">
 		<div class="wrapheader-left">
 			<div class="wrapheader-right">

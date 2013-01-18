@@ -17,15 +17,24 @@
         <link rel="alternate stylesheet" type="text/css" href="resources/css/medium.css" title="A+" />
         
         <script type="text/javascript" src="resources/js/styleswitcher.js"> </script> 
-    </head>    
+    </head>
     <body>
     	<div id="container">
 	    	<div wicket:id="header"></div>
   			<div class="main-content" style="float:none;padding-top:40px;align:center;text-align:center;margin:auto;"> <wicket:child></wicket:child> </div>
   			<div class="footer">
-    			<wicket:message key="footer.footerLine" /> 
-    			<a href="http://calipso.abiss.gr" target="_blank">Calipso</a>
-    			<span wicket:id="version"></span>
+    			<div class="left">
+    				<ul class="links">
+    					<li>
+    						<wicket:message key="footer.footerLine" />
+    						<a href="http://calipso.abiss.gr" target="_blank">Calipso</a>
+    						<span wicket:id="version"></span>
+    					</li>
+    				</ul>
+    			</div>
+    			<div class="right">
+    				<wicket:message key="footer.footerLineRight" /> 
+    			</div>
     		</div>
 	    </div>
     </body>
