@@ -456,7 +456,7 @@ public class SpaceFormPanel extends BasePanel {
 					// space.setName(space.getNameTranslations().get(space.getSupportedLanguages().get(0).getId()));
 					//logger.debug("next clicked, space roles: "+space.getSpaceRoles());
 					CalipsoService calipso = getCalipso();
-					if (copyFrom != null) {
+					if (copyFrom != null && !space.getPublished()) {
 						Space spaceFrom = calipso.loadSpace(copyFrom.getId());
 						SpaceUtils.copySpace(calipso, spaceFrom, SpaceForm.this.getSpace());
 						logger.debug("Space roles: "+space.getSpaceRoles());
@@ -495,7 +495,7 @@ public class SpaceFormPanel extends BasePanel {
 				DropDownChoice choice = new DropDownChoice("copyFrom",	spaces, new IChoiceRenderer() { 
 					public Object getDisplayValue(Object o) { 
 						Space space = (Space) o;
-						return new StringBuffer(space.getSpaceGroup().getName())
+						return new StringBuffer(space.getSpaceGroup() != null ? space.getSpaceGroup().getName():"")
 							.append(": ")
 							.append(localize(space.getNameTranslationResourceKey())); 
 					}
