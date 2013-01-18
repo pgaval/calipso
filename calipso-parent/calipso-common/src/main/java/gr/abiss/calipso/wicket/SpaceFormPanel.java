@@ -40,6 +40,7 @@ import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.SpaceGroup;
+import gr.abiss.calipso.domain.SpaceRole;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.util.BreadCrumbUtils;
 import gr.abiss.calipso.util.SpaceUtils;
@@ -50,6 +51,7 @@ import gr.abiss.calipso.wicket.form.AbstractSpaceform;
 import gr.abiss.calipso.wicket.space.panel.SpacePanelLanguageSupport;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -457,6 +459,7 @@ public class SpaceFormPanel extends BasePanel {
 					//logger.debug("next clicked, space roles: "+space.getSpaceRoles());
 					CalipsoService calipso = getCalipso();
 					if (copyFrom != null && !space.getPublished()) {
+						space.setSpaceRoles(new HashSet<SpaceRole>());
 						Space spaceFrom = calipso.loadSpace(copyFrom.getId());
 						SpaceUtils.copySpace(calipso, spaceFrom, SpaceForm.this.getSpace());
 						logger.debug("Space roles: "+space.getSpaceRoles());
