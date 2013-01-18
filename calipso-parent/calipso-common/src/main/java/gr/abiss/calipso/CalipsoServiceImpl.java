@@ -1520,13 +1520,13 @@ public class CalipsoServiceImpl implements CalipsoService {
 							if(CollectionUtils.isEmpty(results)){
 								AssetTypeCustomAttribute assetTypeAttr = new AssetTypeCustomAttribute();
 								assetTypeAttr.setName(attribute.getName());
+								results.add(assetTypeAttr);
+								
+							}
+							for(AssetTypeCustomAttribute assetTypeAttr : results){
 								SpaceUtils.copy(this, space, field, assetTypeAttr);
 								//logger.info("Creating asset attribute '"+field.getLabel()+"' for missing key: "+attribute.getMappingKey());
 								storeCustomAttribute(assetTypeAttr);
-							}
-							else{
-								//logger.info("Asset attribute exists for mapping key: "+attribute.getMappingKey());
-							
 							}
 						}
 					}
