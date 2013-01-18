@@ -307,9 +307,11 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 
 			if (history.getAssignedTo() != null) {
 				assignedToChoice.setVisible(true);
-				hide.setVisible(false);
-			} else
-				assignedToChoice.setVisible(false);
+				//hide.setVisible(false);
+			} else{
+				assignedToChoice.setVisible(true);
+				
+			}
 
 			assignedToChoice.setOutputMarkupId(true);
 			assignedToChoice.setNullValid(true);
