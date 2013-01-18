@@ -110,7 +110,7 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 		String htmlSuffix = ItemUtils.fmt("item_view.automatically.created.asset", new Object[]{assetType.getName(), asset.getInventoryCode()}, calipsoService.getMessageSource(), new Locale(history.getLoggedBy().getLocale()));
 		history.setHtmlComment(history.getHtmlComment()+htmlSuffix);
 		history.setComment(history.getComment()+XmlUtils.stripTags(htmlSuffix));
-		calipsoService.updateItem(item, history.getLoggedBy(), false);
+		//	calipsoService.updateItem(item, history.getLoggedBy(), false);
 		//calipsoService.updateHistory(history);
 		return asset;
 	}
