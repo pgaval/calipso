@@ -478,7 +478,7 @@ public class SpaceFormPanel extends BasePanel {
 			// hide copy from option if edit ===================================
 			
 			WebMarkupContainer hide = new WebMarkupContainer("hide");
-			if(space.getId() > 0) { 
+			if(space.getPublished()) { 
 				hide.setVisible(false); 
 				}
 			else { 
