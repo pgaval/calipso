@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.NumberUtils;
@@ -130,7 +131,7 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 		}
 		if(asset.getInventoryCode() == null){
 			// use the item creating the asset as an inventory code
-			asset.setInventoryCode(item.getUniqueRefId());
+			asset.setInventoryCode(UUID.randomUUID().toString());
 		}
 		List<Field> itemFields = item.getSpace().getMetadata().getFieldList();
 		if(CollectionUtils.isNotEmpty(assetType.getAllowedCustomAttributes())){
