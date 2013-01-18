@@ -368,7 +368,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 
 			boolean statusChoiceVisible = submitUtils.isStateChangeAllowed() && submitUtils.getSingleStateChangeAllowed() == null;
 			Button submitButton = new Button("submitButton");
-			add(submitButton.setVisible(statusChoiceVisible));
+			add(submitButton.setVisible(true));
 			
 			
 			
