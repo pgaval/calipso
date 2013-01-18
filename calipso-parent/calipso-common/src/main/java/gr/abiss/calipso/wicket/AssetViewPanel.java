@@ -181,11 +181,11 @@ public class AssetViewPanel extends BasePanel {
 					listItem.add(customAttributeValueLabel);
 					
 				} else if (customAttr.getFormType().equals(AssetTypeCustomAttribute.FORM_TYPE_TABULAR)) {
-					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", value).setEscapeModelStrings(false);
+					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", MultipleValuesTextField.toHtmlSafeTable(value)).setEscapeModelStrings(false);
 					listItem.add(customAttributeValueLabel);
 					
 				} else {
-					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", MultipleValuesTextField.toHtmlSafeTable(value)).setEscapeModelStrings(false);
+					Label customAttributeValueLabel = (Label) new Label("customAttributeValue", value).setEscapeModelStrings(false);
 					listItem.add(customAttributeValueLabel);
 				}// 
 
