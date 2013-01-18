@@ -36,7 +36,7 @@ public class SpaceGroup implements Serializable {
 	private Long id;
 	private String name;
 	private String description;
-	private Set<User> admins;
+	private Set<User> admins = new HashSet<User>();
 	private Set<Space> spaces;
 
 	/**
