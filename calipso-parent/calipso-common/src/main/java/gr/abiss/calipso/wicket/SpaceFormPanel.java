@@ -461,7 +461,7 @@ public class SpaceFormPanel extends BasePanel {
 						SpaceUtils.copySpace(calipso, spaceFrom, SpaceForm.this.getSpace());
 						logger.debug("Space roles: "+space.getSpaceRoles());
 					}
-					if(space.getSpaceGroup().getId() == null){
+					if(space.getSpaceGroup() != null && space.getSpaceGroup().getId() == null){
 						space.getSpaceGroup().getAdmins().add(getPrincipal());
 					}
 					activate(new IBreadCrumbPanelFactory() {
