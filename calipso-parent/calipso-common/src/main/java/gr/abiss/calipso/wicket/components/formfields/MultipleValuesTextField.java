@@ -30,6 +30,8 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.wicket.Component;
+import org.apache.wicket.Localizer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
@@ -126,15 +128,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 
 		// subValuesString = this.getModelValue();
 		originalValues = this.getModelValue();// subValuesString;
-		List<FieldConfig> subFieldConfigs = this.fieldConfig != null ? this.fieldConfig
-				.getSubFieldConfigs() : new LinkedList<FieldConfig>();
-		if (CollectionUtils.isEmpty(subFieldConfigs)) {
-			if (this.fieldConfig != null) {
-				subFieldConfigs.add(fieldConfig);
-			} else {
-				subFieldConfigs.add(FieldConfig.getFallBackFieldConfig());
-			}
-		}
+		List<FieldConfig> subFieldConfigs = getSubFieldConfigs(this.fieldConfig);
 		if(valuesField == null){
 			valuesField = new HiddenField<String>("valuesField", this.getModel());
 			mainContainer.add(valuesField);
@@ -251,6 +245,20 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			this.valuesField.setModelObject(s);
 
 		}
+	}
+
+	private List<FieldConfig> getSubFieldConfigs(FieldConfig fieldConfig) {
+		List<FieldConfig> subFieldConfigs = fieldConfig != null 
+				? fieldConfig.getSubFieldConfigs() 
+				: new LinkedList<FieldConfig>();
+		if (CollectionUtils.isEmpty(subFieldConfigs)) {
+			if (fieldConfig != null) {
+				subFieldConfigs.add(fieldConfig);
+			} else {
+				subFieldConfigs.add(FieldConfig.getFallBackFieldConfig());
+			}
+		}
+		return subFieldConfigs;
 	}
 
 	/**
@@ -429,23 +437,49 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				.replaceAll(MultipleValuesTextField.SEPARATOR_LINE_SUBVALUE_REGEXP, " ");
 		return html;
 	}
+	
 	/**
-	 * Return the value a raw HTML <code>&lt;table&gt;</code>. The original input is HTML escaped.
+	 * Return the value a raw HTML <code>&lt;table&gt;</code> without eadings. The original input is HTML escaped.
 	 * @param input
 	 * @return
 	 */
 	public static String toHtmlSafeTable(String input){
+		return toHtmlSafeTable(input, null, null, null);
+	}
+
+	/**
+	 * Return the value a raw HTML <code>&lt;table&gt;</code> with eadings. The original input is HTML escaped.
+	 * @param input
+	 * @return
+	 */
+	public static String toHtmlSafeTable(String input, FieldConfig fieldConfig, Localizer localizer, Component callerComponent){
 		StringBuffer html = new StringBuffer();
 		List<String> escapedLines = MultipleValuesTextField.getValueRows(HtmlUtils.htmlEscape(input));
 		if(CollectionUtils.isNotEmpty(escapedLines)){
-			html.append("<table cellspacing=\"0\">");
-			int lineIndex = 0;
+			html.append("<table cellspacing=\"1\" class=\"custom-attribute-tabular\">");
+			if(fieldConfig != null && localizer != null && callerComponent != null){
+				 List<FieldConfig> configs = fieldConfig.getSubFieldConfigs();
+				if(CollectionUtils.isNotEmpty(configs)){
+					html.append("<thead><tr>");
+						int styleWidth = 100/configs.size();
+						for(FieldConfig config :configs){
+							html.append("<th style=\"width:"+styleWidth+"%\">");
+							html.append(localizer.getString(config.getLabelKey(), callerComponent));
+							html.append("</th>");
+						}
+							
+					html.append("</tr></thead>");
+				}
+			}
+			html.append("<tbody>");
+			int lineIndex = 1;
 			for(String line : escapedLines){
 				List<String> escapedLineSubvalues = MultipleValuesTextField.getValueRowSubvalues(line);
 				if(CollectionUtils.isNotEmpty(escapedLineSubvalues)){
+					int styleWidth = 100/escapedLineSubvalues.size();
 					html.append(lineIndex % 2 == 0 ? "<tr class=\"even\">" :  "<tr class=\"odd\">");
 					for(String subValue : escapedLineSubvalues){
-						html.append("<td>");
+						html.append("<td style=\"width:"+styleWidth+"%\">");
 						html.append(subValue);
 						html.append("</td>");
 					}
@@ -453,6 +487,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				}
 				lineIndex++;
 			}
+			html.append("</tbody>");
 			html.append("</table>");
 		}
 //		String html = escapedInput.replaceAll("\\n", "<br />")
