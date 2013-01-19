@@ -351,7 +351,8 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				}
 				
 			};
-			add(previousButton.setVisible(submitUtils.getPreviousState() != null));
+			//add(previousButton.setVisible(submitUtils.getPreviousState() != null));
+			add(previousButton.setVisible(false));
 
 			Button nextButton = new Button("nextButton", new StringResourceModel(submitUtils.isClosedAllowedOnly()?"submit":"next", this, null)){
 				@Override
@@ -364,10 +365,11 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			if(submitUtils.isClosedAllowedOnly()){
 				nextButton.add(new AttributeModifier("class", new Model("submit-to-close")));
 			}
-			add(nextButton.setVisible(submitUtils.getNextState() != null));
+			//add(nextButton.setVisible(submitUtils.getNextState() != null));
+			add(nextButton.setVisible(false));
 
 
-			boolean statusChoiceVisible = submitUtils.isStateChangeAllowed() && submitUtils.getSingleStateChangeAllowed() == null;
+			boolean statusChoiceVisible = true;//submitUtils.isStateChangeAllowed() && submitUtils.getSingleStateChangeAllowed() == null;
 			Button submitButton = new Button("submitButton");
 			add(submitButton.setVisible(statusChoiceVisible));
 
