@@ -328,7 +328,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 					.getPermittedTransitions(user);
 			List<Integer> states = new ArrayList(statesMap.keySet());
 			
-			// The states list is ordered from low to high,  
+			// The states list is ordered from low to high,   
 			// we can use it to check for the "naturally " 
 			// previous and next state to add buttons as appropriate 
 			this.submitUtils = new SubmitUtilDao(states, item.getStatus().intValue());
