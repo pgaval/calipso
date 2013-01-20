@@ -58,6 +58,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -252,9 +253,9 @@ public class ItemSearchForm extends BasePanel {
                 
                 if(expandAll) {
                     ch.getFilterCriteria().setExpression(validExpressions.get(0));
-                    fragParent = ch.getFilterUiFragment(this, getPrincipal(), getCurrentSpace(), getCalipso());
+                    fragParent = ch.getFilterUiFragment(form, getPrincipal(), getCurrentSpace(), getCalipso());
                 } else {
-                    fragParent = getFilterUiFragment(ch);
+                    fragParent = getFilterUiFragment(form, ch);
                 }
                 
                 
@@ -269,7 +270,7 @@ public class ItemSearchForm extends BasePanel {
                             return;
                         }
 
-                        Component fragment = getFilterUiFragment(ch);
+                        Component fragment = getFilterUiFragment(form, ch);
                         fragment.setOutputMarkupId(true);
                         listItem.replace(fragment);
                         target.addComponent(fragment);
@@ -280,12 +281,12 @@ public class ItemSearchForm extends BasePanel {
         });
     }
 
-    private Component getFilterUiFragment(ColumnHeading ch) {
+    private Component getFilterUiFragment(MarkupContainer container, ColumnHeading ch) {
         if(ch.getFilterCriteria().getExpression() == null) {
             return new WebMarkupContainer("fragParent");
         }    
 
-        return ch.getFilterUiFragment(this, getPrincipal(), getCurrentSpace(), getCalipso());
+        return ch.getFilterUiFragment(container, getPrincipal(), getCurrentSpace(), getCalipso());
     }
 
 }
