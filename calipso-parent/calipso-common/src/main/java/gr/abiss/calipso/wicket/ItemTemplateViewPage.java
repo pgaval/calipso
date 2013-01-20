@@ -46,6 +46,7 @@ public class ItemTemplateViewPage extends WebPage {
 		ItemRenderingTemplate tmpl = new ItemRenderingTemplate();
 		tmpl.setHideHistory(true);
 		tmpl.setHideOverview(false);
+		tmpl.setShowSpaceName(true);
 		add(new ItemView("panel", null, tmpl, item, true).setRenderBodyOnly(true));
 		
     }

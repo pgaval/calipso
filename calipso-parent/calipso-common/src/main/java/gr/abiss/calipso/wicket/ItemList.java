@@ -75,6 +75,7 @@ import gr.abiss.calipso.util.ItemUtils;
 import gr.abiss.calipso.util.StdFieldsUtils;
 import gr.abiss.calipso.wicket.asset.ItemAssetTypesPanel;
 import gr.abiss.calipso.wicket.components.formfields.HumanTimeDurationConverter;
+import gr.abiss.calipso.wicket.components.formfields.MultipleValuesTextField;
 import gr.abiss.calipso.wicket.components.viewLinks.UserViewLink;
 
 import java.io.IOException;
@@ -540,6 +541,9 @@ public class ItemList extends BasePanel {
                         	}
                         	else if (ch.getField().getName().isFile()){
                         		value = new ResourceModel(item.getCustomValue(ch.getField()) != null ? "asset.customAttribute.yes" : "asset.customAttribute.no");
+                        	}
+                        	else if (ch.getField().isMultivalue()){
+                        		value = new Model(MultipleValuesTextField.toHtmlSafeLines(item.getCustomValue(ch.getField()).toString()));
                         	}
                         	else{
                         		value = new Model(item.getCustomValue(ch.getField()).toString());

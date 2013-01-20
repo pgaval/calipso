@@ -36,20 +36,31 @@
 
 package gr.abiss.calipso.wicket;
 
+import gr.abiss.calipso.domain.ItemSearch;
+import gr.abiss.calipso.domain.SavedSearch;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.User;
+import gr.abiss.calipso.exception.CalipsoSecurityException;
+import gr.abiss.calipso.util.BreadCrumbUtils;
+import gr.abiss.calipso.util.ItemUtils;
 import gr.abiss.calipso.wicket.register.RegisterAnonymousUserFormPage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.Cookie;
 import org.acegisecurity.context.SecurityContextHolder;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
+import org.apache.wicket.extensions.breadcrumb.BreadCrumbLink;
+import org.apache.wicket.extensions.breadcrumb.IBreadCrumbParticipant;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -63,16 +74,18 @@ public class HeaderPanel extends BasePanel {
 	// this constructor draws only the title. Used in login and logout
 	public HeaderPanel(boolean simple) {
 		super("header");
-		try{
-		add(new WebMarkupContainer("user").setVisible(false));
-		add(new WebMarkupContainer("logout").setVisible(false));
-		}catch(Throwable e){
+		try {
+			add(new WebMarkupContainer("user").setVisible(false));
+			add(new WebMarkupContainer("logout").setVisible(false));
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-		boolean hideLogin = BooleanUtils.toBoolean(getCalipso().loadConfig("calipso.hideLoginLink"));
-		boolean hideRegister = BooleanUtils.toBoolean(getCalipso().loadConfig("calipso.hideRegisterLink"));
+		boolean hideLogin = BooleanUtils.toBoolean(getCalipso().loadConfig(
+				"calipso.hideLoginLink"));
+		boolean hideRegister = BooleanUtils.toBoolean(getCalipso().loadConfig(
+				"calipso.hideRegisterLink"));
 		final User user = getPrincipal();
-		if ((user == null || user.getId() == 0) ) {
+		if ((user == null || user.getId() == 0)) {
 			add(new Link("login") {
 				public void onClick() {
 					setResponsePage(LoginPage.class);
@@ -83,39 +96,39 @@ public class HeaderPanel extends BasePanel {
 					setResponsePage(RegisterAnonymousUserFormPage.class);
 				}
 			}.setVisible(!hideRegister));// TODO: move to config
-		} 
-		else{
+		} else {
 			add(new WebMarkupContainer("login").setVisible(false));
 			add(new WebMarkupContainer("register").setVisible(false));
 		}
 		add(new WebMarkupContainer("dashboard").setVisible(false));
 		add(new WebMarkupContainer("search").setVisible(false));
 		add(new WebMarkupContainer("options").setVisible(false));
-		//add(new WebMarkupContainer("space").setVisible(false));
-		//add(new WebMarkupContainer("new").setVisible(false));
+		// add(new WebMarkupContainer("space").setVisible(false));
+		// add(new WebMarkupContainer("new").setVisible(false));
 	}
 
 	public HeaderPanel() {
 		super("header");
-		
-		final User user = getPrincipal();
-		final List<Space> spaces = user !=null ? new ArrayList<Space>(user.getSpaces()):new ArrayList<Space>();
-		
 
-		boolean hideLogin = BooleanUtils.toBoolean(getCalipso().loadConfig("calipso.hideLoginLink"));
-		boolean hideRegister = BooleanUtils.toBoolean(getCalipso().loadConfig("calipso.hideRegisterLink"));
+		final User user = getPrincipal();
+		final List<Space> spaces = user != null ? new ArrayList<Space>(
+				user.getSpaces()) : new ArrayList<Space>();
+
+		boolean hideLogin = BooleanUtils.toBoolean(getCalipso().loadConfig(
+				"calipso.hideLoginLink"));
+		boolean hideRegister = BooleanUtils.toBoolean(getCalipso().loadConfig(
+				"calipso.hideRegisterLink"));
 		// manage single space
-		if(spaces.size() == 1){
+		if (spaces.size() == 1) {
 			setCurrentSpace(spaces.get(0));
 		}
 		final Space space = getCurrentSpace();
 		Component link = null;
-		if(getPrincipal().isAnonymous()){
-			ExternalLink externalLink = new ExternalLink("dashboard", "/");  
-			externalLink.setContextRelative(true);  
+		if (getPrincipal().isAnonymous()) {
+			ExternalLink externalLink = new ExternalLink("dashboard", "/");
+			externalLink.setContextRelative(true);
 			link = externalLink;
-		}
-		else{
+		} else {
 			link = new Link("dashboard") {
 				public void onClick() {
 					setCurrentSpace(null);
@@ -124,46 +137,40 @@ public class HeaderPanel extends BasePanel {
 			};
 		}
 		add(link);
-		
-		if (space  == null ) {
-			
-			//add(new Label("space", "").setVisible(false));// 1
-			//add(new Label("new", "").setVisible(false));// 2
+
+		if (space == null) {
+
+			// add(new Label("space", "").setVisible(false));// 1
+			// add(new Label("new", "").setVisible(false));// 2
 			add(new Link("search") {// 3
 				public void onClick() {
 					setResponsePage(ItemSearchFormPage.class);
 				}
-			}.setVisible(user != null && user.getSpaceCount() > 0 && !user.isAnonymous()));
-		}
-		else {
-			/*add(new Link("space") {
-				@Override
-				public void onClick() {
-					setResponsePage(SpacePage.class);
-				}
-			}.add(new Label("space", space.getName())));*/
+			}.setVisible(user != null && user.getSpaceCount() > 0
+					&& !user.isAnonymous()));
+		} else {
+			/*
+			 * add(new Link("space") {
+			 * 
+			 * @Override public void onClick() {
+			 * setResponsePage(SpacePage.class); } }.add(new Label("space",
+			 * space.getName())));
+			 */
 			// add(new WebMarkupContainer("space").add(new Label("space",
 			// space.getName())));
 
 			// In case that User opens an Item direct from e-mail notification
 			// link
 			// and has no access to this Item
-			/*try {
-				if (user.getPermittedTransitions(space, State.NEW).size() > 0) {
-					add(new Link("new") {
-						public void onClick() {
-							setResponsePage(ItemFormPage.class);
-						}
-					});
-				} else {
-					add(new WebMarkupContainer("new").setVisible(false));
-				}
-			} catch (Exception e) {
-				logger.error("user.getPermittedTransitions :: "
-						+ e.getMessage());
-				add(new WebMarkupContainer("new").setVisible(false));
-			}
-			*/
+			/*
+			 * try { if (user.getPermittedTransitions(space, State.NEW).size() >
+			 * 0) { add(new Link("new") { public void onClick() {
+			 * setResponsePage(ItemFormPage.class); } }); } else { add(new
+			 * WebMarkupContainer("new").setVisible(false)); } } catch
+			 * (Exception e) { logger.error("user.getPermittedTransitions :: " +
+			 * e.getMessage()); add(new
+			 * WebMarkupContainer("new").setVisible(false)); }
+			 */
 			add(new Link("search") {
 				public void onClick() {
 					// if search then we user global search
@@ -172,6 +179,7 @@ public class HeaderPanel extends BasePanel {
 				}
 			}.setVisible(user.getSpaceCount() > 0 && !user.isAnonymous()));
 		}
+
 		if (user == null || user.getId() == 0) {
 			add(new WebMarkupContainer("options").setVisible(false));
 			add(new WebMarkupContainer("logout").setVisible(false));
@@ -226,7 +234,9 @@ public class HeaderPanel extends BasePanel {
 				public void onClick() {
 					setResponsePage(new UserViewPage(user));
 				}
-			}.add(new Label("user", user.getDisplayValue()).setRenderBodyOnly(true)));
+			}.add(new Label("user", user.getDisplayValue())
+					.setRenderBodyOnly(true)));
 		}
 	}
+
 }

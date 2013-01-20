@@ -34,6 +34,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class ItemRenderingTemplate extends RenderingTemplate {
 
 	private Short priority = 0;
+	private Boolean showSpaceName = Boolean.FALSE;
 	private Boolean hideOverview = Boolean.FALSE;
 	private Boolean hideHistory = Boolean.FALSE;
 
@@ -60,6 +61,15 @@ public class ItemRenderingTemplate extends RenderingTemplate {
 
 	public void setPriority(Short priority) {
 		this.priority = priority;
+	}
+	
+
+	public Boolean getShowSpaceName() {
+		return showSpaceName;
+	}
+
+	public void setShowSpaceName(Boolean showSpaceName) {
+		this.showSpaceName = showSpaceName;
 	}
 
 	public Boolean getHideOverview() {

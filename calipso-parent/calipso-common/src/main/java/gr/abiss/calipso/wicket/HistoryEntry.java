@@ -29,6 +29,7 @@ import gr.abiss.calipso.domain.StdFieldMask;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.util.DateUtils;
 import gr.abiss.calipso.util.ItemUtils;
+import gr.abiss.calipso.wicket.components.formfields.MultipleValuesTextField;
 import gr.abiss.calipso.wicket.components.viewLinks.OrganizationViewLink;
 import gr.abiss.calipso.wicket.components.viewLinks.UserViewLink;
 import gr.abiss.calipso.wicket.fileUpload.AttachmentDownLoadableLinkPanel;
@@ -198,6 +199,11 @@ public class HistoryEntry extends BasePanel {
 					// if date
 					else if (field.isDateType()) {
 						listItem.add(new Label("field", localize("item_view.changedCustomAttribute", field.getLabel(), shortDateFormat.format((Date) history.getValue(field.getName())))));
+						listItem.add(new EmptyPanel("fileLink").setVisible(false));
+					} 
+					// if tabular
+					else if (field.isMultivalue()) {
+						listItem.add(new Label("field", localize("item_view.changedCustomAttribute", field.getLabel(), MultipleValuesTextField.toHtmlSafeLines(fieldValue.toString()))));
 						listItem.add(new EmptyPanel("fileLink").setVisible(false));
 					} 
 					// else render generic change info text

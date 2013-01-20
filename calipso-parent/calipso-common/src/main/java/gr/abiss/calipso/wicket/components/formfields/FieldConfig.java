@@ -91,6 +91,7 @@ public class FieldConfig implements Serializable{
 	private Integer maxLength;
 	private String validationExpression;
 	private String style;
+	private String totalsLineFunction = null;
 	private String classname;
 	private boolean showHelpInPdf = false;
 
@@ -164,6 +165,14 @@ public class FieldConfig implements Serializable{
 	public void setStyle(String style) {
 		this.style = style;
 	}
+	public String getTotalsLineFunction() {
+		return totalsLineFunction;
+	}
+
+	public void setTotalsLineFunction(String addline) {
+		this.totalsLineFunction = addline;
+	}
+
 	public String getClassname() {
 		return classname;
 	}

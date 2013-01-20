@@ -83,6 +83,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -225,7 +226,12 @@ public class ItemView extends BasePanel {
     	//Edit item is only possible for "global" administrator and current space administrator
     	User currentUser = getPrincipal();
     	Space currentSpace = getCurrentSpace();
-    	//add(new Label("title", this.localize(currentSpace)+": "+item.getStatusValue()));
+    	if(tmpl != null && tmpl.getShowSpaceName()){
+    		add(new Label("title", this.localize(currentSpace)));
+    	}
+    	else{
+    		add(new Label("title", "").setVisible(false));
+    	}
     	
     	
     	WebMarkupContainer editContainer = new WebMarkupContainer("editContainer");
@@ -256,6 +262,11 @@ public class ItemView extends BasePanel {
     	        CharSequence resultCharSequence = renderPageHtmlInNewRequestCycle(ItemTemplateViewPage.class, new PageParameters("0=" + item.getUniqueRefId()));
     	        
     	        markup = resultCharSequence.toString();
+    	        if(StringUtils.isNotBlank(markup)){
+    	        	markup = markup.replaceFirst("../../logo.png", "logo.png").replaceFirst("../logo.png", "logo.png");
+    	        }
+    	        		
+    	        		
     	        //logger.info("printToPdf: "+markup);
             	getRequestCycle().scheduleRequestHandlerAfterCurrent(
 

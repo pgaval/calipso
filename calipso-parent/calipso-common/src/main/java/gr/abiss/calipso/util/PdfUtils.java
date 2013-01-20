@@ -197,7 +197,6 @@ public class PdfUtils {
 				Velocity.evaluate(context, writer, asset.getRefId(), templateReader);
 				// get the output as a string
 				html = writer.getBuffer().toString();
-				logger.debug("Velocity result: \n"+html);
 			}
 			else{
 				// no template exists, just output manual HTML to feed xhtmlrenderer
@@ -242,6 +241,7 @@ public class PdfUtils {
 //				htmlBuffer.append("</table>");
 				appendDefaultFooter(htmlBuffer);
 				htmlBuffer.append("</body></html>");
+
 				html = htmlBuffer.toString();
 			}
 			// convert HTML string to PDF and store it in the buffer output stream 

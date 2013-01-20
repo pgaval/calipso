@@ -48,6 +48,7 @@ import gr.abiss.calipso.domain.Organization;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.domain.ColumnHeading.Name;
 import gr.abiss.calipso.wicket.asset.ItemAssetTypesPanel;
+import gr.abiss.calipso.wicket.components.formfields.MultipleValuesTextField;
 
 import java.util.Date;
 import java.util.List;
@@ -186,28 +187,34 @@ public class ExcelUtils {
             for(ColumnHeading ch : columnHeadings) {
                 if(ch.isField()) {
                     Field field = ch.getField();
-                    switch(field.getName().getType()) {
-	                    case 3: // Integer, Options
-	                    case 33: // Integer, Options
-	                        setText(row, col++, this.callerComponent.getLocalizer().getString("CustomAttributeLookupValue."+item.getValue(field.getName())+".name", null));
-                        break;
-                        case 4: // double
-                            setDouble(row, col++, (Double) item.getValue(field.getName()));
+                    if(field.isMultivalue()){
+                    	setText(row, col++, MultipleValuesTextField.toHtmlSafeLines(item.getCustomValue(field).toString()));
+                    }
+                    else{
+
+                        switch(field.getName().getType()) {
+    	                    case 3: // Integer, Options
+    	                    case 33: // Integer, Options
+    	                        setText(row, col++, this.callerComponent.getLocalizer().getString("CustomAttributeLookupValue."+item.getValue(field.getName())+".name", null));
                             break;
-                        case 6: // date
-                            setDate(row, col++, (Date) item.getValue(field.getName()));
-                            break;
-                        case 20: // user
-                        	setText(row, col++, ((User) item.getValue(field.getName())).getFullName());
-                            break;
-                        case 10: // organization
-                        	setText(row, col++, ((Organization) item.getValue(field.getName())).getName());
-                            break;
-                        case 25: // country
-                        	setText(row, col++, ((Country) item.getValue(field.getName())).getName());
-                            break;
-                        default:
-                            setText(row, col++, item.getCustomValue(field).toString());
+                            case 4: // double
+                                setDouble(row, col++, (Double) item.getValue(field.getName()));
+                                break;
+                            case 6: // date
+                                setDate(row, col++, (Date) item.getValue(field.getName()));
+                                break;
+                            case 20: // user
+                            	setText(row, col++, ((User) item.getValue(field.getName())).getFullName());
+                                break;
+                            case 10: // organization
+                            	setText(row, col++, ((Organization) item.getValue(field.getName())).getName());
+                                break;
+                            case 25: // country
+                            	setText(row, col++, ((Country) item.getValue(field.getName())).getName());
+                                break;
+                            default:
+                                setText(row, col++, item.getCustomValue(field).toString());
+                        }
                     }
                 } else {
                     // TODO optimize if-then for performance
