@@ -1628,6 +1628,8 @@ public class ColumnHeading implements Serializable {
 
 	private List<String> setExpressionAndGetRemainingTokens(String s) {
 		String[] tokens = s.split("_");
+		logger.info("convertToExpression tokens: "+s);
+		logger.info("convertToExpression token[0]: '"+s+"'");
 		filterCriteria.setExpression(FilterCriteria
 				.convertToExpression(tokens[0]));
 		List<String> remainingTokens = new ArrayList<String>();
