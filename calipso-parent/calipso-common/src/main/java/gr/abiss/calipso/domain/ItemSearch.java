@@ -86,7 +86,6 @@ public class ItemSearch implements Serializable {
     private long resultCount;
     private String sortFieldName = "id";
     private boolean sortDescending = true;
-    //private boolean showSummary;
     private boolean showHistory;
     private boolean showDetail;
     
@@ -96,6 +95,8 @@ public class ItemSearch implements Serializable {
     
     private List<ColumnHeading> columnHeadings;
     private Map<String, FilterCriteria> filterCriteriaMap = new LinkedHashMap<String, FilterCriteria>();
+
+    private String defaultVisibleFlags;
     
     public ItemSearch(User user, Component c) {
         this.user = user;
@@ -103,10 +104,11 @@ public class ItemSearch implements Serializable {
         user.setRoleSpaceStdFieldList(ComponentUtils.getCalipso(c).findSpaceFieldsForUser(user));
         
         this.columnHeadings = ColumnHeading.getColumnHeadings(user, c);
+        this.defaultVisibleFlags = getVisibleFlags();
         pageSize = ComponentUtils.getCalipso(c).getRecordsPerPage();
     }
     
-    public ItemSearch(Space space, User user, Component c) {        
+    public ItemSearch(Space space, User user, Component c, CalipsoService calipso) {        
         this.space = space;
         //logger.info("Item search created with space: "+space+", user: "+user);
         if (user.getId()==0){//Non-loggedin Guest (Anonymous)
@@ -117,7 +119,8 @@ public class ItemSearch implements Serializable {
         else{
         	user.setRoleSpaceStdFieldList(ComponentUtils.getCalipso(c).findSpaceFieldsForUser(user));
         }
-        this.columnHeadings = ColumnHeading.getColumnHeadings(space, user, c);
+        this.columnHeadings = ColumnHeading.getColumnHeadings(space, user, c, calipso);
+        this.defaultVisibleFlags = getVisibleFlags();
         //ComponentUtils.getJtrac(c).findSpaceFieldsForUser(user)
         pageSize= ComponentUtils.getCalipso(c).getRecordsPerPage();
     }      
@@ -138,6 +141,7 @@ public class ItemSearch implements Serializable {
         sortDescending = !params.get("sortAscending").toBoolean();
         sortFieldName = params.get("sortFieldName").toString("id");        
         for(Object o : params.getNamedKeys()) {
+        	logger.info("processing parameter: "+0);
             String name = o.toString();
             if(ColumnHeading.isValidFieldOrColumnName(name)) {
                 ColumnHeading ch = getColumnHeading(name);
@@ -149,45 +153,51 @@ public class ItemSearch implements Serializable {
     
     public PageParameters getAsQueryString() {
     	PageParameters params = new PageParameters();
+    	//Map<String, String> map = new HashMap<String, String>();
         if(space != null) {
-        	params.add("s", space.getId() + "");
-        }
+            params.add("s", space.getId() + "");
+        }  
         for(ColumnHeading ch : columnHeadings) {
-        	FilterCriteria fc = ch.getFilterCriteria();
-        	if(fc!=null){
-        	}
-
-            if(ch.getName() == DETAIL) {
-                showDetail = ch.isVisible();
-            }/*
-            if(ch.getName() == SUMMARY) {
-                showSummary = ch.isVisible();
-            }*/
             String s = ch.getAsQueryString();
             if(s != null) {
-            	params.add(ch.getNameText(), s);
-            }
-        }
+                params.add(ch.getNameText(), s);
+            }           
+        } 
+        String visibleFlags = getVisibleFlags();
+        if(!visibleFlags.equals(defaultVisibleFlags)) {
+            params.add("cols", visibleFlags.toString());
+        }        
         if(showHistory) {
-        	params.add("showHistory", "true");
+            params.add("showHistory", "true");
         }
-        if(showDetail) {
-        	params.add("showDetail", "true");
-        }
-        if(pageSize != Constants.PAGE_SIZE) {
-        	params.add("pageSize", pageSize + "");
+        if(pageSize != 25) {
+            params.add("pageSize", pageSize + "");
         }
         if(!sortDescending) {
-        	params.add("sortAscending", "true");
+            params.add("sortAscending", "true");
         }
         if(!sortFieldName.equals("id")) {
-        	params.add("sortFieldName", sortFieldName);
+            params.add("sortFieldName", sortFieldName);
         }
         if(relatingItemRefId != null) {
-        	params.add("relatingItemRefId", relatingItemRefId);
+            params.add("relatingItemRefId", relatingItemRefId);
         }
+        
+        
         return params;
-    }    
+    }
+    
+    private String getVisibleFlags() {
+        StringBuilder visibleFlags = new StringBuilder();
+        for(ColumnHeading ch : columnHeadings) {
+            if(ch.isVisible()) {
+                visibleFlags.append("1");                
+            } else  {
+                visibleFlags.append("0");
+            }            
+        } 
+        return visibleFlags.toString();
+    }
     
     private DetachedCriteria parent; // temp working variable h
     
@@ -570,10 +580,11 @@ public class ItemSearch implements Serializable {
     public List<ColumnHeading> getColumnHeadings() {
         List<ColumnHeading> list = new ArrayList<ColumnHeading>(columnHeadings.size());
         for(ColumnHeading ch : columnHeadings) {
-            if(ch.isVisibleCriterium()) {
+            //if(ch.isVisibleCriterium()) {
                 list.add(ch);
-            }//if
+            //}//if
         }//for
+        logger.info("Returning columns: "+list.size());
         return list;
     	
 //        return columnHeadings;

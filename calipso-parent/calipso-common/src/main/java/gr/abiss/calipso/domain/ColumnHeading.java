@@ -255,8 +255,12 @@ public class ColumnHeading implements Serializable {
 		return c.getLocalizer().getString("item_list." + key, c);
 	}
 
-	public static List<ColumnHeading> getColumnHeadings(Space s, User u, Component c) {
 
+	public static List<ColumnHeading> getColumnHeadings(Space s, User u, Component c){
+		return getColumnHeadings(s, u, c, null);
+	}
+	
+	public static List<ColumnHeading> getColumnHeadings(Space s, User u, Component c, CalipsoService calipso){
 		Map<StdField.Field, StdFieldMask> fieldMaskMap = u.getStdFieldsForSpace(s);
 		
 		List<ColumnHeading> list = new ArrayList<ColumnHeading>();
@@ -268,7 +272,7 @@ public class ColumnHeading implements Serializable {
 		list.add(new ColumnHeading(STATUS, c));
 		list.add(new ColumnHeading(ASSIGNED_TO, c));
 		list.add(new ColumnHeading(LOGGED_BY, c));
-		list.add(new ColumnHeading(REPORTED_BY, c));
+		list.add(new ColumnHeading(REPORTED_BY, c).setVisible(false));
 		//logger.info("fieldMaskMap.get(StdField.Field.DUE_TO"+fieldMaskMap.get(StdField.Field.DUE_TO).getMask().getName());
 		if (fieldMaskMap.get(StdField.Field.DUE_TO) != null
 				&& !fieldMaskMap.get(StdField.Field.DUE_TO).getMask()
@@ -309,18 +313,19 @@ public class ColumnHeading implements Serializable {
 
 		for (Field f : s.getMetadata().getFieldList()) {
 			if(!f.getName().isFile()){
-				boolean show = true;
-//				if(f.getCustomAttribute() != null){
-//					show = f.getCustomAttribute().isShowInSearchResults();
-//					logger.info("Custom attribute exists in field, isShowInSearchResults: "+show);
-//				}
-//				else{
-//					logger.warn("Custom attribute is null in field");
-//				}
-				
-				if(show){
-					list.add(new ColumnHeading(f, s));
+				ColumnHeading ch = new ColumnHeading(f, s);
+				if(f.getCustomAttribute() == null && calipso != null){
+					f.setCustomAttribute(calipso.loadItemCustomAttribute(s, f.getName().getText()));
 				}
+				if(f.getCustomAttribute() != null){
+					boolean show = f.getCustomAttribute().isShowInSearchResults();
+					ch.setVisible(show);
+					logger.info("show: "+ch.isVisible());
+				}
+				else{
+					logger.info("show: custom attr was null");
+				}
+				list.add(ch);
 			}
 		}
 		list.add(new ColumnHeading(TIME_STAMP, c));
@@ -1091,6 +1096,7 @@ public class ColumnHeading implements Serializable {
 					}
 
 					void loadFromQueryString(String s, User user, CalipsoService calipsoService) {
+						//logger.info("loadFromQueryString: "+s);
 						setStatusListFromQueryString(s);
 					}
 				};
@@ -1628,8 +1634,6 @@ public class ColumnHeading implements Serializable {
 
 	private List<String> setExpressionAndGetRemainingTokens(String s) {
 		String[] tokens = s.split("_");
-		logger.info("convertToExpression tokens: "+s);
-		logger.info("convertToExpression token[0]: '"+s+"'");
 		filterCriteria.setExpression(FilterCriteria
 				.convertToExpression(tokens[0]));
 		List<String> remainingTokens = new ArrayList<String>();
@@ -1775,8 +1779,9 @@ public class ColumnHeading implements Serializable {
 		return visible;
 	}
 
-	public void setVisible(boolean visible) {
+	public ColumnHeading setVisible(boolean visible) {
 		this.visible = visible;
+		return this;
 	}
 
 	public boolean isDbField() {

@@ -54,6 +54,7 @@ import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.State;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.exception.CalipsoSecurityException;
+import gr.abiss.calipso.wicket.BasePanel;
 import gr.abiss.calipso.wicket.ComponentUtils;
 
 import java.io.BufferedReader;
@@ -519,7 +520,7 @@ public final class ItemUtils {
 		return effort.toString();
 	}//formatEffort
 
-    public static ItemSearch getItemSearch(User user, PageParameters params, Component comp) throws CalipsoSecurityException {
+    public static ItemSearch getItemSearch(User user, PageParameters params, Component comp, CalipsoService calipso) throws CalipsoSecurityException {
         long spaceId = params.get("s").toLong(-1);        
         CalipsoService calipsoService = ComponentUtils.getCalipso(comp);
         
@@ -529,7 +530,7 @@ public final class ItemUtils {
             if(!user.isAllocatedToSpace(space.getId())) {
                 throw new CalipsoSecurityException("User not allocated to space: " + spaceId + " in URL: " + params);
             }
-            itemSearch = new ItemSearch(space, user, comp);            
+            itemSearch = new ItemSearch(space, user, comp, calipso);            
         } else {
             itemSearch = new ItemSearch(user, comp);
         }
