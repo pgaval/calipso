@@ -1014,7 +1014,7 @@ public class SpacePermissionsPanel extends BasePanel {
 			space = getCalipso().storeSpace(space);
 			// add creator as space admin if space is new
 //			try {
-				if (!isNewSpace) {
+				if (isNewSpace) {
 
 					Space persistedSpace = getCalipso().loadSpace(
 							space.getPrefixCode());
