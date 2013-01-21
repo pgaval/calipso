@@ -102,7 +102,7 @@ public class ItemSearchForm extends BasePanel {
         Space s = getCurrentSpace();
         refreshParentMenu(breadCrumbModel);
         if(s != null) {
-            this.itemSearch = new ItemSearch(s, getPrincipal(), this);
+            this.itemSearch = new ItemSearch(s, getPrincipal(), this, this.getCalipso());
         } else {
             this.itemSearch = new ItemSearch(getPrincipal(), this);
         }

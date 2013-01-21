@@ -66,7 +66,7 @@ public class UnassigendItemsPanel extends BasePanel {
 					@Override
 					protected IBreadCrumbParticipant getParticipant(String componentId) {
 	                    setCurrentSpace(space);
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, UnassigendItemsPanel.this.getCalipso());
 	                    itemSearch.setUnassigned();
 	                    setCurrentItemSearch(itemSearch);
 	                    return new SingleSpacePanel(componentId, getBreadCrumbModel(), itemSearch);
@@ -77,7 +77,7 @@ public class UnassigendItemsPanel extends BasePanel {
 			else{
 				link = new IndicatingAjaxLink("link") {
 	                public void onClick(AjaxRequestTarget target) {
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, UnassigendItemsPanel.this.getCalipso());
 	                    itemSearch.setUnassigned();
 	                    setCurrentItemSearch(itemSearch);
 	

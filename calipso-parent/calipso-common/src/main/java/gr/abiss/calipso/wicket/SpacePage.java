@@ -35,7 +35,7 @@ public class SpacePage extends BasePage {
     	CalipsoBreadCrumbBar breadCrumbBar = new CalipsoBreadCrumbBar("breadCrumbBar", this);
         add(breadCrumbBar);
         
-        ItemSearch itemSearch = new ItemSearch(getCurrentSpace(), getPrincipal(), this);
+        ItemSearch itemSearch = new ItemSearch(getCurrentSpace(), getPrincipal(), this, this.getCalipso());
         
         //panels that change with navigation
         SingleSpacePanel singleSpacePanel = new SingleSpacePanel("panel", breadCrumbBar, itemSearch);

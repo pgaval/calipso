@@ -188,24 +188,21 @@ public abstract class AbstractSaveSearchFormPanel extends BasePanel {
 				public void onSubmit() {
 					String savedSearchName = (String) name.getModelObject();
 					Short savedVisibility = (Short) visibility.getModelObject();
-					String savedSearchQueryString = null;
+					StringBuffer savedSearchQueryString = null;
 					
 					if (getCurrentItemSearch()!=null){//Actually in case of edit if no search has been done
 						PageParameters params = getCurrentItemSearch().getAsQueryString();
-	
-				        for(Object o : params.getNamedKeys()) {
+						for(Object o : params.getNamedKeys()) {
 				            if(savedSearchQueryString == null){
-				            	savedSearchQueryString = o.toString();
+				            	savedSearchQueryString = new StringBuffer();
 				            }else{
-				            	savedSearchQueryString += ","+o.toString();
-				            }//else
+				            	savedSearchQueryString.append(",");
+				            }
+			            	savedSearchQueryString.append(o.toString()).append("_").append(params.get(o.toString()));
 				        }//for
 					}//if
-			        if(savedSearchQueryString == null){
-		            	savedSearchQueryString = "";
-			        }
 			        
-			        savedSearch.setQueryString(savedSearchQueryString);
+			        savedSearch.setQueryString(savedSearchQueryString.toString());
 			        savedSearch.setSpace(getCurrentSpace());
 			        savedSearch.setUser(getPrincipal());
 			        savedSearch.setName(savedSearchName);

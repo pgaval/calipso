@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -148,11 +149,22 @@ public class SavedSearchList extends BasePanel {
     			@Override
     			protected IBreadCrumbParticipant getParticipant(String id) {
     				//create PageParameters and ItemSearch classes
-    				PageParameters params = new PageParameters(savedSearch.getQueryString(), ",");
-
-    		        ItemSearch itemSearch = null;
+    				String queryString = savedSearch.getQueryString();
+    				PageParameters params = new PageParameters();
+    				if(StringUtils.isNotBlank(queryString)){
+    					String[] sParams = queryString.split(",");
+    					for(int i=0; i < sParams.length;i++){
+    						String param = sParams[i];
+    						int firstUnderscore = param.indexOf("_");
+        					String key = param.substring(0, firstUnderscore);
+        					String value = param.substring(firstUnderscore+1);
+        					params.add(key, value);
+        					
+    					}
+    				}
+    				ItemSearch itemSearch = null;
     				try {
-    					itemSearch = ItemUtils.getItemSearch(getPrincipal(), params, this);
+    					itemSearch = ItemUtils.getItemSearch(getPrincipal(), params, this, SavedSearchList.this.getCalipso());
     				} catch (CalipsoSecurityException e) {
     					e.printStackTrace();
     				}
@@ -258,7 +270,6 @@ public class SavedSearchList extends BasePanel {
 			private static final long serialVersionUID = 1L;
 
 			protected Object load() {
-                logger.debug("loading saved searches from database");
                 savedSearchList = getCalipso().findSavedSearches(user, getCurrentSpace());
                 return savedSearchList;
             }

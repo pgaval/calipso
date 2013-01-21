@@ -113,7 +113,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
                 	BreadCrumbLink spaceLink = new BreadCrumbLink("spaceName", getBreadCrumbModel()) {
             			@Override
             			protected IBreadCrumbParticipant getParticipant(String componentId) {
-            				ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+            				ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
             				return new SingleSpacePanel(componentId, getBreadCrumbModel(), itemSearch);
             			}
             		};
@@ -225,7 +225,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         	        if(isSingleSpace){//if a space is selected
         	        	loggedByMeContainer = new IndicatingAjaxLink("loggedByMe") {
         	                public void onClick(AjaxRequestTarget target) {
-                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
                                 itemSearch.setLoggedBy(user);
                                 itemSearch.setStatus(i);
                                 setCurrentItemSearch(itemSearch);
@@ -237,7 +237,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         	            
         	            assignedToMeContainer = new IndicatingAjaxLink("assignedToMe") {
         	                public void onClick(AjaxRequestTarget target) {
-                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
                                 itemSearch.setAssignedTo(user);
                                 itemSearch.setStatus(i);
                                 setCurrentItemSearch(itemSearch);
@@ -249,7 +249,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         	            
         	            unassignedContainer = new IndicatingAjaxLink("unassigned") {
         	                public void onClick(AjaxRequestTarget target) {
-        	        			ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+        	        			ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
         	        			itemSearch.setUnassigned();
         	                    itemSearch.setStatus(i);
         	                    setCurrentItemSearch(itemSearch);
@@ -262,7 +262,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         	        else{//if no space is selected. i.e. for dashboard
         	        	loggedByMeContainer = new BreadCrumbLink("loggedByMe", getBreadCrumbModel()){
         	        		protected IBreadCrumbParticipant getParticipant(String componentId){
-                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
                                 itemSearch.setLoggedBy(user);
                                 itemSearch.setStatus(i);
                                 setCurrentItemSearch(itemSearch);
@@ -274,7 +274,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         	        	
         	        	assignedToMeContainer = new BreadCrumbLink("assignedToMe", getBreadCrumbModel()){
         	        		protected IBreadCrumbParticipant getParticipant(String componentId){
-                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+                                ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
                                 itemSearch.setAssignedTo(user);
                                 itemSearch.setStatus(i);
                                 setCurrentItemSearch(itemSearch);
@@ -285,7 +285,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         	        	
         	        	unassignedContainer = new BreadCrumbLink("unassigned", getBreadCrumbModel()){
         	        		protected IBreadCrumbParticipant getParticipant(String componentId){
-        	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+        	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
         	                    itemSearch.setUnassigned();
         	                    itemSearch.setStatus(i);
         	                    setCurrentItemSearch(itemSearch);
@@ -319,7 +319,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
                 if(isSingleSpace){//if a space is selected
                 	totalContainer = new IndicatingAjaxLink("total") {
                         public void onClick(AjaxRequestTarget target) {
-                            ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);                        
+                            ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());                    
                             itemSearch.setStatus(i);
                             setCurrentItemSearch(itemSearch);
 
@@ -331,7 +331,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
                 else{//if no space is selected. i.e. for dashboard
                 	totalContainer = new BreadCrumbLink("total", getBreadCrumbModel()){
                 		protected IBreadCrumbParticipant getParticipant(String componentId){
-                            ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);                        
+                            ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());                    
                             itemSearch.setStatus(i);
                             setCurrentItemSearch(itemSearch);
                             
@@ -357,7 +357,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
 	        if(isSingleSpace){//if a space is selected
 	        	loggedByMeTotalContainer = new IndicatingAjaxLink("loggedByMeTotal") {
 	                public void onClick(AjaxRequestTarget target) {
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
 	                    itemSearch.setLoggedBy(user);
 	                    setCurrentItemSearch(itemSearch);
 	                    
@@ -368,7 +368,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
 	            
 	            assignedToMeTotalContainer = new IndicatingAjaxLink("assignedToMeTotal") {
 	                public void onClick(AjaxRequestTarget target) {
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
 	                    itemSearch.setAssignedTo(user);
 	                    setCurrentItemSearch(itemSearch);
 	                    
@@ -379,7 +379,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
 	            
 	            unassignedTotalContainer = new IndicatingAjaxLink("unassignedTotal") {
 	                public void onClick(AjaxRequestTarget target) {
-	        			ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	        			ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
 	        			itemSearch.setUnassigned();
 	                    setCurrentItemSearch(itemSearch);
 	
@@ -391,7 +391,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
 	        else{//if no space is selected. i.e. for dashboard
 	        	loggedByMeTotalContainer = new BreadCrumbLink("loggedByMeTotal", getBreadCrumbModel()){
 	        		protected IBreadCrumbParticipant getParticipant(String componentId){
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
 	                    itemSearch.setLoggedBy(user);
 	                    setCurrentItemSearch(itemSearch);
 	                    
@@ -402,7 +402,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
 	        	
 	        	assignedToMeTotalContainer = new BreadCrumbLink("assignedToMeTotal", getBreadCrumbModel()){
 	        		protected IBreadCrumbParticipant getParticipant(String componentId){
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
 	                    itemSearch.setAssignedTo(user);
 	                    setCurrentItemSearch(itemSearch);
 	                    
@@ -413,7 +413,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
 	        	
 	        	unassignedTotalContainer = new BreadCrumbLink("unassignedTotal", getBreadCrumbModel()){
 	        		protected IBreadCrumbParticipant getParticipant(String componentId){
-	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+	                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
 	                    itemSearch.setUnassigned();
 	                    setCurrentItemSearch(itemSearch);
 	
@@ -448,7 +448,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         if(isSingleSpace){//if a space is selected
         	totalTotalContainer = new IndicatingAjaxLink("totalTotal") {
                 public void onClick(AjaxRequestTarget target) {
-                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
                     setCurrentItemSearch(itemSearch);
 
                     SingleSpacePanel singleSpacePanel = (SingleSpacePanel) getBreadCrumbModel().getActive();
@@ -459,7 +459,7 @@ public class DashboardRowExpandedPanel extends BasePanel {
         else{//if no space is selected. i.e. for dashboard
         	totalTotalContainer = new BreadCrumbLink("totalTotal", getBreadCrumbModel()){
         		protected IBreadCrumbParticipant getParticipant(String componentId){
-                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this);
+                    ItemSearch itemSearch = new ItemSearch(space, getPrincipal(), this, DashboardRowExpandedPanel.this.getCalipso());
                     setCurrentItemSearch(itemSearch);
                     
                     return new SingleSpacePanel(componentId, getBreadCrumbModel(), itemSearch);

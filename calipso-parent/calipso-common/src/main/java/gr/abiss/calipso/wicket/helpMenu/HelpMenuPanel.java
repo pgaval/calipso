@@ -138,7 +138,7 @@ public class HelpMenuPanel extends BasePanel {
 						if(breadCrumbList.get(siz -1).equals(getBreadCrumbModel().getActive())){
 							breadCrumbList.remove(siz-1);
 						}
-				        ItemSearch itemSearch = new ItemSearch(getCurrentSpace(), getPrincipal(), this);
+				        ItemSearch itemSearch = new ItemSearch(getCurrentSpace(), getPrincipal(), this, HelpMenuPanel.this.getCalipso());
 				        SingleSpacePanel singleSpacePanel = new SingleSpacePanel(id, getBreadCrumbModel(), itemSearch);
 				        return singleSpacePanel;
 					}
@@ -195,7 +195,7 @@ public class HelpMenuPanel extends BasePanel {
 			    				PageParameters params = new PageParameters(savedSearch.getQueryString(), ",");
 			    		        ItemSearch itemSearch = null;
 			    				try {
-			    					itemSearch = ItemUtils.getItemSearch(getPrincipal(), params, this);
+			    					itemSearch = ItemUtils.getItemSearch(getPrincipal(), params, this, HelpMenuPanel.this.getCalipso());
 			    				} catch (CalipsoSecurityException e) {
 			    					e.printStackTrace();
 			    				}
