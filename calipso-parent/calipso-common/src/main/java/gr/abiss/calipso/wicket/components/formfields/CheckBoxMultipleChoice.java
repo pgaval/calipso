@@ -104,8 +104,14 @@ public class CheckBoxMultipleChoice extends ListMultipleChoice {
         for (int index = 0; index < choices.size(); index++) {
             
             final Object choice = choices.get(index);
+            IChoiceRenderer choiceRenderer = getChoiceRenderer();
+            logger.info("choiceRenderer: "+choiceRenderer);
+            logger.info("choice: "+choice);
+            logger.info(".getDisplayValue(choice): "+choiceRenderer.getDisplayValue(choice));
             
-            final String label = getConverter(String.class).convertToString(getChoiceRenderer().getDisplayValue(choice).toString(), locale);
+            final String label = getConverter(String.class).convertToString(
+            		choiceRenderer.getDisplayValue(choice).toString(), 
+            		locale);
             
             if (label != null) {
                 

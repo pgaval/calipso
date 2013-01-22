@@ -925,14 +925,20 @@ public class ColumnHeading implements Serializable {
 							spaces.add(calipsoService.loadSpace(Long.parseLong(key)));
 						}// for
 						CheckBoxMultipleChoice choice = new CheckBoxMultipleChoice(
-								"values", spaces, new IChoiceRenderer() {
-									public Object getDisplayValue(Object o) {
-										return ((Space) o).getName();
+								"values", spaces, new IChoiceRenderer<Space>() {
+									private static final long serialVersionUID = 1L;
+
+									@Override
+									public Object getDisplayValue(Space o) {
+										logger.info("Option for space: "+o);
+										String name = o.getName();
+										return name != null ? name : o.getId();
 									}
 
-									public String getIdValue(Object o, int i) {
-										return String.valueOf(((Space) o)
-												.getId());
+									@Override
+									public String getIdValue(Space o,
+											int index) {
+										return o.getId()+"";
 									}
 								});
 
