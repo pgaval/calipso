@@ -36,6 +36,7 @@
 
 package gr.abiss.calipso.wicket;
 
+import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.Counts;
 import gr.abiss.calipso.domain.ItemSearch;
 import gr.abiss.calipso.domain.Space;
@@ -75,6 +76,8 @@ public class DashboardRowPanel extends BasePanel {
         
         super(id, breadCrumbModel);
         setOutputMarkupId(true);
+        CalipsoService calipso = getCalipso();
+        
         // needed for links like (space, assets)
         // TODO: holds last space
         final Space space = userSpaceRole.getSpaceRole().getSpace();
@@ -135,8 +138,7 @@ public class DashboardRowPanel extends BasePanel {
             }
         }.setVisible(false));
 
-
-        if (space.isAssetEnabled() && canViewItems){
+        if (UserUtils.canViewSpaceAssets(user, space, calipso)){
         	add(new BreadCrumbLink("asset", getBreadCrumbModel()){
         	
 				private static final long serialVersionUID = 1L;

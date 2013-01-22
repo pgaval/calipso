@@ -35,9 +35,14 @@
  */
 package gr.abiss.calipso.util;
 
+import gr.abiss.calipso.CalipsoService;
+import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.ItemRenderingTemplate;
 import gr.abiss.calipso.domain.ItemUser;
+import gr.abiss.calipso.domain.RoleSpaceStdField;
 import gr.abiss.calipso.domain.Space;
+import gr.abiss.calipso.domain.StdField;
+import gr.abiss.calipso.domain.StdFieldMask;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.domain.UserSpaceRole;
 
@@ -48,11 +53,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.log4j.Logger;
+
 /**
  * routines to filter User, UserSpaceRoles collections etc
  */
 public class UserUtils {
-
+	
+	private static final Logger logger = Logger.getLogger(UserUtils.class);
     /**
      * This is a rather 'deep' concept, first of course you need to restrict the next possible
      * states that an item can be switched to based on the current state and the workflow defined.
@@ -138,5 +149,16 @@ public class UserUtils {
 		
 	}
 	
-    
+    public static boolean canViewSpaceAssets(User currentUser, Space currentSpace, CalipsoService calipso){
+    	boolean canView = false;
+    	logger.info("currentSpace.isAssetEnabled(): "+currentSpace.isAssetEnabled());
+    	logger.info("currentSpace.isAssetEnabled(): "+currentSpace.isAssetEnabled());
+    	if(currentSpace.isAssetEnabled()){
+			List<AssetType> visibleAssetTypes = calipso.findAllAssetTypesForSpace(currentSpace);
+	    	logger.info("visibleAssetTypes: "+visibleAssetTypes);
+	    	logger.info("currentUser.hasRegularRoleForSpace(currentSpace): "+currentUser.hasRegularRoleForSpace(currentSpace));
+			canView = CollectionUtils.isNotEmpty(visibleAssetTypes) && currentUser.hasRegularRoleForSpace(currentSpace);
+    	}
+    	return canView;
+    }
 }

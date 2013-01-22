@@ -580,7 +580,7 @@ public class ItemList extends BasePanel {
                                 value = new PropertyModel(item, "summary");
                             } else if(name == DETAIL) {                                
                                 if(showHistory) {
-                                    Fragment detailFrag = new Fragment("column", "detail", this);
+                                    Fragment detailFrag = new Fragment("column", "detail",  ItemList.this);
                                     final History history = (History) item;
                                     // TODO
                                     //detailFrag.add(new AttachmentLinkPanel("attachment", history.getAttachment()));
@@ -689,7 +689,7 @@ public class ItemList extends BasePanel {
                             }                            
                             else if(name == ASSET_TYPE){
                             	ItemAssetTypesPanel itemAssetTypesPanel = new ItemAssetTypesPanel("assetTypesPanel", item);
-                            	Fragment assetTypesFragment = new Fragment("column", "assetTypesFragment", this);
+                            	Fragment assetTypesFragment = new Fragment("column", "assetTypesFragment", ItemList.this);
                             	assetTypesFragment.add(itemAssetTypesPanel);
                             	listItem.add(assetTypesFragment);
                             	return;
