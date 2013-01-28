@@ -179,6 +179,7 @@ public interface CalipsoService extends UserDetailsService {
     Space loadSpace(String prefixCode);
 	Space loadSpace(SpaceRole spaceRole);
     List<Space> findAllSpaces();
+    List<Space> findAllTemplateSpaces();
     List<Space> findSpacesWhereIdIn(List<Long> ids);
     List<Space> findSpacesWhereGuestAllowed();
     List<Space> findSpacesWhereAnonymousAllowed();

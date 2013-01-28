@@ -211,7 +211,6 @@ public class CalipsoApplication extends WebApplication {
 		} catch (NoSuchBeanDefinitionException nsbde) {
 			logger.info("casProxyTicketValidator not found in application context, CAS single-sign-on is not being used");
 		}
-
 		// delegate wicket i18n support to spring i18n
 		getResourceSettings().getStringResourceLoaders().add(
 				new IStringResourceLoader() {
@@ -264,7 +263,8 @@ public class CalipsoApplication extends WebApplication {
 						return resource != null ? resource.getValue() : null;
 					}
 				});
-
+		// cache resources. resource cache is cleared when creating/updating a space
+		getResourceSettings().getLocalizer().setEnableCache(true);
 		getSecuritySettings().setAuthorizationStrategy(
 				new IAuthorizationStrategy() {
 					public boolean isActionAuthorized(Component c, Action a) {

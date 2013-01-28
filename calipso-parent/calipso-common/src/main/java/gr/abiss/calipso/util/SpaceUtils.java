@@ -109,8 +109,10 @@ public class SpaceUtils {
 		}
 		
 		// copy templates
-		List<ItemRenderingTemplate> templatesFrom = spaceFrom.getItemRenderingTemplates();
+		List<ItemRenderingTemplate> templatesFrom = calipso.getItemRenderingTemplates(spaceFrom);
+		logger.info("Adding templates to new space");
 		Map<String, ItemRenderingTemplate> newTemplates = new HashMap<String, ItemRenderingTemplate>();
+		logger.info("Adding templates to new space: "+templatesFrom);
 		if(CollectionUtils.isNotEmpty(templatesFrom)){
 			int templateNameSuffix = 0;
 			for(ItemRenderingTemplate templateFrom : templatesFrom){
@@ -122,7 +124,7 @@ public class SpaceUtils {
 				templateNameSuffix = templateNameSuffix+1;
 				templateTo.setDescription(space.getPrefixCode()+"-template-"+templateNameSuffix);
 			}
-			//logger.info("Added templates to new space: "+space.getItemRenderingTemplates());
+			logger.info("Added templates to new space: "+space.getItemRenderingTemplates());
 			// iterate roles from the original space to add the item rendering templates
 			// to the new space roles
 			for(SpaceRole roleFrom : rolesFrom){
@@ -136,6 +138,7 @@ public class SpaceUtils {
 						roleTemplatesTo.put(key, templateTo);
 					}
 					roleTo.setItemRenderingTemplates(roleTemplatesTo);
+					logger.info("Added templates to new role ("+roleTo.getDescription()+"): "+roleTemplatesTo);
 				}
 			
 			}
@@ -240,13 +243,7 @@ public class SpaceUtils {
 //				+ space.getSpaceRoles());
 		// load persisted roles for space if any
 		//if (CollectionUtils.isEmpty(space.getSpaceRoles())) {
-			List<SpaceRole> roleList = calipso.findSpaceRolesForSpace(
-					space);
-			Set<SpaceRole> spaceRolesSet = new HashSet<SpaceRole>();
-			if (roleList != null && !roleList.isEmpty()) {
-				spaceRolesSet.addAll(roleList);
-			}
-			space.setSpaceRoles(spaceRolesSet);
+			
 		//}
 		Set<RoleType> roleTypes = new HashSet<RoleType>();
 		// if a new space, add the regular user role

@@ -139,6 +139,8 @@ public interface CalipsoDao {
 	Space loadSpace(SpaceRole spaceRole);
     List<Space> findSpacesByPrefixCode(String prefixCode);
     List<Space> findAllSpaces();
+    List<Space> findAllTemplateSpaces();
+    
     List<Space> findSpacesWhereIdIn(List<Long> ids);
     List<Space> findSpacesWhereAnonymousAllowed();
     List<Space> findSpacesWhereGuestAllowed();

@@ -76,7 +76,7 @@ public class CustomAttributeUtils {
 		List<CustomAttributeLookupValue> existingLookupValues = calipso.findLookupValuesByCustomAttribute(customAttribute);
 		if (existingLookupValues != null
 				&& !existingLookupValues.isEmpty()) {
-			logger.info("field.getCustomAttribute().getAllowedLookupValues("+existingLookupValues.size()+"): "+customAttribute.getAllowedLookupValues());
+			//logger.info("field.getCustomAttribute().getAllowedLookupValues("+existingLookupValues.size()+"): "+customAttribute.getAllowedLookupValues());
 			for (CustomAttributeLookupValue value : existingLookupValues) {
 				if(value.isActive()){
 
@@ -96,7 +96,7 @@ public class CustomAttributeUtils {
 			Language language, StringBuffer languageOptions,
 			CustomAttributeLookupValue value) {
 		// TODO:load in single query
-		logger.info("buildStringOptionTranslations lookup value: "+ value.getId()+", language: "+language);
+		//logger.info("buildStringOptionTranslations lookup value: "+ value.getId()+", language: "+language);
 		I18nStringResource res = calipso.loadI18nStringResource(new I18nStringIdentifier(value.getNameTranslationResourceKey(), language.getId()));
 		if(res != null && value.isActive()){
 			// new line if not first
@@ -136,7 +136,7 @@ public class CustomAttributeUtils {
 				languageId = language.getId();
 			}
 			String input = optionsTextIput.get(language.getId());
-			logger.info("textAreaOptions.get(language.getId(): "+input);
+			//logger.info("textAreaOptions.get(language.getId(): "+input);
 			if(StringUtils.isNotBlank(input)){
 				Stack<CustomAttributeLookupValue> parents = new Stack<CustomAttributeLookupValue>();
 				String[] lines = input.split("\\r?\\n");
@@ -191,9 +191,9 @@ public class CustomAttributeUtils {
 					}
 					parents.push(lookupValue);
 					// add the translation
-					logger.info("Adding lookup value "+language.getId()+" translation: "+translatedName);
+					//logger.info("Adding lookup value "+language.getId()+" translation: "+translatedName);
 					lookupValue.addNameTranslation(language.getId(), translatedName);
-					logger.info("translations afre now: "+lookupValue.getNameTranslations());
+					//logger.info("translations afre now: "+lookupValue.getNameTranslations());
 						
 				}
 			}
@@ -210,9 +210,9 @@ public class CustomAttributeUtils {
 		}
 		attribute.removeAll(toRemove);*/
 		for(CustomAttributeLookupValue value : optionsList){
-			logger.info("Adding lookupValue  with translations: "+value.getNameTranslations());
+			//logger.info("Adding lookupValue  with translations: "+value.getNameTranslations());
 			attribute.addAllowedLookupValue(value);
 		}
-		logger.info("Added lookup values: "+attribute.getAllowedLookupValues());
+		//logger.info("Added lookup values: "+attribute.getAllowedLookupValues());
 	}
 }

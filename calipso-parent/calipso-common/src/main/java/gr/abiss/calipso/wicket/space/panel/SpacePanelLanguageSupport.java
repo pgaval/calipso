@@ -22,8 +22,11 @@ package gr.abiss.calipso.wicket.space.panel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
@@ -54,6 +57,7 @@ import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.domain.Metadata;
 import gr.abiss.calipso.domain.RoleSpaceStdField;
 import gr.abiss.calipso.domain.Space;
+import gr.abiss.calipso.domain.SpaceRole;
 import gr.abiss.calipso.util.BreadCrumbUtils;
 import gr.abiss.calipso.util.SpaceUtils;
 import gr.abiss.calipso.wicket.BasePanel;
@@ -98,11 +102,23 @@ public class SpacePanelLanguageSupport  extends BasePanel{
 		if(!isEdit){
 			space = new Space();
 			this.getCalipso().storeUnpublishedSpace(space);
+			space.setItemRenderingTemplates(new LinkedList<ItemRenderingTemplate>());
 		}
 		else{
 			List<ItemRenderingTemplate> tmplList = this.getCalipso().getItemRenderingTemplates(space);
 			space.setItemRenderingTemplates(tmplList);
 		}
+		// init lazy roles collection
+		List<SpaceRole> roleList = getCalipso().findSpaceRolesForSpace(
+				space);
+		Set<SpaceRole> spaceRolesSet = new HashSet<SpaceRole>();
+		if (roleList != null && !roleList.isEmpty()) {
+			spaceRolesSet.addAll(roleList);
+			for(SpaceRole spaceRole : roleList){
+				spaceRole.setItemRenderingTemplates(getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
+			}
+		}
+		space.setSpaceRoles(spaceRolesSet);
 		
 		//SpaceUtils.initSpaceSpaceRoles(getCalipso(), space);
 		this.space = space;

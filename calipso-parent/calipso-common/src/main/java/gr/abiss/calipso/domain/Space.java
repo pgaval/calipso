@@ -529,7 +529,9 @@ public class Space extends AbstractI18nResourceTranslatable implements Serializa
 			if(this.getItemRenderingTemplates() == null){
 				this.setItemRenderingTemplates(new LinkedList<ItemRenderingTemplate>());
 			}
-			this.getItemRenderingTemplates().addAll(tmplList);
+			for(ItemRenderingTemplate tmpl : tmplList){
+				this.add(tmpl);
+			}
 		}
 		
 	}

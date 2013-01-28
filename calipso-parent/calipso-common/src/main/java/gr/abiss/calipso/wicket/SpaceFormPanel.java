@@ -489,7 +489,7 @@ public class SpaceFormPanel extends BasePanel {
 				List<Space> spaces;
 				// if space admin, only allow 
 				if (user.isGlobalAdmin()){ 
-					spaces = getCalipso().findAllSpaces();
+					spaces = getCalipso().findAllTemplateSpaces();
 				} 
 				else{ 
 					spaces = user.getTemplateSpacesForUser();

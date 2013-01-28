@@ -863,7 +863,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	public void runStateChangePlugins(History history, Item item, Integer state) {
 		// assets to create based on Item info?
 		AbstractItem abstractItem = history != null? history : item;
-		//logger.info("RUNNING PLUGINS ("+state+"), item state: "+abstractItem.getSpace().getMetadata().getStatusValue(abstractItem.getStatus()));
+		logger.info("RUNNING PLUGINS ("+state+"), item state: "+abstractItem.getSpace().getMetadata().getStatusValue(abstractItem.getStatus()));
 		
 		// run plugins
 
@@ -872,14 +872,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 		if (abstractItem.getStatus() != null && MapUtils.isNotEmpty(pluginsMap)) {
 			String pluginClassNames = pluginsMap.get(abstractItem.getStatus());
-			//logger.info("pluginClassNames:"+pluginClassNames + ", status: " + (abstractItem != null?abstractItem.getStatus():null) );
-			//logger.info("Running plugins for status: "+abstractItem.getStatus()+", plugins: "+pluginsMap.get(abstractItem.getStatus()));
+			logger.info("pluginClassNames:"+pluginClassNames + ", status: " + (abstractItem != null?abstractItem.getStatus():null) );
+			logger.info("Running plugins for status: "+abstractItem.getStatus()+", plugins: "+pluginsMap.get(abstractItem.getStatus()));
 			if (pluginClassNames != null && pluginClassNames.length() > 0) {
 
 				String[] pluginNames = pluginClassNames.split(" ");
 				for(int i=0; i < pluginNames.length;i++){
 					String pluginClassName = pluginNames[i];
-					//logger.debug("Loading plugin class: "+pluginClassName);
+					logger.debug("Loading plugin class: "+pluginClassName);
 					// "clazz" is the class name to load
 					Class clazz = null;
 					try {
@@ -900,7 +900,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 						logger.error("Cannot load State Plugin class: " + pluginClassName, e);
 						e.printStackTrace();
 					} catch (InstantiationException ie) {
-						logger.error("Cannot load State Plugin class: " + pluginClassName,
+						logger.error("Cannot instantiate State Plugin class: " + pluginClassName,
 								ie);
 						ie.printStackTrace();
 					} catch (IllegalAccessException iae) {
@@ -1599,6 +1599,9 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 
 	public List<Space> findAllSpaces() {
+		return dao.findAllSpaces();
+	}
+	public List<Space> findAllTemplateSpaces() {
 		return dao.findAllSpaces();
 	}
 

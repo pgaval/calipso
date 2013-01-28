@@ -463,7 +463,7 @@ public class SpacePermissionsPanel extends BasePanel {
 						protected void populateItem(ListItem listItem) {
 							final SpaceRole spaceRole = (SpaceRole) listItem
 									.getModelObject();
-							spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
+							//spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
 							String roleClass = listItem.getIndex() % 2 == 1 ? " alt"
 									: "";
 							String lastRole = listItem.getIndex() == roles
@@ -692,7 +692,7 @@ public class SpacePermissionsPanel extends BasePanel {
 			final WebMarkupContainer templatesGridContainer = new WebMarkupContainer(
 					"templatesGridContainer");
 			templatesGridContainer.setOutputMarkupId(true);
-			space.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().getItemRenderingTemplates(space));
+			//space.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().getItemRenderingTemplates(space));
 			
 			final ListDataProvider listDataProvider = new ListDataProvider(
 					space.getItemRenderingTemplates());
@@ -1012,6 +1012,8 @@ public class SpacePermissionsPanel extends BasePanel {
 //			}
 			//space.setPublished(true);
 			space = getCalipso().storeSpace(space);
+			// refresh i18n resources cache
+			CalipsoApplication.get().getResourceSettings().getLocalizer().clearCache();
 			// add creator as space admin if space is new
 //			try {
 				if (isNewSpace) {

@@ -415,7 +415,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	else{*/
     		List<ItemRenderingTemplate> templates = space.getItemRenderingTemplates();
-    		space.setItemRenderingTemplates(null);
+    		//space.setItemRenderingTemplates(null);
         	getHibernateTemplate().update(space);
         	if(CollectionUtils.isNotEmpty(templates)){
         		for(ItemRenderingTemplate template : templates){
@@ -560,9 +560,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 					"or space.assetVisibility = "+Space.ASSETS_VISIBLE_TO_ANY_SPACE+")", 
 					new Object[] {space, space.getSpaceGroup()});
 	}
-    
+
     public List<Space> findAllSpaces() {
         return getHibernateTemplate().find("from Space space order by space.prefixCode");
+    }
+    
+    public List<Space> findAllTemplateSpaces() {
+        return getHibernateTemplate().find("from Space space where space.isTemplate = true order by space.prefixCode");
     }
     
     public List<Space> findSpacesWhereIdIn(List<Long> ids) {
