@@ -12,8 +12,8 @@
 				<thead>
 					<tr class="heading">
 						<th wicket:id="subFieldsListView" class="bottom">
-							<label wicket:id="newValueLabel"></label>
-							<input type="text" wicket:id="newValueField" />
+							<label wicket:id="newValueLabel"></label><br />
+							<input type="text" wicket:id="newValueField" /><br />
 							<span wicket:id="newValueHelp"></span><span>&nbsp;</span>
 						</th>
 						<td wicket:id="submitControls" class="right" colspan="">
@@ -32,6 +32,15 @@
 						</td>
 					</tr>
 				</tbody>
+				<tfoot>
+					<tr class="multivalue">
+						<td wicket:id="summary">
+							<span wicket:id="cellValue"></span>
+						</td>
+						<td class="right">
+						</td>
+					</tr>
+				</tfoot>
 				
 				
 			</table>

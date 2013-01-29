@@ -38,11 +38,24 @@ import org.xml.sax.SAXException;
 import com.thoughtworks.xstream.XStream;
 
 public class FieldConfig implements Serializable{
+
+	public static final String TYPE_STRING = "string";
+	public static final String TYPE_DECIMAL = "decimal";
+	public static final String TYPE_INTEGER = "integer";
+	public static final String TYPE_DATE = "date";
+	public static final String SUMMARY_TOTAL = "total";
+	public static final String SUMMARY_AVERAGE = "average";
+	
 	private static final XStream xstream = new XStream();
 	static{
 		xstream.alias("field-config", FieldConfig.class);
 		xstream.useAttributeFor(FieldConfig.class, "classname");
 		xstream.useAttributeFor(FieldConfig.class, "style");
+		xstream.useAttributeFor(FieldConfig.class, "type");
+		xstream.useAttributeFor(FieldConfig.class, "format");
+		xstream.useAttributeFor(FieldConfig.class, "summary");
+		xstream.useAttributeFor(FieldConfig.class, "min");
+		xstream.useAttributeFor(FieldConfig.class, "max");
 		xstream.useAttributeFor(FieldConfig.class, "showHelpInPdf");
 		xstream.aliasAttribute(FieldConfig.class, "showHelpInPdf", "show-help-in-pdf");
 	}
@@ -93,6 +106,12 @@ public class FieldConfig implements Serializable{
 	private String style;
 	private String totalsLineFunction = null;
 	private String classname;
+	private String type = "string";
+	private String summary = null;
+	private String format = null;
+	private String min = "0";
+	private String max = null;
+	
 	private boolean showHelpInPdf = false;
 
 	public FieldConfig(String labelKey, Integer size,
@@ -179,11 +198,61 @@ public class FieldConfig implements Serializable{
 	public void setClassname(String classname) {
 		this.classname = classname;
 	}
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public String getMin() {
+		return min;
+	}
+
+	public void setMin(String min) {
+		this.min = min;
+	}
+
+	public String getMax() {
+		return max;
+	}
+
+	public void setMax(String max) {
+		this.max = max;
+	}
+
 	public boolean isShowHelpInPdf() {
 		return showHelpInPdf;
 	}
 	public void setShowHelpInPdf(boolean showHelpInPdf) {
 		this.showHelpInPdf = showHelpInPdf;
+	}
+	
+	public boolean isNumberType(){
+		boolean isNumber = false;
+		if(StringUtils.isNotBlank(this.type) 
+				&& (this.type.equalsIgnoreCase(TYPE_DECIMAL) 
+						|| this.type.equalsIgnoreCase(TYPE_INTEGER))){
+			isNumber = true;
+		}
+		return isNumber;
 	}
 	public void addSubFieldConfig(FieldConfig config) {
 		if (this.subFieldConfigs == null) {

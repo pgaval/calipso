@@ -212,7 +212,8 @@ public class ItemView extends BasePanel {
     	else{
     		Label label;
     		if(field.isMultivalue()){
-    			label = new Label("fieldValue", MultipleValuesTextField.toHtmlSafeTable(((String)value), field.getXmlConfig(), this.getLocalizer(), this));
+    			logger.info("addFieldValueDisplay, fieldConfig: "+fieldConfig);
+    			label = new Label("fieldValue", MultipleValuesTextField.toHtmlSafeTable(((String)value), fieldConfig, this.getLocalizer(), this));
     			label.setEscapeModelStrings(false);
     			label.add(new AttributeAppender("class", new Model("content"), " "));
     		}

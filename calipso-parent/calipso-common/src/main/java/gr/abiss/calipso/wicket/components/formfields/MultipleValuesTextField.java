@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -162,6 +163,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				}
 			};
 			mainContainer.add(form);
+
+			final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 			// create a backing model for each subfield label using a list
 			form.add(new ListView("subFieldsListView", subFieldConfigs) {
 	
@@ -194,6 +197,12 @@ public class MultipleValuesTextField extends FormComponentPanel {
 					newValueField.add(new ErrorHighlighter());
 					newValueField.setRequired(MultipleValuesTextField.this.isRequired());
 					newValueField.add(new MultipleValuesTextFieldValidator());
+					List<IValidator> validators = helper.getValidators(fieldConfig);
+					if(CollectionUtils.isNotEmpty(validators)){
+						for(IValidator validator : validators){
+							newValueField.add(validator);
+						}
+					}
 					FieldUtils.appendFieldStyles(fieldConfig, newValueField);
 					item.add(newValueField);
 					// TODO: add validator and field size etc.
@@ -317,7 +326,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * appropriately in a table
 	 * @param form
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "serial" })
 	private void paintSubValuesTable(final Form form) {
 		// show existing values table
 		String currentValue = valuesField.getModelObject();
@@ -334,7 +343,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 		if(linesCount == 0){
 			clearInput();
 		}
-		
+		final SimpleAttributeModifier cssTextAlignRight = new SimpleAttributeModifier("class", "right");
+		final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 		form.addOrReplace(new ListView("row", originalValueRows) {
 
 			@Override
@@ -348,8 +358,18 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				rowItem.add(new ListView("cell", subValues) {
 					@Override
 					protected void populateItem(ListItem cellItem) {
+						int fieldConfigIndex = cellItem.getIndex();
 						String subValue = cellItem.getModelObject().toString();
-						cellItem.add(new Label("cellValue", StringUtils.isBlank(subValue)?"":subValue));
+						subValue = StringUtils.isBlank(subValue)?"":subValue;
+						FieldConfig subConfig = fieldConfig.getSubFieldConfigs().get(fieldConfigIndex);
+						logger.info("rendering cell index: " +fieldConfigIndex+" for config: "+subConfig.getLabelKey()+", got helper for label: "+helper.getLabel());
+						helper.updateSummary(subConfig, subValue);
+						subValue = helper.parseFormat(subConfig, subValue, MultipleValuesTextField.this.getSession().getLocale());
+						
+						cellItem.add(new Label("cellValue", subValue));
+						if(subConfig.isNumberType()){
+							cellItem.add(cssTextAlignRight);
+						}
 					}
 
 				});
@@ -385,6 +405,22 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			}
 
 		});
+		form.addOrReplace(new ListView<FieldConfig>("summary", fieldConfig.getSubFieldConfigs()) {
+					@Override
+					protected void populateItem(ListItem<FieldConfig> cellItem) {
+						int fieldConfigIndex = cellItem.getIndex();
+						FieldConfig subConfig = fieldConfig.getSubFieldConfigs().get(fieldConfigIndex);
+						String summary = helper.getCalculatedSummary(subConfig);
+						if(StringUtils.isNotBlank(helper.getSummary(subConfig))){
+							summary = getLocalizer().getString(helper.getSummary(subConfig), MultipleValuesTextField.this) + ": " + summary;
+						}
+						cellItem.add(new Label("cellValue", summary));
+						if(subConfig.isNumberType()){
+							cellItem.add(cssTextAlignRight);
+						}
+					}
+
+				});
 	}
 
 	private static List<String> getValueRows(String currentValue) {
@@ -439,7 +475,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	}
 	
 	/**
-	 * Return the value a raw HTML <code>&lt;table&gt;</code> without eadings. The original input is HTML escaped.
+	 * Return the value a raw HTML <code>&lt;table&gt;</code> without headings or summary footer. The original input is HTML escaped.
 	 * @param input
 	 * @return
 	 */
@@ -448,13 +484,15 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	}
 
 	/**
-	 * Return the value a raw HTML <code>&lt;table&gt;</code> with eadings. The original input is HTML escaped.
+	 * Return the value a raw HTML <code>&lt;table&gt;</code> with headings and summary. The original input is HTML escaped.
 	 * @param input
 	 * @return
 	 */
 	public static String toHtmlSafeTable(String input, FieldConfig fieldConfig, Localizer localizer, Component callerComponent){
+		logger.info("toHtmlSafeTable input: "+input+", fieldConfig: "+fieldConfig+", localizer: "+localizer+", component: "+callerComponent);
 		StringBuffer html = new StringBuffer();
 		List<String> escapedLines = MultipleValuesTextField.getValueRows(HtmlUtils.htmlEscape(input));
+		final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 		if(CollectionUtils.isNotEmpty(escapedLines)){
 			html.append("<table cellspacing=\"1\" class=\"custom-attribute-tabular\">");
 			if(fieldConfig != null && localizer != null && callerComponent != null){
@@ -478,16 +516,34 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				if(CollectionUtils.isNotEmpty(escapedLineSubvalues)){
 					int styleWidth = 100/escapedLineSubvalues.size();
 					html.append(lineIndex % 2 == 0 ? "<tr class=\"even\">" :  "<tr class=\"odd\">");
+					int cellIndex = 0;
 					for(String subValue : escapedLineSubvalues){
-						html.append("<td style=\"width:"+styleWidth+"%\">");
-						html.append(subValue);
+						FieldConfig subconfig = fieldConfig.getSubFieldConfigs().get(cellIndex);
+						html.append("<td style=\"width:"+styleWidth+"%\"").append(subconfig.isNumberType()?" class=\"right\">":">");
+						html.append(helper.parseFormat(subconfig, subValue, callerComponent != null ? callerComponent.getSession().getLocale():Locale.ENGLISH));
 						html.append("</td>");
+						helper.updateSummary(subconfig, subValue);
+						cellIndex++;
 					}
 					html.append("</tr>");
 				}
 				lineIndex++;
 			}
 			html.append("</tbody>");
+			if(CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs())){
+				html.append("<tfoot>");
+				html.append((helper.getSummaryEntriesCount()) % 2 == 0 ? "<tr class=\"even\">" :  "<tr class=\"odd\">");
+				for(FieldConfig subConfig : fieldConfig.getSubFieldConfigs()){
+					html.append("<td").append(subConfig.isNumberType()?" class=\"right\">":">");
+					if(callerComponent != null && StringUtils.isNotBlank(subConfig.getSummary())){
+						html.append(callerComponent.getLocalizer().getString(subConfig.getSummary(), callerComponent)).append(": ");
+					}
+					html.append(helper.getCalculatedSummary(subConfig));
+					html.append("</td>");
+				}
+				html.append("</tr></tfoot>");
+			}
+			
 			html.append("</table>");
 		}
 //		String html = escapedInput.replaceAll("\\n", "<br />")
