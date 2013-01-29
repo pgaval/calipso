@@ -320,11 +320,11 @@ public class ColumnHeading implements Serializable {
 				if(f.getCustomAttribute() != null){
 					boolean show = f.getCustomAttribute().isShowInSearchResults();
 					ch.setVisible(show);
-					logger.info("show: "+ch.isVisible());
+					//logger.info("show: "+ch.isVisible());
 				}
-				else{
-					logger.info("show: custom attr was null");
-				}
+//				else{
+//					logger.info("show: custom attr was null");
+//				}
 				list.add(ch);
 			}
 		}

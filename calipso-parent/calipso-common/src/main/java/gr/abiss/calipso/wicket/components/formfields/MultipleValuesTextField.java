@@ -22,6 +22,7 @@ package gr.abiss.calipso.wicket.components.formfields;
 import gr.abiss.calipso.wicket.ErrorHighlighter;
 import gr.abiss.calipso.wicket.form.FieldUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -81,7 +82,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	private String originalValues = "";
 	private WebMarkupContainer mainContainer;
 	private FieldConfig fieldConfig;
-	private List<String> newSubFieldValues = new LinkedList<String>();
+	private List<Serializable> newSubFieldValues = new LinkedList<Serializable>();
 	private MultipleValuesTextFieldValidator subFieldNoCommasValidator = new MultipleValuesTextFieldValidator();
 
 	public MultipleValuesTextField(String id, IModel<String> model,
@@ -178,8 +179,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						newSubFieldValues.add("");
 						
 					}
-					final TextField<String> newValueField = 
-							new TextField<String>("newValueField", new PropertyModel(newSubFieldValues, "[" + index + "]")){
+					final TextField newValueField = 
+							new TextField("newValueField", new PropertyModel(newSubFieldValues, "[" + index + "]")){
 						@Override
 					    protected void onComponentTag(ComponentTag tag){
 					            super.onComponentTag(tag);
@@ -189,13 +190,24 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						
 						@Override
 						public boolean isRequired(){
-							return super.isRequired() && linesCount <= 0;
+							return super.isRequired() || linesCount <= 0;
 						}
 					};
 					newValueField.setOutputMarkupId(true);
-					newValueField.setType(String.class);
+					String fieldType = fieldConfig.getType();
+					if(StringUtils.isNotBlank(fieldType) && !fieldType.equalsIgnoreCase(FieldConfig.TYPE_STRING)){
+						if(fieldType.equalsIgnoreCase(FieldConfig.TYPE_DECIMAL)){
+							newValueField.setType(Double.class);
+						}
+						else if(fieldType.equalsIgnoreCase(FieldConfig.TYPE_INTEGER)){
+							newValueField.setType(Integer.class);
+						}
+					}
+					else{
+						newValueField.setType(String.class);
+					}
 					newValueField.add(new ErrorHighlighter());
-					newValueField.setRequired(MultipleValuesTextField.this.isRequired());
+					newValueField.setRequired(MultipleValuesTextField.this.isRequired() || !fieldConfig.isOptional());
 					newValueField.add(new MultipleValuesTextFieldValidator());
 					List<IValidator> validators = helper.getValidators(fieldConfig);
 					if(CollectionUtils.isNotEmpty(validators)){
@@ -288,7 +300,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				// submits the first in the page
 				// for some reason, unless it's own submit is used
 				// e.g. instead of pressing enter in a field
-				if (StringUtils.isNotBlank(newSubFieldValues.get(i))) {
+				if (StringUtils.isNotBlank(newSubFieldValues.get(i)+"")) {
 					foundNonBlankValue = true;
 				}
 				values.append(newSubFieldValues.get(i));
@@ -449,14 +461,15 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 *
 	 */
 	private class MultipleValuesTextFieldValidator implements
-			IValidator<String> {
-		private void error(IValidatable<String> validatable, String errorKey) {
+			IValidator<Serializable> {
+		private void error(IValidatable<Serializable> validatable, String errorKey) {
 			ValidationError error = new ValidationError();
 			error.addMessageKey("MultipleValuesTextFieldValidator." + errorKey);
 			validatable.error(error);
 		}
-		public void validate(IValidatable<String> validatable) {
-			if (validatable.getValue().contains(SEPARATOR_LINE_SUBVALUE)) {
+		public void validate(IValidatable<Serializable> validatable) {
+			Serializable value = validatable.getValue();
+			if (value != null && value.toString().contains(SEPARATOR_LINE_SUBVALUE)) {
 				error(validatable, "noCommasAllowed");
 			}
 		}

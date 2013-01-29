@@ -56,6 +56,7 @@ public class FieldConfig implements Serializable{
 		xstream.useAttributeFor(FieldConfig.class, "summary");
 		xstream.useAttributeFor(FieldConfig.class, "min");
 		xstream.useAttributeFor(FieldConfig.class, "max");
+		xstream.useAttributeFor(FieldConfig.class, "optional");
 		xstream.useAttributeFor(FieldConfig.class, "showHelpInPdf");
 		xstream.aliasAttribute(FieldConfig.class, "showHelpInPdf", "show-help-in-pdf");
 	}
@@ -111,6 +112,7 @@ public class FieldConfig implements Serializable{
 	private String format = null;
 	private String min = "0";
 	private String max = null;
+	boolean optional = false;
 	
 	private boolean showHelpInPdf = false;
 
@@ -236,6 +238,14 @@ public class FieldConfig implements Serializable{
 
 	public void setMax(String max) {
 		this.max = max;
+	}
+
+	public boolean isOptional() {
+		return optional;
+	}
+
+	public void setOptional(boolean optional) {
+		this.optional = optional;
 	}
 
 	public boolean isShowHelpInPdf() {

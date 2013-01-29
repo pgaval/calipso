@@ -689,10 +689,10 @@ public class User implements UserDetails, Serializable, IUser {
     
     @Override
     public int hashCode() {
-        if(loginName == null) {
+        if(this.getLoginName() == null) {
             return 0;
         }
-        return loginName.hashCode();
+        return this.getLoginName().hashCode();
     }
 
 	public List<RoleSpaceStdField> getRoleSpaceStdFieldList() {

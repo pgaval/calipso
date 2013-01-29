@@ -25,6 +25,7 @@ import static gr.abiss.calipso.wicket.components.formfields.FieldConfig.TYPE_DEC
 import static gr.abiss.calipso.wicket.components.formfields.FieldConfig.TYPE_INTEGER;
 import static gr.abiss.calipso.wicket.components.formfields.FieldConfig.TYPE_DATE;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -45,7 +46,11 @@ import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
 
 
-public class FieldSummaryHelper{
+public class FieldSummaryHelper implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(FieldSummaryHelper.class);
 	private static final Double ZERO = new Double(0);
 	private static final Map<String, String> TYPE_FORMATS = new HashMap<String, String>();
