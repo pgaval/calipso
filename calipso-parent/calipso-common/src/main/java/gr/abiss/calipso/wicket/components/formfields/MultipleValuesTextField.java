@@ -190,7 +190,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						
 						@Override
 						public boolean isRequired(){
-							return super.isRequired() || linesCount <= 0;
+							return super.isRequired() && linesCount <= 0;
 						}
 					};
 					newValueField.setOutputMarkupId(true);
