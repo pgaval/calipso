@@ -447,6 +447,7 @@ div.calipso-multivalue-text{padding:0px;margin-left: 10px;width:auto;/*float:rig
 div.calipso-multivalue-text label{font-weight:normal;text-decoration:underline;}
 div.calipso-multivalue-text{background:#FFFFFF;}
 div.calipso-multivalue-text table td{}
+.summary{font-weight:bold;}
 
 div.calipso-multivalue-text textarea, 
 div.calipso-multivalue-text table{
