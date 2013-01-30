@@ -463,7 +463,7 @@ public class SpacePermissionsPanel extends BasePanel {
 						protected void populateItem(ListItem listItem) {
 							final SpaceRole spaceRole = (SpaceRole) listItem
 									.getModelObject();
-							//spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
+							spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
 							String roleClass = listItem.getIndex() % 2 == 1 ? " alt"
 									: "";
 							String lastRole = listItem.getIndex() == roles
@@ -535,6 +535,7 @@ public class SpacePermissionsPanel extends BasePanel {
 							// -------------------------------------------------
 							// add template selection for state/spacerole combo
 							// -------------------------------------------------
+							
 							DropDownChoice<ItemRenderingTemplate> roleStateTemplateChoice = new DropDownChoice<ItemRenderingTemplate>(
 									"roleStateTemplate",
 									new PropertyModel<ItemRenderingTemplate>(
