@@ -272,6 +272,8 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		
 		Fragment mandatoryFragment;
 		Fragment activeFragment;
+		TextField mappingKey = new TextField("mappingKey");//, new PropertyModel(model.getObject(), "mappingKey"));
+		add(mappingKey);
 
 		if (isMandatory) {// Edit Mode
 
@@ -297,7 +299,6 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 			// form label for active
 			active.setLabel(new ResourceModel("asset.customAttributes.active"));
 			add(new SimpleFormComponentLabel("activeLabel", active));
-			
 			
 
 		} else {// Search Mode
