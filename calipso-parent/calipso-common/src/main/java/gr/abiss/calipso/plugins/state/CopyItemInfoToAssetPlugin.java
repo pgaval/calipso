@@ -29,6 +29,7 @@ import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.Item;
+import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
 import gr.abiss.calipso.domain.Organization;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.plugins.state.AbstractStatePlugin;
@@ -47,6 +48,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.NumberUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 
@@ -180,8 +182,16 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 	private void initAssetAttributeUsingItemFields(CalipsoService calipsoService, Item item, Asset asset,
 			List<Field> itemFields, AssetTypeCustomAttribute assetTypeAttr) {
 		for(Field field : itemFields){
-			// got a match?
-			if(field.getLabel().trim().equals(assetTypeAttr.getName().trim())){
+			ItemFieldCustomAttribute customAttribute = field.getCustomAttribute();
+			if(customAttribute == null){
+				customAttribute = calipsoService.loadItemCustomAttribute(item.getSpace(), field.getName().getText());
+				field.setCustomAttribute(customAttribute);
+			}
+			String fieldMappingKey = customAttribute != null ? customAttribute.getMappingKey() : null;
+			
+			// match based on mapping key. keep supporting legacy match i.e. field label/asset attribute name.
+			if((field.getLabel().trim().equals(assetTypeAttr.getName().trim())) 
+					|| StringUtils.isNotBlank(fieldMappingKey) && fieldMappingKey.equals(assetTypeAttr.getMappingKey())){
 				// DropDown
 				if(field.getName().isDropDownType()){
 					// Item field and Asset attribute options need to be in the same order
