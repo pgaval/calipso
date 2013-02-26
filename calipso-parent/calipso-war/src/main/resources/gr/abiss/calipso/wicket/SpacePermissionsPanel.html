@@ -14,29 +14,36 @@ if (document.all) showMode='block';
 
 // This is the function that actually does the manipulation
 
-function toggleVis(name, skipPrevious){
-	// Once the cells and checkbox object has been retrieved
-	// the show hide choice is simply whether the checkbox is
-	// checked or clear
+function toggleVis(name, selectedIndex){
 
-	if(!skipPrevious){
-		toggleVis(previousColumn, true);
-		previousColumn = name;
-
-	}
 	// get the name of cells to toggle
 	name = name.substring(5);
-	// Next find all the table cells by using the DOM function
-	// getElementsByName passing in the constructed name of
-	// the cells, derived from the checkbox name
 
-	cells = document.getElementsByName(name);
-	// Apply the style to the CSS display property for the cells
+	//alert("selectedIndex: "+selectedIndex+", name:" +name);
+	var rows = document.getElementById("workflow-table").getElementsByTagName("tr");
 
-	mode = skipPrevious ? 'none' : showMode;
-	if(cells){
-		for(j = 0; j < cells.length; j++) cells[j].style.display = mode;
+	//alert("rows("+rows.length+"): "+rows);
+	//headings
+	var cells = rows[0].getElementsByTagName("th");
+	for(j=0;j < cells.length;j++){
+		var cellName = cells[j].getAttribute('name');
+		if(cellName != "show"){
+			cells[j].style.display = (name == cellName) ? showMode : 'none' ;
+		}
 	}
+	for(i=1;i<rows.length;i++){
+		cells = rows[i].getElementsByTagName("td");
+		for(j=0;j < cells.length;j++){
+			var cellName = cells[j].getAttribute('name');
+			if(cellName != "show"){
+				cells[j].style.display = (name == cellName) ? showMode : 'none' ;
+			}
+		}
+    }
+}
+
+function getCells(){
+	
 }
 
 </script>
@@ -55,7 +62,7 @@ function toggleVis(name, skipPrevious){
 		<p class="help-message"><wicket:message key="SpacePermissionsPanel.help"/></p>
 
 		<form wicket:id="form">    
-<select  onchange="toggleVis(this.options[this.selectedIndex].value)">
+<select  onchange="toggleVis(this.options[this.selectedIndex].value, this.selectedIndex)">
 	<option value="show-states-cell"><wicket:message key="space_roles.state"/></option>
 	<option value="show-tmpls-cell"><wicket:message key="space_roles.state.template"/></option>
 	<option wicket:id="field-group-selection" value="show-fields-group-cell"><span wicket:id="field-group-selection-label"></span></option>
@@ -76,20 +83,20 @@ function toggleVis(name, skipPrevious){
 		        </td>       
 		    </tr-->
 		    <tr class="center alt">
-		        <th><wicket:message key="space_roles.state"/></th>
-		        <th><input type="image" wicket:id="addState" src="../resources/add.gif"/></th>
-		        <th><wicket:message key="space_roles.role"/></th>
-		        <th><input type="image" wicket:id="addRole" src="../resources/add.gif"/></th>
+		        <th name="show"><wicket:message key="space_roles.state"/></th>
+		        <th name="show"><input type="image" wicket:id="addState" src="../resources/add.gif"/></th>
+		        <th name="show"><wicket:message key="space_roles.role"/></th>
+		        <th name="show"><input type="image" wicket:id="addRole" src="../resources/add.gif"/></th>
 		        <th name="tmpls-cell" class="hide"><wicket:message key="space_roles.state.template"/></th>
 		        <th name="states-cell" wicket:id="stateHeads"><span wicket:id="state"></span></th>
 		        <th name="fields-cell" wicket:id="fieldHeads" class="selected hide"><span wicket:id="field"></span></th>                        
 		    </tr>
 		    <tbody wicket:id="states" class="roles">
 		        <tr wicket:id="roles">
-		            <td wicket:id="state"></td>
-		            <td wicket:id="editState"><input type="image" wicket:id="editState" src="../resources/edit.gif"/></td>
-		            <td wicket:id="role" class="transition"></td>
-		            <td><input type="image" wicket:id="editRole" src="../resources/edit.gif"/></td>
+		            <td name="show" wicket:id="state"></td>
+		            <td name="show" wicket:id="editState"><input type="image" wicket:id="editState" src="../resources/edit.gif"/></td>
+		            <td name="show" wicket:id="role"></td>
+		            <td name="show"><input type="image" wicket:id="editRole" src="../resources/edit.gif"/></td>
 		            <td name="tmpls-cell" class="hide"><select wicket:id="roleStateTemplate"></select></td>
 		            <td name="states-cell" wicket:id="stateHeads"><input type="image" wicket:id="state"/></td>
 		            <td name="fields-cell" wicket:id="fieldHeads" class="info hide"><select class="states" type="image" wicket:id="field"/></td>
