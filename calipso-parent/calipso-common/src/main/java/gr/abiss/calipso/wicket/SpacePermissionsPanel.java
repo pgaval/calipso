@@ -466,11 +466,15 @@ public class SpacePermissionsPanel extends BasePanel {
 							// TODO: hack
 							try{
 
-								spaceRole.getItemRenderingTemplates();
+								
+								logger.debug("space role already has tmpls loaded: "+spaceRole.getItemRenderingTemplates().values());
 							}
 							catch(Exception e){
+
+								logger.info("space role has no templates loaded, loading");
 								spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
-								
+
+								logger.info("space role has now loaded tmpls: "+spaceRole.getItemRenderingTemplates());
 							}
 							String roleClass = listItem.getIndex() % 2 == 1 ? " alt"
 									: "";
