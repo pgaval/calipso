@@ -211,7 +211,7 @@ public class SpacePermissionsPanel extends BasePanel {
 	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
 			SpaceRole spaceRole) {
 		super(id, breadCrumbModel);
-		logger.info("Constructor 5");
+		//logger.info("Constructor 5");
 
 		this.space = spaceRole.getSpace();
 		// this.isNewSpace = isNewSpace();
@@ -463,7 +463,15 @@ public class SpacePermissionsPanel extends BasePanel {
 						protected void populateItem(ListItem listItem) {
 							final SpaceRole spaceRole = (SpaceRole) listItem
 									.getModelObject();
-							spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
+							// TODO: hack
+							try{
+
+								spaceRole.getItemRenderingTemplates();
+							}
+							catch(Exception e){
+								spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
+								
+							}
 							String roleClass = listItem.getIndex() % 2 == 1 ? " alt"
 									: "";
 							String lastRole = listItem.getIndex() == roles
@@ -535,7 +543,7 @@ public class SpacePermissionsPanel extends BasePanel {
 							// -------------------------------------------------
 							// add template selection for state/spacerole combo
 							// -------------------------------------------------
-							
+							//logger.info("select stateKeyRow: "+stateKeyRow+", with role templates: "+spaceRole.getItemRenderingTemplates());
 							DropDownChoice<ItemRenderingTemplate> roleStateTemplateChoice = new DropDownChoice<ItemRenderingTemplate>(
 									"roleStateTemplate",
 									new PropertyModel<ItemRenderingTemplate>(
@@ -931,7 +939,7 @@ public class SpacePermissionsPanel extends BasePanel {
 													.getItemRenderingTemplates()
 													.contains(tpl)) {
 										space.add(tpl);
-										logger.info("added new template to space");
+										//logger.info("added new template to space");
 									}
 
 									// update grid
@@ -970,7 +978,7 @@ public class SpacePermissionsPanel extends BasePanel {
 													.getItemRenderingTemplates()
 													.contains(tpl)) {
 										space.add(tpl);
-										logger.info("added new template to space");
+										//logger.info("added new template to space");
 									}
 
 									// update grid
