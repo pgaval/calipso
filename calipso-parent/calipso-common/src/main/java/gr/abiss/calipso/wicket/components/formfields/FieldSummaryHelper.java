@@ -78,63 +78,70 @@ public class FieldSummaryHelper implements Serializable{
 	}
 	
 	public FieldSummaryHelper(FieldConfig fieldConfig){
-		this.type = fieldConfig.getType();
-		this.label = fieldConfig.getLabelKey();
-		this.summary = fieldConfig.getSummary();
-		this.min = fieldConfig.getMin();
-		this.max = fieldConfig.getMax();
-		if(StringUtils.isNotBlank(type)){
-			// confiogure min/max
-			if(StringUtils.isNotBlank(min)){
-				if(TYPE_DECIMAL.equalsIgnoreCase(type)){
-					validators.add(new MinimumValidator<Double>(Double.parseDouble(min)));
+		if(fieldConfig != null){
+
+			this.type = fieldConfig.getType();
+			this.label = fieldConfig.getLabelKey();
+			this.summary = fieldConfig.getSummary();
+			this.min = fieldConfig.getMin();
+			this.max = fieldConfig.getMax();
+		}
+
+			if(StringUtils.isNotBlank(type)){
+				// confiogure min/max
+				if(StringUtils.isNotBlank(min)){
+					if(TYPE_DECIMAL.equalsIgnoreCase(type)){
+						validators.add(new MinimumValidator<Double>(Double.parseDouble(min)));
+					}
+					if(TYPE_INTEGER.equalsIgnoreCase(type)){
+						validators.add(new MinimumValidator<Integer>(Integer.parseInt(min)));
+					}
 				}
-				if(TYPE_INTEGER.equalsIgnoreCase(type)){
-					validators.add(new MinimumValidator<Integer>(Integer.parseInt(min)));
+				if(StringUtils.isNotBlank(max)){
+					if(TYPE_DECIMAL.equalsIgnoreCase(type)){
+						validators.add(new MaximumValidator<Double>(Double.parseDouble(min)));
+					}
+					if(TYPE_INTEGER.equalsIgnoreCase(type)){
+						validators.add(new MaximumValidator<Integer>(Integer.parseInt(min)));
+					}
 				}
-			}
-			if(StringUtils.isNotBlank(max)){
-				if(TYPE_DECIMAL.equalsIgnoreCase(type)){
-					validators.add(new MaximumValidator<Double>(Double.parseDouble(min)));
-				}
-				if(TYPE_INTEGER.equalsIgnoreCase(type)){
-					validators.add(new MaximumValidator<Integer>(Integer.parseInt(min)));
-				}
-			}
-			
-			
-			// configure formatting
-			if(StringUtils.isNotBlank(fieldConfig.getFormat())){
 				
-				try {
-					Class formatClass = Class.forName(TYPE_FORMATS.get(type));
-					this.format = (Format) formatClass.getConstructor(String.class).newInstance(fieldConfig.getFormat());
-				} catch (Exception e) {
-					//throw new RuntimeException(e);
-					logger.error("Failed configuring format for field config: "+fieldConfig.getLabelKey());
+				
+				// configure formatting
+				if(fieldConfig != null && StringUtils.isNotBlank(fieldConfig.getFormat())){
+					
+					try {
+						Class formatClass = Class.forName(TYPE_FORMATS.get(type));
+						this.format = (Format) formatClass.getConstructor(String.class).newInstance(fieldConfig.getFormat());
+					} catch (Exception e) {
+						//throw new RuntimeException(e);
+						logger.error("Failed configuring format for field config: "+fieldConfig.getLabelKey());
+					}
 				}
 			}
-		}
-		
-		
-		
-		// configure summary
-		if(StringUtils.isNotBlank(this.summary)){
-			if(TYPE_DECIMAL.equalsIgnoreCase(this.type)
-					|| TYPE_INTEGER.equalsIgnoreCase(this.type)){
-				this.summaryObject = ZERO;	
+			
+			
+			
+			// configure summary
+			if(StringUtils.isNotBlank(this.summary)){
+				if(TYPE_DECIMAL.equalsIgnoreCase(this.type)
+						|| TYPE_INTEGER.equalsIgnoreCase(this.type)){
+					this.summaryObject = ZERO;	
+				}
 			}
-		}
-		if(fieldConfig != null && CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs())){
-			List<FieldConfig> subConfigs = fieldConfig.getSubFieldConfigs();
-			helpers = new HashMap<String, FieldSummaryHelper>();
-			helpersList = new ArrayList<FieldSummaryHelper>(subConfigs.size());
-			for(FieldConfig subConfig : subConfigs){
-				FieldSummaryHelper helper = new FieldSummaryHelper(subConfig);
-				helpers.put(subConfig.getLabelKey(), helper);
-				helpersList.add(helper);
+			if(fieldConfig != null && CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs())){
+				List<FieldConfig> subConfigs = fieldConfig.getSubFieldConfigs();
+				helpers = new HashMap<String, FieldSummaryHelper>();
+				helpersList = new ArrayList<FieldSummaryHelper>(subConfigs.size());
+				for(FieldConfig subConfig : subConfigs){
+					FieldSummaryHelper helper = new FieldSummaryHelper(subConfig);
+					helpers.put(subConfig.getLabelKey(), helper);
+					helpersList.add(helper);
+				}
 			}
-		}
+		
+
+		
 	}
 
 	public void updateSummary(FieldConfig subFieldConfig, String value) {
