@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
+import org.jfree.util.Log;
 
 
 public class FieldSummaryHelper implements Serializable{
@@ -225,8 +226,19 @@ public class FieldSummaryHelper implements Serializable{
 		return helper.getValidators();
 	}
 	public List<IValidator> getValidators(FieldConfig subFieldConfig){
-		FieldSummaryHelper helper = helpers.get(subFieldConfig.getLabelKey());
-		return helper.getValidators();
+		List<IValidator> validators = new LinkedList<IValidator>();
+		if(subFieldConfig != null){
+			String labelKey = subFieldConfig.getLabelKey();
+			logger.info("labelKey: "+labelKey);
+			if(StringUtils.isNotBlank(labelKey)){
+				FieldSummaryHelper helper = helpers.get(subFieldConfig.getLabelKey());
+				validators.addAll(helper.getValidators());
+			}
+		}
+		else{
+			logger.info("subFieldConfig is null");
+		}
+		return validators;
 	}
 	
 	private String parseFormat(String value, Locale locale){
