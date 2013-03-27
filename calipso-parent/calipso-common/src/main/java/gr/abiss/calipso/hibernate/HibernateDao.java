@@ -415,7 +415,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	else{*/
     		List<ItemRenderingTemplate> templates = space.getItemRenderingTemplates();
-    		//space.setItemRenderingTemplates(null);
+    		space.setItemRenderingTemplates(null);
         	getHibernateTemplate().update(space);
         	if(CollectionUtils.isNotEmpty(templates)){
         		for(ItemRenderingTemplate template : templates){
