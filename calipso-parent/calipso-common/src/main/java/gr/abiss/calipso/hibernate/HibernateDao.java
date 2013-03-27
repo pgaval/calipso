@@ -415,14 +415,14 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	else{*/
     		List<ItemRenderingTemplate> templates = space.getItemRenderingTemplates();
-    		space.setItemRenderingTemplates(null);
-        	getHibernateTemplate().update(space);
-        	if(CollectionUtils.isNotEmpty(templates)){
-        		for(ItemRenderingTemplate template : templates){
-        			template.setSpace(space);
-        			this.getHibernateTemplate().merge(template);
-        		}
-        	}
+    		//space.setItemRenderingTemplates(null);
+        	getHibernateTemplate().merge(space);
+//        	if(CollectionUtils.isNotEmpty(templates)){
+//        		for(ItemRenderingTemplate template : templates){
+//        			template.setSpace(space);
+//        			this.getHibernateTemplate().merge(template);
+//        		}
+//        	}
         		
     	/*}*/
         //logger.info("Saved space, updating metadataCache for space: "+space.getPrefixCode());
