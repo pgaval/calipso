@@ -2,21 +2,43 @@
 <html>
 	<head>
 		<style type='text/css'>
-			#normalFooter, #firstPageFooter{font-size:12px;}
-			@page {@bottom-right {content: element(normalFooter);}}
-			@page :first {@bottom-right {content: element(firstPageFooter);}}
+			#normalFooter, #firstPageFooter{font-size:12px;} 
+			@page {
+				padding-top:100px;
+				background: url('watermark.png') no-repeat top center; 
+				@bottom-center { content: element(footer); }
+			}
+			@page :first {
+				padding-top:10px;
+				background: url('watermark.png') no-repeat center 30px;
+				@bottom-center { content: element(firstPageFooter); }
+			}
 			#page:before {content: counter(page);}
+			
+			#pagecount:before {content: counter(pages);}
+			#header {
+		        	display: block; text-align: center;
+		        	position: running(header);
+		    }
+			#footer {
+		        	display: block; text-align: center;
+		        	position: running(footer);
+		    }
+			#firstPageFooter {
+		        	display: block; text-align: center;
+		        	position: running(firstPageFooter);
+		    }
+		    #page:before {content: counter(page);}
 			#pagecount:before {content: counter(pages);}
 			.heading-container1{display:none;}
-			h1{font-size:16px;padding:10px;background: #EADFD7;font-weight:bold;color:#666666;}
-			body {font-size:14px; /*font-family: \"Arial Unicode MS\";*/ }
+			h1{font-size:16px;margin:10px;padding:10px;background: #EADFD7;font-weight:bold;color:#666666;}
+			body {font-size:14px;margin:10px;padding:10px; /*font-family: \"Arial Unicode MS\";*/ }
 			th{width:40%;max-width:50%;text-align:left;font-weight:bold;}
 			td, th, caption{padding-left:4px;padding-right:4px;padding-top:2px;padding-bottom:2px;}
 			table.overview{border-collapse:collapse;background:#FFFFFF;width:100%;margin-bottom:8px;page-break-inside: avoid; }
 			tr.alt { background: #F2F2F2; }
 			table.overview caption{background: #EADFD7;font-weight:bold;text-align:left;}
 			td, th{vertical-align:top;}
-			.footer{display:none;}
 			.clear{clear:both;}
       		a, a:link{color:#4E3227; text-decoration: none;}
       		table.overview th.label-right {
@@ -29,13 +51,15 @@
 		</style>
 	</head>
 	<body>
+		<div id="header">header</div>
+		<div id='footer'><div class="footer">Page <span id='page'/> of <span id='pagecount'/></div></div>
+		<div id='firstPageFooter'><div class="footer">Page <span id='page'/> of <span id='pagecount'/></div></div>
 <!-- <img src='logo.png' style='margin:20px;' /> -->
 		<img src='logo.png' style='margin:20px;' />
 <!-- begin:ItemTemplateViewPage.html -->
 		<div class="main-content" wicket:id="panel"></div>
 <!-- end:ItemTemplateViewPage.html -->
-		<div id='normalFooter' style='position: running(normalFooter);'><div class="footer">Page <span id='page'/> of <span id='pagecount'/></div></div>
-		<div id='firstPageFooter' style='position: running(firstPageFooter);'><div class="footer">Page <span id='page'/> of <span id='pagecount'/></div></div>
+		
 	</body>
 </html>
 		
