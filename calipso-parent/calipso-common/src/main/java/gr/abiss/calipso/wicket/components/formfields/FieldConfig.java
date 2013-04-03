@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.dom4j.io.DOMReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,6 +46,9 @@ public class FieldConfig implements Serializable{
 	public static final String TYPE_DATE = "date";
 	public static final String SUMMARY_TOTAL = "total";
 	public static final String SUMMARY_AVERAGE = "average";
+	
+
+	public static final FieldConfig FALLBACK_SUBCONFIG = new FieldConfig("");
 	
 	private static final XStream xstream = new XStream();
 	static{
@@ -131,6 +135,26 @@ public class FieldConfig implements Serializable{
 	public FieldConfig(String labelKey) {
 		this.labelKey = labelKey;
 	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).
+	        append("labelKey", labelKey).
+	        append("helpKey", helpKey).
+	        append("size", size).
+	        append("maxLength", maxLength).
+	        append("validationExpression", validationExpression).
+	        append("style", style).
+	        append("totalsLineFunction", totalsLineFunction).
+	        append("classname", classname).
+	        append("type", type).
+	        append("summary", summary).
+	        append("format", format).
+	        append("min", min).
+	        append("max", max).
+	        append("optional", optional).
+	        append("showHelpInPdf", showHelpInPdf).
+	        toString();}
 
 	public List<FieldConfig> getSubFieldConfigs() {
 		return subFieldConfigs;

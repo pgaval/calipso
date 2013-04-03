@@ -531,7 +531,9 @@ public class MultipleValuesTextField extends FormComponentPanel {
 					html.append(lineIndex % 2 == 0 ? "<tr class=\"even\">" :  "<tr class=\"odd\">");
 					int cellIndex = 0;
 					for(String subValue : escapedLineSubvalues){
-						FieldConfig subconfig = fieldConfig.getSubFieldConfigs().get(cellIndex);
+						FieldConfig subconfig = fieldConfig != null && CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs()) 
+								? fieldConfig.getSubFieldConfigs().get(cellIndex) 
+								: FieldConfig.FALLBACK_SUBCONFIG;
 						html.append("<td style=\"width:"+styleWidth+"%\"").append(subconfig.isNumberType()?" class=\"right\">":">");
 						html.append(helper.parseFormat(subconfig, subValue, callerComponent != null ? callerComponent.getSession().getLocale():Locale.ENGLISH));
 						html.append("</td>");
@@ -543,7 +545,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				lineIndex++;
 			}
 			html.append("</tbody>");
-			if(CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs())){
+			if(fieldConfig !=null && CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs())){
 				html.append("<tfoot>");
 				html.append((helper.getSummaryEntriesCount()) % 2 == 0 ? "<tr class=\"even\">" :  "<tr class=\"odd\">");
 				for(FieldConfig subConfig : fieldConfig.getSubFieldConfigs()){

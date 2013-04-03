@@ -146,12 +146,17 @@ public class FieldSummaryHelper implements Serializable{
 	}
 
 	public void updateSummary(FieldConfig subFieldConfig, String value) {
-		FieldSummaryHelper helper = helpers.get(subFieldConfig.getLabelKey());
-		helper.updateSummary(value);
+		//logger.info("updateSummary for subFieldConfig: "+subFieldConfig+", value: "+value+", labelKey: "+subFieldConfig.getLabelKey());
+		FieldSummaryHelper helper = StringUtils.isNotBlank(subFieldConfig.getLabelKey()) ? helpers.get(subFieldConfig.getLabelKey()):null;
+		if(helper != null){
+			helper.updateSummary(value);	
+		}
 	}
 	public void updateSummary(int subFieldIndex, String value) {
 		FieldSummaryHelper helper = helpersList.get(subFieldIndex);
-		helper.updateSummary(value);
+		if(helper != null){
+			helper.updateSummary(value);
+		}
 	}
 
 	public void updateSummary(String value) {
@@ -206,19 +211,20 @@ public class FieldSummaryHelper implements Serializable{
 		if(o == null){
 			o = value;
 		}
-		logger.info("parse "+value +" returns " +o +" ("+o.getClass()+") with locale "+locale+" for type: "+type+" and label: "+this.label);
+		//logger.info("parse "+value +" returns " +o +" ("+o.getClass()+") with locale "+locale+" for type: "+type+" and label: "+this.label);
 		return o;
 	}
 
 	public String parseFormat(FieldConfig subFieldConfig, String value, Locale locale){
-		FieldSummaryHelper helper = helpers.get(subFieldConfig.getLabelKey());
-		logger.info("parseFormat subFieldConfig, helper: "+helper);
-		return helper.parseFormat(value, locale);
+		//logger.info("parseFormat subFieldConfig: "+subFieldConfig);
+		FieldSummaryHelper helper = helpers != null ? helpers.get(subFieldConfig.getLabelKey()) : null;
+		//logger.info("parseFormat subFieldConfig, helper: "+helper);
+		return helper != null ? helper.parseFormat(value, locale) :value;
 	}
 	public String parseFormat(int subFieldIndex, String value, Locale locale){
-		FieldSummaryHelper helper = helpersList.get(subFieldIndex);
-		logger.info("parseFormat subFieldIndex:, helper: "+helper);
-		return helper.parseFormat(value, locale);
+		FieldSummaryHelper helper = helpersList != null && helpersList.size() >= subFieldIndex ? helpersList.get(subFieldIndex) :null;
+		//logger.info("parseFormat subFieldIndex:, helper: "+helper);
+		return helper != null ? helper.parseFormat(value, locale) :value;
 	}
 
 	public List<IValidator> getValidators(int subFieldIndex){
@@ -229,14 +235,14 @@ public class FieldSummaryHelper implements Serializable{
 		List<IValidator> validators = new LinkedList<IValidator>();
 		if(subFieldConfig != null){
 			String labelKey = subFieldConfig.getLabelKey();
-			logger.info("labelKey: "+labelKey);
+			//logger.info("labelKey: "+labelKey);
 			if(StringUtils.isNotBlank(labelKey)){
 				FieldSummaryHelper helper = helpers.get(subFieldConfig.getLabelKey());
 				validators.addAll(helper.getValidators());
 			}
 		}
 		else{
-			logger.info("subFieldConfig is null");
+			logger.warn("Cannot build validators for null subFieldConfig");
 		}
 		return validators;
 	}
@@ -248,14 +254,14 @@ public class FieldSummaryHelper implements Serializable{
 	private String format(Object value){
 		String val;
 		if(this.format == null || value instanceof String){
-			logger.info("format skipped "+value+" for label"+this.label);
+			//logger.info("format skipped "+value+" for label"+this.label);
 			val = value.toString();
 		}
 		else{
 			val = this.format.format(value);
-			logger.info("format formatted '"+value+"' to '"+val+"' using a "+this.format+" for label"+this.label);
+			//logger.info("format formatted '"+value+"' to '"+val+"' using a "+this.format+" for label"+this.label);
 		}
-		logger.info("format "+value +" returns " +val+" for label"+this.label);
+		//logger.info("format "+value +" returns " +val+" for label"+this.label);
 		return val;
 	}
 	
