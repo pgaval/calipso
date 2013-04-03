@@ -166,7 +166,6 @@ public class PdfUtils {
 					}
 				}
 				htmlBuffer.append("</table>");
-				appendDefaultFooter(htmlBuffer);
 				
 				htmlBuffer.append("</body></html>");
 				html = htmlBuffer.toString();
@@ -239,7 +238,6 @@ public class PdfUtils {
 //					}
 //				}
 //				htmlBuffer.append("</table>");
-				appendDefaultFooter(htmlBuffer);
 				htmlBuffer.append("</body></html>");
 
 				html = htmlBuffer.toString();
@@ -253,15 +251,47 @@ public class PdfUtils {
 	}
 
 	public static StringBuffer getDefaultHeader() {
-		StringBuffer htmlBuffer = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?><html><head><style type='text/css'>#normalFooter, #firstPageFooter{font-size:12px;} @page {@bottom-right {content: element(normalFooter);}}@page :first {@bottom-right {content: element(firstPageFooter);}}#page:before {content: counter(page);}#pagecount:before {content: counter(pages);} body { font-family: \"Arial Unicode MS\"; }th{width:50%;background:#EEEEEE;}td, th{border:1px solid #EEEEEE;padding-left:4px;padding-right:4px;vertical-align:top;}table{border-collapse:collapse;}</style></head><body>");
-				
+		StringBuffer htmlBuffer = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?><html><head>" +
+				"<style type='text/css'>" +
+				"#normalFooter, #firstPageFooter{font-size:12px;} " +
+				"@page {" +
+				"	padding-top:100px;" +
+				"	background: url('watermark.png') no-repeat top center; " +
+				"	@top-center { content: element(header) }" +
+				"	@bottom-right {content: element(footer);}" +
+				"}" +
+				"@page :first {" +
+				"	padding-top:10px;" +
+				"	background: url('watermark.png') no-repeat center 30px; " +
+				"	@top-center { content: element(header) }" +
+				"	@bottom-right {content: element(firstPageFooter);}" +
+				"}" +
+				"#page:before {content: counter(page);}" +
+				"#pagecount:before {content: counter(pages);} " +
+				"#footer{position: running(footer);}" +
+		        "#header {\n" +
+		        "	display: block; text-align: center;\n" + 
+		        "	position: running(header);}\n" +
+				"body { font-family: \"Arial Unicode MS\";margin:10px;padding:10px; }th{width:50%;background:#EEEEEE;}td, th{border:1px solid #EEEEEE;padding-left:4px;padding-right:4px;vertical-align:top;}table{border-collapse:collapse;}</style></head><body>" +
+				"<div id='header'>Header</div>")
+			.append("<div id='footer' style=''><div class='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>")
+			.append("<div id='firstPageFooter' style='position: running(firstPageFooter);'><div class='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>");
+//		"<html><head><style>\n" +
+//        "div.footer {\n" +
+//        "display: block; text-align: center;\n" + 
+//        "position: running(footer);}\n" +
+//        "div.content {page-break-after: always;}" +
+//        "@page { }\n " +
+//        "@page { @bottom-center { content: element(footer) }}\n" +
+//        "</style></head>\n" +
+//        "<body><div class='header'>Header</div><div class='footer'>Footer</div><div class='content'>Page1</div><div>Page2</div></body></html>";
+		
 		return htmlBuffer;
 	}
 
-	public static void appendDefaultFooter(StringBuffer htmlBuffer) {
-		htmlBuffer.append("<div id='normalFooter' style='position: running(normalFooter);'><div id='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>");
-		htmlBuffer.append("<div id='firstPageFooter' style='position: running(firstPageFooter);'><div class='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>");
-	}
+//	public static void appendDefaultFooter(StringBuffer htmlBuffer) {
+//		
+//	}
 
 
 	/**
@@ -273,6 +303,7 @@ public class PdfUtils {
 	 */
 	public static void writePdf(CalipsoService calipso, OutputStream os,
 			String html) throws DocumentException, IOException {
+	    logger.info("writePdf html: "+html);
 		writePdf(calipso.getFontsDirPath(), calipso.getResourcesDirPath(), os, html);
 	}
 	
@@ -288,7 +319,6 @@ public class PdfUtils {
 			    InputSource is = new InputSource( new StringReader(html));
 			    Document doc = builder.parse(is);
 			    String rsPath = new File(resourcesBasePath+File.separator).toURI().toURL().toString();
-			    logger.info("Resources DIR: "+rsPath);
 			    renderer.setDocument(doc, rsPath);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
