@@ -55,7 +55,8 @@ public class ValidationUtils {
         if (input == null) {
             return false;
         }
-        return input.matches("[\\w.@\\\\-]+");        
+        //return input.matches("[\\w.@\\\\-]+");
+        return input.matches("[a-zA-Z0-9\\._\\-]{4,}");
     }     
     
     /**
