@@ -417,7 +417,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			}
 
 		});
-		form.addOrReplace(new ListView<FieldConfig>("summary", fieldConfig.getSubFieldConfigs()) {
+		form.addOrReplace(new ListView<FieldConfig>("summary", fieldConfig != null ? fieldConfig.getSubFieldConfigs() : new ArrayList<FieldConfig>(0)) {
 					@Override
 					protected void populateItem(ListItem<FieldConfig> cellItem) {
 						int fieldConfigIndex = cellItem.getIndex();
