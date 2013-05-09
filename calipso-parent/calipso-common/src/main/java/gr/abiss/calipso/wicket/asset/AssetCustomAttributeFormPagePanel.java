@@ -19,19 +19,18 @@
 
 package gr.abiss.calipso.wicket.asset;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
 import gr.abiss.calipso.domain.CustomAttributeLookupValue;
-import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.util.BreadCrumbUtils;
 import gr.abiss.calipso.wicket.BasePanel;
 import gr.abiss.calipso.wicket.CalipsoApplication;
 import gr.abiss.calipso.wicket.CalipsoFeedbackMessageFilter;
 import gr.abiss.calipso.wicket.ConfirmPanel;
 import gr.abiss.calipso.wicket.customattrs.CustomAttributeUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.wicket.Application;
@@ -59,7 +58,7 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 	private CustomAttributeLookupValue lookupValue;
 	//private AssetCustomAttributeLookupValuesFormPanel assetCustomAttributeLookupValuesFormPanel = null;
 	private boolean canBeDeleted;
-	private boolean isEdit;
+	private final boolean isEdit;
 	private AssetType referenceAssetType = null;
 
 	private Map<String, String> textAreaOptions;
@@ -237,10 +236,10 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 	 *  
 	 */	
 	private class AssetCustomAttributeForm extends Form{
-		private AssetTypeCustomAttribute customAttribute;
-		private CalipsoFeedbackMessageFilter filter;
+		private final AssetTypeCustomAttribute customAttribute;
+		private final CalipsoFeedbackMessageFilter filter;
 
-		private Map<String, String> textAreaOptions = new HashMap<String,String>();
+		private final Map<String, String> textAreaOptions = new HashMap<String,String>();
 		
 		public AssetCustomAttributeForm(String id, AssetTypeCustomAttribute assetTypeCustomAttribute){
 			super(id);
@@ -271,6 +270,7 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 		*/
 		//----------------------------------------------------------------------------------------------------------
 
+		@Override
 		protected void onSubmit() {
 			
 			CustomAttributeUtils.parseOptionsIntoAttribute(textAreaOptions, assetTypeCustomAttribute, getCalipso().getSupportedLanguages());
@@ -291,7 +291,7 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 				
 			}
 			else{*/
-				getCalipso().store(customAttribute);
+			getCalipso().storeCustomAttribute(customAttribute);
 				/*
 				 * ervis
 				 *  We want a connection between Form
@@ -299,6 +299,7 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 				setHighlightOnPreviousPage(customAttribute.getId());				
 				//else go to previous page
 				activate(new IBreadCrumbPanelFactory(){
+					@Override
 					public BreadCrumbPanel create(final String id, final IBreadCrumbModel breadCrumbModel) {
 						BreadCrumbUtils.popPanels(2, breadCrumbModel);
 						AssetCustomAttributesPanel assetCustomAttributesPanel;
@@ -321,6 +322,7 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	
+	@Override
 	public String getTitle() {
 		if (isEdit){
 			return localize("asset.customAttributes.edit");
@@ -365,15 +367,18 @@ public class AssetCustomAttributeFormPagePanel extends BasePanel {
 					final String warning = new String("");
 	            	
 	            	activate(new IBreadCrumbPanelFactory(){
-	                    public BreadCrumbPanel create(String componentId, IBreadCrumbModel breadCrumbModel){
+	                    @Override
+						public BreadCrumbPanel create(String componentId, IBreadCrumbModel breadCrumbModel){
 	                    	ConfirmPanel confirm = new ConfirmPanel(componentId, breadCrumbModel, heading, warning, new String[] {line1}) {
-	                            public void onConfirm() {
+	                            @Override
+								public void onConfirm() {
 									//Delete Custom Attribute
 									getCalipso().removeCustomAttribute(assetTypeCustomAttribute);
 	                                
 	                                BreadCrumbUtils.removePreviousBreadCrumbPanel(getBreadCrumbModel());
 	                                
 	                                activate(new IBreadCrumbPanelFactory(){
+										@Override
 										public BreadCrumbPanel create(String componentId, IBreadCrumbModel breadCrumbModel) {
 											return (BreadCrumbPanel) breadCrumbModel.getActive();
 										}                                    	
