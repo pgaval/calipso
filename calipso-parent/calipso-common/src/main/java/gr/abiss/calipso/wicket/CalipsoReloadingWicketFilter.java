@@ -59,7 +59,7 @@ public class CalipsoReloadingWicketFilter extends ReloadingWicketFilter {
         ReloadingClassLoader.excludePattern("gr.abiss.calipso.wicket.CalipsoSession");
         ReloadingClassLoader.excludePattern("gr.abiss.calipso.wicket.DashboardPage");
         // ReloadingClassLoader.excludePattern("org.springframework.*");
-        // ReloadingClassLoader.excludePattern("org.acegisecurity.*");
+        // ReloadingClassLoader.excludePattern("org.springframework.security.*");
     }
     
     public CalipsoReloadingWicketFilter() {

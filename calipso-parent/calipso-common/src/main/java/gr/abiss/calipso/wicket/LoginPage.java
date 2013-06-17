@@ -37,27 +37,17 @@
 package gr.abiss.calipso.wicket;
 
 
-import java.util.List;
-
 import gr.abiss.calipso.CalipsoService;
-import gr.abiss.calipso.domain.RoleType;
-import gr.abiss.calipso.domain.Space;
-import gr.abiss.calipso.domain.SpaceRole;
 import gr.abiss.calipso.domain.User;
-import gr.abiss.calipso.domain.UserSpaceRole;
-import gr.abiss.calipso.util.WebUtils;
 import gr.abiss.calipso.wicket.components.validators.ValidationUtils;
 import gr.abiss.calipso.wicket.hlpcls.ExpandPanelSimple;
 
-import javax.servlet.http.Cookie;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.markup.MarkupStream;
-import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -70,7 +60,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.cookies.CookieUtils;
-import org.apache.log4j.Logger;
 
 /**
  * login page
@@ -207,27 +196,24 @@ public class LoginPage extends CalipsoBasePage {
                 // setup session with principal
                 // TODO: where is refreshPrincipal?
                 // Establish *Logged-in* Guest access to public spaces 
-                /*
-                List<Space> spaces = getJtrac().findSpacesWhereGuestAllowed();
-                if (spaces.size() > 0) {
-                	// init guest roles in memory only
-                    for (Space space : spaces) {            
-                    	user.getUserSpaceRoles().add(new UserSpaceRole(user, new SpaceRole(space, RoleType.GUEST.getDescription(), RoleType.GUEST)));
-                    }
-
-                	if(logger.isDebugEnabled()){
-                		logger.debug(spaces.size() + "public space(s) available, initialized guest with user roles("+user.getUserSpaceRoles().size()+"): "+user.getUserSpaceRoles());
-                	}
-                }
-                else{
-                    if(logger.isDebugEnabled()){
-                    	logger.debug("No public spaces where found.");
-                    }
-                }
-                // TODO:
-                // user.setRoleSpaceStdFieldList(getJtrac().findSpaceFieldsForUser(user));         
-                 *        
-                 */
+				/*
+				 * List<Space> spaces =
+				 * getJtrac().findSpacesWhereGuestAllowed(); if (spaces.size() >
+				 * 0) { // init guest roles in memory only for (Space space :
+				 * spaces) { user.getUserSpaceRoles().add(new
+				 * UserSpaceRole(user, new SpaceRole(space,
+				 * RoleType.GUEST.getDescription(), RoleType.GUEST))); }
+				 * 
+				 * if(logger.isDebugEnabled()){ logger.debug(spaces.size() +
+				 * "public space(s) available, initialized guest with user roles("
+				 * +
+				 * user.getUserSpaceRoles().size()+"): "+user.getUserSpaceRoles(
+				 * )); } } else{ if(logger.isDebugEnabled()){
+				 * logger.debug("No public spaces where found."); } } // TODO:
+				 * //
+				 * user.setRoleSpaceStdFieldList(getJtrac().findSpaceFieldsForUser
+				 * (user));
+				 */
                 ((CalipsoSession) getSession()).setUser(user);
                 // proceed to bookmarkable page or default dashboard
                 if (!continueToOriginalDestination()) {
@@ -292,10 +278,12 @@ public class LoginPage extends CalipsoBasePage {
     		successMessage.setVisible(false);
 
     		AbstractFormValidator emailValidator = new AbstractFormValidator(){
+				@Override
 				public FormComponent[] getDependentFormComponents() {
 					return new FormComponent[]{emailAddressField};
 				}
 
+				@Override
 				public void validate(Form form) {
 					if (emailAddressField==null || (emailAddressField!=null && emailAddressField.getValue().trim().length()==0)){
 						emailAddressField.error(getLocalizer().getString("login.emailAddressNotEmpty", null));

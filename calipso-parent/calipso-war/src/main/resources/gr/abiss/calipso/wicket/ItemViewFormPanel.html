@@ -22,8 +22,7 @@ tinyMCE.init({
 </script>
 </wicket:head>
 <wicket:panel>
-<!-- begin:ItemViewFormPanel.html -->
-<div class="section" wicket:id="formContainer" id="section-add-coment">
+<!-- begin:ItemViewFormPanel.html --><div class="section" wicket:id="formContainer" id="section-add-coment">
 			<div class="heading-container">
 				<h2>
 					<wicket:message key="item_view.addNewRecord" />
@@ -38,8 +37,6 @@ tinyMCE.init({
 				
 	<form wicket:id="form">  
 	<a id="history-section" name="history-section"> </a>
-		<fieldset>
-			<legend><wicket:message key="comment.details"/></legend>
 			<table class="form" cellspacing="0">
 				<tr>
 					<td colspan="2"><div class="feedback" wicket:id="feedback" ></div></td>
@@ -62,13 +59,28 @@ tinyMCE.init({
 			        	<td wicket:id="actualEffortField"></td>
 		        	</tr>
 		        </tbody>
+		        <tbody wicket:id="statusAndAssignContainer">
+					<tr class="alt">
+						<td class="label"><label wicket:id="assignedToLabel">item_view_form.assignTo</label></td>
+						<td>
+							<span wicket:id="border">
+								<select wicket:id="assignedTo"></select>
+								<span wicket:id="hide">
+									<select>
+										<option><wicket:message key="item_view_form.chooseStatus" /></option>
+									</select> 
+								</span>
+							</span>
+						</td>
+					</tr>
+		        </tbody>
 		        <tbody wicket:id="commentContainer">
 					<tr>
 						<td class="label"><label wicket:id="commentLabel">item_view_form.comment</label></td>
 						<td><textarea wicket:id="comment" rows="10" cols="80"></textarea></td>
 					</tr>
 		        </tbody>
-		        <tbody wicket:id="notificationsContainer">
+		        <tbody wicket:id="notificationsContainer" style="display:none;">
 					<tr>
 						<td class="label"><label wicket:id="sendNotificationsLabel">item_view_form.sendNotifications</label></td>
 						<td><input type="checkbox" wicket:id="sendNotifications" /></td>
@@ -77,38 +89,16 @@ tinyMCE.init({
 						<td class="label"><label for="itemUsers"><wicket:message key="item_view_form.notificationList" /></label></td>
 						<td wicket:id="itemUsers"></td>
 					</tr>
-				</tbody>
-		        <tbody wicket:id="statusAndAssignContainer">
-					<!--tr>
-						<td class="label"><label wicket:id="statusLabel">item_view_form.newStatus</label></td>
-						<td ></td>
-					</tr-->
-					<tr class="alt">
-						<td class="label"><label wicket:id="assignedToLabel">item_view_form.assignTo</label></td>
-						<td>
-							<span wicket:id="border">
-								<select wicket:id="assignedTo"></select>
-								<span wicket:id="hide">
-									<select>
-										<!--  --><option><wicket:message key="item_view_form.chooseStatus" /></option>-->
-									</select> 
-								</span>
-							</span>
-						</td>
-					</tr>
-		        </tbody>
+					</tbody>
 				</table>
-			</fieldset>
-			
-			<div class="submit-controls">
-			<!-- input type="submit" class="button" wicket:id="preview" wicket:message="value:preview"/-->
-				<input type="submit" class="submit-to-cancel" wicket:id="cancelButton" />
-				<input type="submit" class="submit-to-previous" wicket:id="previousButton" wicket:message="value:previous" />
-				<input type="submit" class="submit-to-next" wicket:id="nextButton" />
-				<select class="submit-to-select" wicket:id="status" />
-				<input type="submit" class="submit-to-same" wicket:id="submitButton" wicket:message="value:save" />
-				<br class="clear" />
-			</div>
+				<div class="submit-controls">
+					<input type="submit" class="submit-to-cancel" wicket:id="cancelButton" />
+					<input type="submit" class="submit-to-previous" wicket:id="previousButton" wicket:message="value:previous" />
+					<input type="submit" class="submit-to-next" wicket:id="nextButton" />
+					<select class="submit-to-select" wicket:id="status" />
+					<input type="submit" class="submit-to-same" wicket:id="submitButton" wicket:message="value:save" />
+					<br class="clear" />
+				</div>
 	</form>
 	    </div>
     </div>

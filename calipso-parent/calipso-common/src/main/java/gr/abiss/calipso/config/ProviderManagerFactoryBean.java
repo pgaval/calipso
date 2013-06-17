@@ -41,8 +41,8 @@ import gr.abiss.calipso.acegi.LdapAuthenticationProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.acegisecurity.providers.AuthenticationProvider;
-import org.acegisecurity.providers.ProviderManager;
+import org.springframework.security.providers.AuthenticationProvider;
+import org.springframework.security.providers.ProviderManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.FactoryBean;
 

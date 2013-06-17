@@ -29,10 +29,10 @@ import gr.abiss.calipso.wicket.hlpcls.SpaceAssetAdminLink;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbLink;
@@ -43,7 +43,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.log4j.Logger;
 
 
 /**
@@ -78,18 +77,20 @@ public class DashboardPanel extends BasePanel {
 		
 		final User user = getPrincipal();
 		// current space???
-		List<UserSpaceRole> spaceRoles = new ArrayList<UserSpaceRole>(user.getSpaceRolesNoGlobal());		
+		List<UserSpaceRole> nonGlobalSpaceRoles = new ArrayList<UserSpaceRole>(
+				user.getSpaceRolesNoGlobal());
+		logger.info("nonGlobalSpaceRoles: " + nonGlobalSpaceRoles);
 		 WebMarkupContainer table = new WebMarkupContainer("table");
         WebMarkupContainer message = new WebMarkupContainer("message");
         
         // if only one space exist for the user, and user has roles in this space
-        if(isSingleSpace && spaceRoles.size() > 0){
+		if (isSingleSpace && nonGlobalSpaceRoles.size() > 0) {
 	        UserSpaceRole singleUSR = null;
 	        // if only one space exist then the first space is the the current space
 	        final Space singleSpace = getCurrentSpace();//spaceRoles.get(0).getSpaceRole().getSpace();
 	        //setCurrentSpace(singleSpace);
 	        // try to obtain a non-Guest role for user
-	        for(UserSpaceRole u: spaceRoles){
+			for (UserSpaceRole u : nonGlobalSpaceRoles) {
 	        	u.getSpaceRole().getSpace();
 	        	if(u.getSpaceRole().getSpace().equals(singleSpace)){
 	        		singleUSR = u;
@@ -111,12 +112,13 @@ public class DashboardPanel extends BasePanel {
 	        	}
 	        }
 			*/
-	        spaceRoles = new ArrayList();
-	        spaceRoles.add(singleUSR);
+			nonGlobalSpaceRoles = new ArrayList();
+			nonGlobalSpaceRoles.add(singleUSR);
 	        
 	        if(singleUSR.isAbleToCreateNewItem()) {
 	        	add(new BreadCrumbLink("new", breadCrumbModel){
-	        		protected IBreadCrumbParticipant getParticipant(String componentId){
+	        		@Override
+					protected IBreadCrumbParticipant getParticipant(String componentId){
 	    				return new ItemFormPanel(componentId, getBreadCrumbModel());
 	        	    }
 	        	});
@@ -139,7 +141,8 @@ public class DashboardPanel extends BasePanel {
 	        }
 
 	        add(new BreadCrumbLink("search", breadCrumbModel){
-	    		protected IBreadCrumbParticipant getParticipant(String componentId){
+	    		@Override
+				protected IBreadCrumbParticipant getParticipant(String componentId){
 					return new ItemSearchFormPanel(componentId, getBreadCrumbModel());
 	    	    }
 	    	});
@@ -171,7 +174,7 @@ public class DashboardPanel extends BasePanel {
         add(message);
         
         // TODO: this should actually present totals for public spaces.
-        if(spaceRoles.size() > 0) {   
+		if (nonGlobalSpaceRoles.size() > 0) {
         	// if many spaces there is no current space
         	// check loggedBy,assignedTo,Unassigned counts
         	
@@ -191,11 +194,12 @@ public class DashboardPanel extends BasePanel {
             table.add(hideUnassigned);
             
             TreeSet<UserSpaceRole> sortedBySpaceCode = new TreeSet<UserSpaceRole>(new UserSpaceRoleComparator());
-            sortedBySpaceCode.addAll(spaceRoles);
+			sortedBySpaceCode.addAll(nonGlobalSpaceRoles);
             List<UserSpaceRole> sortedBySpaceCodeList = new ArrayList<UserSpaceRole>(sortedBySpaceCode.size());
             sortedBySpaceCodeList.addAll(sortedBySpaceCode);
             table.add(new ListView<UserSpaceRole>("dashboardRows", sortedBySpaceCodeList) {
-                protected void populateItem(final ListItem listItem) {
+                @Override
+				protected void populateItem(final ListItem listItem) {
                     UserSpaceRole userSpaceRole = (UserSpaceRole) listItem.getModelObject();
                     // TODO: this should happen onclick
                     //logger.info("populateItem, userSpaceRole.getSpaceRole().getSpace(): "+userSpaceRole.getSpaceRole().getSpace());
@@ -238,7 +242,7 @@ public class DashboardPanel extends BasePanel {
             WebMarkupContainer total = new WebMarkupContainer("total");
             total.add(new Label("allSpaces", localize("item_search_form.allSpaces")).setRenderBodyOnly(true).setVisible(!user.isAnonymous()));
 
-            if(spaceRoles.size() > 1) {
+			if (nonGlobalSpaceRoles.size() > 1) {
             	Label hTotal = new Label("hTotal");
             	hTotal.add(colSpan);
             	total.add(hTotal);
@@ -252,7 +256,8 @@ public class DashboardPanel extends BasePanel {
 
                 if(user.getId() > 0) {     
                 	total.add(new BreadCrumbLink("loggedByMe", breadCrumbModel){
-                		protected IBreadCrumbParticipant getParticipant(String componentId){
+                		@Override
+						protected IBreadCrumbParticipant getParticipant(String componentId){
                             ItemSearch itemSearch = new ItemSearch(user, DashboardPanel.this);
                             itemSearch.setLoggedBy(user);
                             setCurrentItemSearch(itemSearch);
@@ -263,7 +268,8 @@ public class DashboardPanel extends BasePanel {
                 	
 
                     total.add(new BreadCrumbLink("assignedToMe", breadCrumbModel){
-                		protected IBreadCrumbParticipant getParticipant(String componentId){
+                		@Override
+						protected IBreadCrumbParticipant getParticipant(String componentId){
                             ItemSearch itemSearch = new ItemSearch(user, DashboardPanel.this);
                             itemSearch.setAssignedTo(user);
                             setCurrentItemSearch(itemSearch);
@@ -274,7 +280,8 @@ public class DashboardPanel extends BasePanel {
                     
                     
                     total.add(new BreadCrumbLink("unassigned", breadCrumbModel){
-                		protected IBreadCrumbParticipant getParticipant(String componentId){
+                		@Override
+						protected IBreadCrumbParticipant getParticipant(String componentId){
     	        			ItemSearch itemSearch = new ItemSearch(user, DashboardPanel.this);
     	        			itemSearch.setUnassigned();
     	                    setCurrentItemSearch(itemSearch);
@@ -290,7 +297,8 @@ public class DashboardPanel extends BasePanel {
                 }
 
                 total.add(new BreadCrumbLink("total", breadCrumbModel){
-            		protected IBreadCrumbParticipant getParticipant(String componentId){
+            		@Override
+					protected IBreadCrumbParticipant getParticipant(String componentId){
                         ItemSearch itemSearch = new ItemSearch(user, DashboardPanel.this);
                         setCurrentItemSearch(itemSearch);
                         
@@ -341,6 +349,7 @@ public class DashboardPanel extends BasePanel {
 		expandedRowsList.remove(usr.getId());
 	}
 	
+	@Override
 	public String getTitle(){
         return localize("header.dashboard");
     }

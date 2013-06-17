@@ -46,7 +46,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.acegisecurity.GrantedAuthority;
+import org.springframework.security.GrantedAuthority;
 
 public class UserTest extends TestCase {    
     

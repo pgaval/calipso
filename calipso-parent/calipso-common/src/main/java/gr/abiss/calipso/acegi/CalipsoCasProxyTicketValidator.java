@@ -36,7 +36,8 @@
 
 package gr.abiss.calipso.acegi;
 
-import org.acegisecurity.providers.cas.ticketvalidator.CasProxyTicketValidator;
+import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
+//import org.springframework.security.providers.cas.ticketvalidator.CasProxyTicketValidator;
 
 /**
  * class that exists purely to add a couple of setters to the Acegi CasProxyTicketValidator
@@ -47,9 +48,14 @@ import org.acegisecurity.providers.cas.ticketvalidator.CasProxyTicketValidator;
  * plus Acegi seems to be undergoing a major overhaul at the moment as well
  * and haven't yet looked at CAS 3 yet
  */
-public class CalipsoCasProxyTicketValidator extends CasProxyTicketValidator {
+public class CalipsoCasProxyTicketValidator extends Cas20ProxyTicketValidator {
     
-    private String loginUrl;
+    public CalipsoCasProxyTicketValidator(String casServerUrlPrefix) {
+		super(casServerUrlPrefix);
+		// TODO Auto-generated constructor stub
+	}
+
+	private String loginUrl;
     private String logoutUrl;
 
     public String getLoginUrl() {

@@ -19,38 +19,28 @@
 
 package gr.abiss.calipso.wicket;
 
-import gr.abiss.calipso.domain.Counts;
-import gr.abiss.calipso.domain.CountsHolder;
-import gr.abiss.calipso.domain.ItemSearch;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.domain.UserSpaceRole;
 import gr.abiss.calipso.util.DateUtils;
-import gr.abiss.calipso.wicket.hlpcls.SpaceAssetAdminLink;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.extensions.breadcrumb.BreadCrumbLink;
+import org.apache.log4j.Logger;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
-import org.apache.wicket.extensions.breadcrumb.IBreadCrumbParticipant;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.log4j.Logger;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 
 public class ApplicationsDashboardPanel extends BasePanel {
@@ -70,11 +60,12 @@ public class ApplicationsDashboardPanel extends BasePanel {
 		
 		final User user = getPrincipal();
 		// current space???
-		List<UserSpaceRole> spaceRoles = new ArrayList<UserSpaceRole>(user.getSpaceRolesNoGlobal());
+		List<UserSpaceRole> nonGlobalSpaceRoles = new ArrayList<UserSpaceRole>(user.getSpaceRolesNoGlobal());
+		logger.info("nonGlobalSpaceRoles: " + nonGlobalSpaceRoles);
         WebMarkupContainer message = new WebMarkupContainer("message");
     	setCurrentSpace(null);
         TreeSet<UserSpaceRole> sortedBySpaceCode = new TreeSet<UserSpaceRole>(new UserSpaceRoleComparator());
-        sortedBySpaceCode.addAll(spaceRoles);
+        sortedBySpaceCode.addAll(nonGlobalSpaceRoles);
         List<UserSpaceRole> sortedBySpaceCodeList = new ArrayList<UserSpaceRole>(sortedBySpaceCode.size());
         sortedBySpaceCodeList.addAll(sortedBySpaceCode);
         
@@ -84,7 +75,8 @@ public class ApplicationsDashboardPanel extends BasePanel {
         // add the spaces not used by the user
         final WebMarkupContainer noItems = new WebMarkupContainer("noItems");
         add(new ListView<Object[]>("items", userItems) {
-            protected void populateItem(final ListItem listItem) {
+            @Override
+			protected void populateItem(final ListItem listItem) {
             	Object[] o = (Object[]) listItem.getModelObject();
             	Date closingDate = (Date) o[2];
                 listItem.add(new Label("spaceName", localize(new StringBuffer("Space.").append(o[1]).append(".name").toString())));
@@ -108,7 +100,8 @@ public class ApplicationsDashboardPanel extends BasePanel {
         final WebMarkupContainer noSpaces = new WebMarkupContainer("noSpaces");
         noSpaces.setVisible(true);
         add(new ListView<UserSpaceRole>("spaces", sortedBySpaceCodeList) {
-            protected void populateItem(final ListItem listItem) {
+            @Override
+			protected void populateItem(final ListItem listItem) {
                 UserSpaceRole userSpaceRole = (UserSpaceRole) listItem.getModelObject();
                 Space space = userSpaceRole.getSpaceRole().getSpace();
                 listItem.add(new Label("spaceTitle", localize(space.getNameTranslationResourceKey())));

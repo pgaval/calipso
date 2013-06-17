@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-
-<!-- application context / root Spring IoC container config for Calipso -->
-
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+		
+	<sec:http>
+    	<sec:intercept-url pattern="/app/login*" filters="none"/>  
+    	<sec:intercept-url pattern="/**" access="ROLE_USER" />
+    	<sec:form-login login-page='/app/login'/>
+		<sec:remember-me key="myAppKey"/>
+  	</sec:http>
 
     <!-- custom Configurer that extends the spring PropertyPlaceholderConfigurer -->
     <bean class="gr.abiss.calipso.config.CalipsoConfigurer"/>        
 
     <!-- this Acegi helper finds its way into our root Spring context 
          because CalipsoServiceImpl depends on it -->
-    <bean id="passwordEncoder" class="org.acegisecurity.providers.encoding.Md5PasswordEncoder"/>
+    <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.Md5PasswordEncoder"/>
 
     <!-- i18n message source -->
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -108,9 +118,24 @@
                 <property name="dataSourceJndiName" value="${database.datasource.jndiname}"/>
             </bean>                
         </property>
-    </bean>    
+    </bean>
 
-	<!-- Inforama integration -->
+	<!-- URL token based login -->
+	<bean id="rememberMeProcessingFilter"
+		class="org.springframework.security.ui.rememberme.RememberMeProcessingFilter">
+		<property name="rememberMeServices" ref="rememberMeServices" />
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
+	<bean id="rememberMeServices"
+		class="org.springframework.security.ui.rememberme.TokenBasedRememberMeServices">
+		<property name="userDetailsService" ref="calipsoService" />
+		<property name="key" value="springRocks" />
+	</bean>
+	<bean id="rememberMeAuthenticationProvider"
+		class="org.springframework.security.providers.rememberme.RememberMeAuthenticationProvider">
+		<property name="key" value="springRocks" />
+	</bean>
+	
 </beans>
 
 

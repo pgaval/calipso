@@ -42,7 +42,6 @@ import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.FieldGroup;
-import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.Item;
 import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
 import gr.abiss.calipso.domain.Metadata;
@@ -54,12 +53,10 @@ import gr.abiss.calipso.domain.UserSpaceRole;
 import gr.abiss.calipso.domain.ValidationExpression;
 import gr.abiss.calipso.util.AttachmentUtils;
 import gr.abiss.calipso.util.DateUtils;
-import gr.abiss.calipso.wicket.components.LoadableDetachableDomainObjectModels.LoadableDetachableReadOnlyItemModel;
 import gr.abiss.calipso.wicket.components.formfields.DateField;
 import gr.abiss.calipso.wicket.components.formfields.MultipleValuesTextField;
 import gr.abiss.calipso.wicket.components.formfields.TreeChoice;
 import gr.abiss.calipso.wicket.components.renderers.UserChoiceRenderer;
-import gr.abiss.calipso.wicket.components.validators.NumberValidator;
 import gr.abiss.calipso.wicket.components.validators.PositiveNumberValidator;
 import gr.abiss.calipso.wicket.components.validators.ValidationExpressionValidator;
 import gr.abiss.calipso.wicket.form.FieldUtils;
@@ -83,7 +80,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
-import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AbstractAutoCompleteRenderer;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.ComponentTag;
@@ -96,14 +92,12 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -128,10 +122,10 @@ public class CustomFieldsFormPanel extends BasePanel {
 	private DropDownChoice statusChoice;
 	private DropDownChoice assignedToChoice;
 	private ItemViewFormPanel itemViewFormPanel;
-	private boolean editMode;
+	private final boolean editMode;
 	private boolean historyMode;
 	private IModel historyModel;
-	private Item item;
+	private final Item item;
 	Space space;
 	private AutoCompleteTextField autoTextField;
 	public AssignableSpacesDropDownChoice assignableSpacesDropDownChoice;
@@ -336,7 +330,7 @@ public class CustomFieldsFormPanel extends BasePanel {
 		List<String> assignableSpacesIds = new ArrayList<String>(field.getOptions().values());
 		for (int i = 0; i < assignableSpacesIds.size(); i++) {
 			long assignableSpaceId = Long
-					.parseLong((String) assignableSpacesIds.get(i));
+					.parseLong(assignableSpacesIds.get(i));
 			spaces.add(getCalipso().loadSpace(assignableSpaceId));
 		}// for
 		return spaces;
@@ -372,6 +366,7 @@ public class CustomFieldsFormPanel extends BasePanel {
 				}
 				ListView listView = new ListView("fields", editableGroupFields) {
 
+					@Override
 					@SuppressWarnings("deprecation")
 					protected void populateItem(ListItem listItem) {
 						boolean preloadExistingValue = true;
@@ -439,11 +434,20 @@ public class CustomFieldsFormPanel extends BasePanel {
 //								}
 
 								// preload existing value
-								if(field.getCustomAttribute() != null 
+								if (field.getCustomAttribute() != null
 										&& customAttribute.getLookupValue() == null
-										&& item.getCustomValue(field) != null){
+										&& item.getCustomValue(field) != null) {
+									logger.info("preloading custom attribute for field: "
+											+ field.getLabel());
 									customAttribute.setLookupValue(getCalipso().loadCustomAttributeLookupValue(NumberUtils.createLong(item.getCustomValue(field).toString())));
 									customAttribute.setAllowedLookupValues( getCalipso().findActiveLookupValuesByCustomAttribute(customAttribute));
+								} else {
+									logger.info("SKIPPED preloading custom attribute for field: "
+											+ field.getLabel());
+									customAttribute
+											.setAllowedLookupValues(getCalipso()
+													.findActiveLookupValuesByCustomAttribute(
+															customAttribute));
 								}
 								TreeChoice choice = new TreeChoice("field", new PropertyModel<CustomAttributeLookupValue>(field, "customAttribute.lookupValue"), customAttribute.getAllowedLookupValues(), customAttribute);
 								
@@ -500,10 +504,12 @@ public class CustomFieldsFormPanel extends BasePanel {
 
 							AssignableSpacesDropDownChoice choice = new AssignableSpacesDropDownChoice(
 									"field", keys, new IChoiceRenderer() {
+										@Override
 										public Object getDisplayValue(Object o) {
 											return o;
 										};
 
+										@Override
 										public String getIdValue(Object o, int i) {
 											return o.toString();
 										};
@@ -515,11 +521,13 @@ public class CustomFieldsFormPanel extends BasePanel {
 
 							choice.setRequired(valueRequired);
 							choice .add(new Behavior(){
-							      public void renderHead(Component component, IHeaderResponse response) {
+							      @Override
+								public void renderHead(Component component, IHeaderResponse response) {
 							    	  response.renderJavaScript(new JavaScripts().setAssignableSpacesId.asString(), "setAssignableSpacesId");
 							      }
 							});
 							choice.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+								@Override
 								protected void onUpdate(AjaxRequestTarget target) {
 									if (statusChoice != null
 											&& !statusChoice.getDefaultModelObjectAsString()
@@ -627,10 +635,12 @@ public class CustomFieldsFormPanel extends BasePanel {
 									new IChoiceRenderer() {
 										// user's choice renderer
 										// display value user's name
+										@Override
 										public Object getDisplayValue(Object object) {
 											return ((Organization) object).getName();
 										}
 
+										@Override
 										public String getIdValue(Object object,
 												int index) {
 											// id value user's id
@@ -1004,11 +1014,13 @@ public class CustomFieldsFormPanel extends BasePanel {
 							}
 							DropDownChoice choice = new DropDownChoice("field", new PropertyModel(field, "customAttribute.lookupValue"), 
 									lookupValues, new IChoiceRenderer<CustomAttributeLookupValue>() {
+										@Override
 										public Object getDisplayValue(
 												CustomAttributeLookupValue o) {
 											return fragment.getString(o.getNameTranslationResourceKey());
 										}
 
+										@Override
 										public String getIdValue(
 												CustomAttributeLookupValue o,
 												int index) {
@@ -1050,10 +1062,12 @@ public class CustomFieldsFormPanel extends BasePanel {
 							
 							DropDownChoice choice = new DropDownChoice("field",
 									options, new IChoiceRenderer() {
+										@Override
 										public Object getDisplayValue(Object o) {
 											return DateUtils.format((Date) o);
 										};
 
+										@Override
 										public String getIdValue(Object o, int i) {
 											return String.valueOf(i);
 										};

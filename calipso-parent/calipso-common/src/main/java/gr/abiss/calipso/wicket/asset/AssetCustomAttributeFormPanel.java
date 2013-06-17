@@ -24,7 +24,6 @@ import gr.abiss.calipso.domain.AssetTypeCustomAttributeSearch;
 import gr.abiss.calipso.domain.CustomAttribute;
 import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.domain.ValuePair;
-import gr.abiss.calipso.domain.i18n.AbstractI18nResourceTranslatable;
 import gr.abiss.calipso.wicket.BasePanel;
 import gr.abiss.calipso.wicket.ErrorHighlighter;
 import gr.abiss.calipso.wicket.MandatoryPanel;
@@ -32,15 +31,11 @@ import gr.abiss.calipso.wicket.customattrs.CustomAttributeOptionsPanel;
 import gr.abiss.calipso.wicket.regexp.ValidationPanel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -52,20 +47,19 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.PropertyModel;;
 
 /**
  * Renders all fields of a given Custom attribute for editing.
  */
 public class AssetCustomAttributeFormPanel extends BasePanel {
 	protected static final Logger logger = Logger.getLogger(AssetCustomAttributeFormPanel.class);
-	private static final long serialVersionUID = 1L;
-	private boolean assetTypeCanBeModified;
+	
+	private final boolean assetTypeCanBeModified;
 	
 	
 	private WebMarkupContainer optionsPanelContainer;
@@ -73,7 +67,7 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 	private Panel validPanel;
 	private Panel optionsPanel;
 
-	private Map<String, String> textAreaOptions;
+	private final Map<String, String> textAreaOptions;
 	DropDownChoice<Integer> type;
 	/**
 	 * @param isMandatory
@@ -106,75 +100,129 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 	private void addComponents(final CompoundPropertyModel model,
 			final boolean isMandatory) {
 		// Mandatory mark. red asterisk (*)
-		if (isMandatory) {
-			add(new MandatoryPanel("mandatoryPanel")); // Create new Custom
-												// Asset (Creation Mode)
-			//validPanel = new ValidationPanel("validPanel", model, isMandatory);
-		}
-
-		else {
-			add(new WebMarkupContainer("mandatoryPanel"));// for search, fields
-															// are optional
-															// (Search Mode)
-			//add(new EmptyPanel("validPanel"));
-		}
+		add(isMandatory?new MandatoryPanel("mandatoryPanel"):new WebMarkupContainer("mandatoryPanel"));
 		
 		// name
-		if(model.getObject() instanceof AssetTypeCustomAttribute){
-			List<Language> languages = getCalipso().getSupportedLanguages();
-			CustomAttribute attr = (CustomAttribute) model.getObject();
-			if(MapUtils.isEmpty(attr.getNameTranslations())){
-				attr.setNameTranslations(getCalipso().getNameTranslations(attr));
-				logger.info("Loaded '"+attr.getName()+"' name translations from the DB: "+attr.getNameTranslations());
-			}
-			else{
-
-				logger.info("Loaded '"+attr.getName()+"' name translations from memory: "+attr.getNameTranslations());
-			}
-			// TODO: change this to only use the space-supported languages after
-			// moving asset type creation to space admin
-			//nameTranslations
-			add(new ListView("nameTranslations", languages){
-				protected void populateItem(ListItem listItem) {
-					Language language = (Language) listItem.getModelObject();
-					TextField description = new TextField("name");
-					if (isMandatory) {
-						description.setRequired(true);
-						description.add(new ErrorHighlighter());
-					}
-					listItem.add(description);
-					description.setModel(new PropertyModel(model.getObject(), "nameTranslations["+language.getId()+"]"));
-					//model.bind(description, "nameTranslations["+language.getId()+"]");
-					// form label for name
-					description.setLabel(new ResourceModel("language."+language.getId()));
-					listItem.add(new SimpleFormComponentLabel("languageLabel", description));
-				}
-			});
-		}/*
-		else{
-			WebMarkupContainer container = new WebMarkupContainer("nameTranslations");
-			TextField description = new TextField("name");
-			description.setRequired(false);
-			model.bind(description, "name");
-			container.add(description);
-			container.add(new Label("languageLabel", "").setVisible(false));
-			add(container);
-		}*/
+		addName(model, isMandatory);
 
 
 		// form type
-		// -------------------------------------------------------------------------------
-		// Ervis
+		addType(model, isMandatory);
+
+		Integer selected = type.getModelObject() != null ? type.getModelObject()  : AssetTypeCustomAttribute.FORM_TYPE_SELECT;
+		//if(selected == null)
+		logger.debug("selected: "+selected);
+		addValidationPanel(new PropertyModel(model.getObject(), "validationExpression"), isMandatory, selected);
+		
+		Fragment mandatoryFragment;
+		Fragment activeFragment;
+		TextField mappingKey = new TextField("mappingKey");//, new PropertyModel(model.getObject(), "mappingKey"));
+		add(mappingKey);
+
+		addOptionsPanel(model, selected, isMandatory);
+		if (isMandatory) {// Edit Mode
+
+			mandatoryFragment = new Fragment("mandatoryField",
+					"mandatoryEditMode", this);
+			activeFragment = new Fragment("activeField", "activeEditMode", this);
+
+			// Mandatory checkbox
+			// ------------------------------------------------------------------
+			CheckBox mandatory = new CheckBox("mandatory");
+			mandatoryFragment.add(mandatory);
+			mandatory.setModel(model);
+			// form label for mandatory
+			mandatory.setLabel(new ResourceModel(
+					"asset.customAttributes.mandatory"));
+			add(new SimpleFormComponentLabel("mandatoryLabel", mandatory));
+
+			// Active checkbox
+			// ---------------------------------------------------------------------
+			CheckBox active = new CheckBox("active");
+			activeFragment.add(active);
+			active.setModel(model);
+			// form label for active
+			active.setLabel(new ResourceModel("asset.customAttributes.active"));
+			add(new SimpleFormComponentLabel("activeLabel", active));
+			
+
+		} else {// Search Mode
+			List<ValuePair> searchModi = new ArrayList<ValuePair>();
+			searchModi.add(new ValuePair(localize("asset.customAttribute.yes"), "1"));
+			searchModi.add(new ValuePair(localize("asset.customAttribute.no"), "0"));
+
+			// Mandatory
+			// ---------------------------------------------------------------------------
+			mandatoryFragment = new Fragment("mandatoryField",
+					"mandatorySearchMode", this);
+			final DropDownChoice mandatoryChoice = new DropDownChoice(
+					"mandatory", searchModi, new IChoiceRenderer() {
+						@Override
+						public Object getDisplayValue(Object object) {
+							return ((ValuePair) object).getName();
+						}
+
+						@Override
+						public String getIdValue(Object object, int index) {
+							return String.valueOf(((ValuePair) object)
+									.getValue());
+						}
+					});
+
+			mandatoryChoice.setNullValid(true);
+
+			// form label for mandatory
+			mandatoryChoice.setLabel(new ResourceModel(
+					"asset.customAttributes.mandatory"));
+			add(new SimpleFormComponentLabel("mandatoryLabel", mandatoryChoice));
+
+			mandatoryFragment.add(mandatoryChoice);
+
+			// Active
+			// ------------------------------------------------------------------------------
+			activeFragment = new Fragment("activeField", "activeSearchMode",
+					this);
+			final DropDownChoice activeChoice = new DropDownChoice("active",
+					searchModi, new IChoiceRenderer() {
+						@Override
+						public Object getDisplayValue(Object object) {
+							return ((ValuePair) object).getName();
+						}
+
+						@Override
+						public String getIdValue(Object object, int index) {
+							return index+"";
+						}
+					});
+
+			activeChoice.setNullValid(true);
+
+			// form label for active
+			activeChoice.setLabel(new ResourceModel(
+					"asset.customAttributes.active"));
+			add(new SimpleFormComponentLabel("activeLabel", activeChoice));
+
+			activeFragment.add(activeChoice);
+		}
+		add(mandatoryFragment);
+		add(activeFragment);
+
+	}// addComponents
+
+	private void addType(final CompoundPropertyModel model,
+			final boolean isMandatory) {
 		// attributeTypeList is a an object that contains a list of
 		// attributeTypes
 		// and a Map of pairs (AttributeTypes,AttributeTypes)
 		//final AttributeTypes attributeTypesList = new AttributeTypes();
 		
 		type = new DropDownChoice<Integer>("formType", new ArrayList<Integer>(CustomAttribute.FORM_TYPES), new IChoiceRenderer<Integer>() {
+			@Override
 			public Object getDisplayValue(Integer o) {
 				return localize("asset.attributeType_" + o.toString());
 				}
 
+			@Override
 			public String getIdValue(Integer object, int index) {
 				return index + "";
 				}}) {
@@ -254,6 +302,7 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		type.setEnabled(this.assetTypeCanBeModified);
 		type.setOutputMarkupId(true);
 		add(type);
+		
 		type.setModel(new PropertyModel(model.getObject(), "formType"));
 		// form label for form type
 		type.setLabel(new ResourceModel("asset.customAttributes.type"));
@@ -263,104 +312,53 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 			type.setRequired(true);
 			type.add(new ErrorHighlighter());
 		}
-		
-		Integer selected = type.getModelObject() != null ? type.getModelObject()  : AssetTypeCustomAttribute.FORM_TYPE_SELECT;
-		//if(selected == null)
-		logger.debug("selected: "+selected);
-		addValidationPanel(model, isMandatory, selected);
-		addOptionsPanel(model, selected);
-		
-		Fragment mandatoryFragment;
-		Fragment activeFragment;
-		TextField mappingKey = new TextField("mappingKey");//, new PropertyModel(model.getObject(), "mappingKey"));
-		add(mappingKey);
+	}
 
-		if (isMandatory) {// Edit Mode
+	private void addName(final CompoundPropertyModel model,
+			final boolean isMandatory) {
+		if(model.getObject() instanceof AssetTypeCustomAttribute){
+			List<Language> languages = getCalipso().getSupportedLanguages();
+			CustomAttribute attr = (CustomAttribute) model.getObject();
+			if(MapUtils.isEmpty(attr.getNameTranslations())){
+				attr.setNameTranslations(getCalipso().getNameTranslations(attr));
+				logger.info("Loaded '"+attr.getName()+"' name translations from the DB: "+attr.getNameTranslations());
+			}
+			else{
 
-			mandatoryFragment = new Fragment("mandatoryField",
-					"mandatoryEditMode", this);
-			activeFragment = new Fragment("activeField", "activeEditMode", this);
-
-			// Mandatory checkbox
-			// ------------------------------------------------------------------
-			CheckBox mandatory = new CheckBox("mandatory");
-			mandatoryFragment.add(mandatory);
-			mandatory.setModel(model);
-			// form label for mandatory
-			mandatory.setLabel(new ResourceModel(
-					"asset.customAttributes.mandatory"));
-			add(new SimpleFormComponentLabel("mandatoryLabel", mandatory));
-
-			// Active checkbox
-			// ---------------------------------------------------------------------
-			CheckBox active = new CheckBox("active");
-			activeFragment.add(active);
-			active.setModel(model);
-			// form label for active
-			active.setLabel(new ResourceModel("asset.customAttributes.active"));
-			add(new SimpleFormComponentLabel("activeLabel", active));
-			
-
-		} else {// Search Mode
-			List<ValuePair> searchModi = new ArrayList<ValuePair>();
-			searchModi.add(new ValuePair(localize("asset.customAttribute.yes"), "1"));
-			searchModi.add(new ValuePair(localize("asset.customAttribute.no"), "0"));
-
-			// Mandatory
-			// ---------------------------------------------------------------------------
-			mandatoryFragment = new Fragment("mandatoryField",
-					"mandatorySearchMode", this);
-			final DropDownChoice mandatoryChoice = new DropDownChoice(
-					"mandatory", searchModi, new IChoiceRenderer() {
-						public Object getDisplayValue(Object object) {
-							return ((ValuePair) object).getName();
-						}
-
-						public String getIdValue(Object object, int index) {
-							return String.valueOf(((ValuePair) object)
-									.getValue());
-						}
-					});
-
-			mandatoryChoice.setNullValid(true);
-
-			// form label for mandatory
-			mandatoryChoice.setLabel(new ResourceModel(
-					"asset.customAttributes.mandatory"));
-			add(new SimpleFormComponentLabel("mandatoryLabel", mandatoryChoice));
-
-			mandatoryFragment.add(mandatoryChoice);
-
-			// Active
-			// ------------------------------------------------------------------------------
-			activeFragment = new Fragment("activeField", "activeSearchMode",
-					this);
-			final DropDownChoice activeChoice = new DropDownChoice("active",
-					searchModi, new IChoiceRenderer() {
-						public Object getDisplayValue(Object object) {
-							return ((ValuePair) object).getName();
-						}
-
-						public String getIdValue(Object object, int index) {
-							return index+"";
-						}
-					});
-
-			activeChoice.setNullValid(true);
-
-			// form label for active
-			activeChoice.setLabel(new ResourceModel(
-					"asset.customAttributes.active"));
-			add(new SimpleFormComponentLabel("activeLabel", activeChoice));
-
-			activeFragment.add(activeChoice);
+				logger.info("Loaded '"+attr.getName()+"' name translations from memory: "+attr.getNameTranslations());
+			}
+			// TODO: change this to only use the space-supported languages after
+			// moving asset type creation to space admin
+			//nameTranslations
+			add(new ListView("nameTranslations", languages){
+				@Override
+				protected void populateItem(ListItem listItem) {
+					Language language = (Language) listItem.getModelObject();
+					TextField description = new TextField("name");
+					if (isMandatory) {
+						description.setRequired(true);
+						description.add(new ErrorHighlighter());
+					}
+					listItem.add(description);
+					description.setModel(new PropertyModel(model.getObject(), "nameTranslations["+language.getId()+"]"));
+					//model.bind(description, "nameTranslations["+language.getId()+"]");
+					// form label for name
+					description.setLabel(new ResourceModel("language."+language.getId()));
+					listItem.add(new SimpleFormComponentLabel("languageLabel", description));
+				}
+			});
 		}
-		add(mandatoryFragment);
-		add(activeFragment);
+		else{
+			WebMarkupContainer container = new WebMarkupContainer("nameTranslations");
+			TextField description = new TextField("name", model);
+			description.setRequired(false);
+			container.add(description);
+			container.add(new Label("languageLabel", "").setVisible(false));
+			add(container);
+		}
+	}
 
-	}// addComponents
-
-	private void addValidationPanel(final CompoundPropertyModel model,
+	private void addValidationPanel(final PropertyModel model,
 			final boolean isMandatory, Integer selected) {
 		validPanel = new ValidationPanel("validPanel", model, isMandatory);
 		validPanel.setOutputMarkupId(true);
@@ -379,7 +377,7 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 	}
 
 	private void addOptionsPanel(final CompoundPropertyModel model,
-			Integer selected) {
+			Integer selected, boolean hide) {
 		logger.info("selected: "+selected);
 		Object modelObject = model.getObject();
 		if(modelObject instanceof AssetTypeCustomAttributeSearch){
@@ -388,7 +386,8 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		optionsPanel = new CustomAttributeOptionsPanel("optionTranslationsPanel", (AssetTypeCustomAttribute) modelObject, getCalipso().getSupportedLanguages(), textAreaOptions);
 		optionsPanel.setOutputMarkupId(true);
 		//optionsPanel.setOutputMarkupId(true);
-		if(selected.equals(AssetTypeCustomAttribute.FORM_TYPE_SELECT)
+		if (hide = false
+				&& selected.equals(AssetTypeCustomAttribute.FORM_TYPE_SELECT)
 			|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_MULTISELECT)
 			|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_OPTIONS_TREE)) {
 			optionsPanel.setVisible(true);

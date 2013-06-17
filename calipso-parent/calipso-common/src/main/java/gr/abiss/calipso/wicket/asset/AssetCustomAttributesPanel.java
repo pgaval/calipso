@@ -19,10 +19,6 @@
 
 package gr.abiss.calipso.wicket.asset;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
 import gr.abiss.calipso.domain.AssetTypeCustomAttributeSearch;
@@ -30,6 +26,10 @@ import gr.abiss.calipso.domain.CustomAttribute;
 import gr.abiss.calipso.wicket.BasePanel;
 import gr.abiss.calipso.wicket.CalipsoFeedbackMessageFilter;
 import gr.abiss.calipso.wicket.hlpcls.ExpandAssetSearchLink;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
@@ -46,7 +46,6 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 
 /**
  * @author marcello
@@ -69,11 +68,11 @@ import org.apache.wicket.model.PropertyModel;
 
 public class AssetCustomAttributesPanel extends BasePanel {
 
-	private CustomAttribute assetTypeCustomAttribute;
+	private final CustomAttribute assetTypeCustomAttribute;
 	private AssetType referenceAssetType;
-	private AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch;
-	private String id;
-	private IBreadCrumbModel breadCrumbModel;
+	private final AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch;
+	private final String id;
+	private final IBreadCrumbModel breadCrumbModel;
 	private Long selectedAttributeId;
 	
 	private AssetTypeCustomAttributeForm searchForm = null;
@@ -170,9 +169,11 @@ public class AssetCustomAttributesPanel extends BasePanel {
 	 * */
 	private void createNewCustomAttributes(){
 		Link newCustomAttribute = new Link("new") {
-            public void onClick() {
+            @Override
+			public void onClick() {
     			activate(new IBreadCrumbPanelFactory(){
-    				public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
+    				@Override
+					public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
     					AssetCustomAttributeFormPagePanel assetCustomAttributeFormPagePanel = new AssetCustomAttributeFormPagePanel(id, breadCrumbModel);
     					if (referenceAssetType!=null){
     						assetCustomAttributeFormPagePanel.setReferenceAssetType(referenceAssetType);
@@ -235,9 +236,9 @@ public class AssetCustomAttributesPanel extends BasePanel {
 	 * Wicket Form for search 
 	 * */
 	private class AssetTypeCustomAttributeForm extends Form {
-		private CalipsoFeedbackMessageFilter filter;
-		private AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch;
-		private Map<String,String> textAreaOptions = new HashMap<String,String>();
+		private final CalipsoFeedbackMessageFilter filter;
+		private final AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch;
+		private final Map<String,String> textAreaOptions = new HashMap<String,String>();
 
 		public AssetTypeCustomAttributeForm(String id, AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch) {
 			super(id);
@@ -252,7 +253,8 @@ public class AssetCustomAttributesPanel extends BasePanel {
 			setModel(model);
 			//isMandatory := false => make attribute description and type optional
 			//assetTypeCanBeModified := true => make asset type drop down list choose enable  
-			//add(new AssetCustomAttributeFormPanel("customAttributeFormPanel", model, false, true, textAreaOptions));
+			add(new AssetCustomAttributeFormPanel("customAttributeFormPanel",
+					model, false, true, textAreaOptions));
 		}//AssetTypeCustomAttributeForm
 		/*
 		@Override
@@ -265,6 +267,7 @@ public class AssetCustomAttributesPanel extends BasePanel {
 		@Override
 		protected void onSubmit() {
 			activate(new IBreadCrumbPanelFactory(){
+				@Override
 				public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
 
 					//Remove last breadcrumb participant
@@ -285,7 +288,8 @@ public class AssetCustomAttributesPanel extends BasePanel {
 	 * */
 	private void listAttributes(){
         LoadableDetachableModel attributesListModel = new LoadableDetachableModel() {
-            protected Object load() {
+            @Override
+			protected Object load() {
             	return getCalipso().findCustomAttributesMatching(AssetCustomAttributesPanel.this.assetTypeCustomAttributeSearch);
             }//load
         };
@@ -300,6 +304,7 @@ public class AssetCustomAttributesPanel extends BasePanel {
         PaginationPanel paginationPanel = new PaginationPanel("paginationPanel", getBreadCrumbModel(),  this.assetTypeCustomAttributeSearch){
         	
         	IBreadCrumbPanelFactory breadCrumbPanelFactory = new IBreadCrumbPanelFactory(){
+				@Override
 				public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
 					//Remove last breadcrumb participant
 					if (breadCrumbModel.allBreadCrumbParticipants().size()>0){
@@ -310,15 +315,18 @@ public class AssetCustomAttributesPanel extends BasePanel {
 				}
 			};
 
-        	public void onNextPageClick() {
+        	@Override
+			public void onNextPageClick() {
         		activate(breadCrumbPanelFactory);
         	}
         	
-        	public void onPreviousPageClick() {
+        	@Override
+			public void onPreviousPageClick() {
         		activate(breadCrumbPanelFactory);
         	}
         	
-        	public void onPageNumberClick() {
+        	@Override
+			public void onPageNumberClick() {
         		activate(breadCrumbPanelFactory);
         	}
         };
@@ -333,11 +341,13 @@ public class AssetCustomAttributesPanel extends BasePanel {
         List<String> columnHeaders = AssetCustomAttributesPanel.this.assetTypeCustomAttributeSearch.getColumnHeaders();
 
         ListView headings = new ListView("headings", columnHeaders) {
-            protected void populateItem(ListItem listItem) {
+            @Override
+			protected void populateItem(ListItem listItem) {
                 final String header = (String) listItem.getModelObject();
                 
                 Link headingLink = new Link("heading") {
-                    public void onClick() {
+                    @Override
+					public void onClick() {
                     	AssetCustomAttributesPanel.this.assetTypeCustomAttributeSearch.doSort(header);
                     }
                 };
@@ -386,10 +396,12 @@ public class AssetCustomAttributesPanel extends BasePanel {
         		listItem.add(new Label("active", new Model(attribute.isActive()?localize("yes"):localize("no"))));
         		
                 Link edit = new Link("edit") {
-                    public void onClick() {
+                    @Override
+					public void onClick() {
 
             			activate(new IBreadCrumbPanelFactory(){
-            				public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
+            				@Override
+							public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
             					AssetCustomAttributeFormPagePanel assetCustomAttributeFormPagePanel = new AssetCustomAttributeFormPagePanel(id, breadCrumbModel, attribute);
             					if (referenceAssetType!=null){
             						assetCustomAttributeFormPagePanel.setReferenceAssetType(referenceAssetType);
@@ -418,7 +430,8 @@ public class AssetCustomAttributesPanel extends BasePanel {
             			}
                 		add.add(new Link("link"){
 	                		//remove a custom attribute to the Asset Type in question
-	                		public void onClick() {
+	                		@Override
+							public void onClick() {
 	                			if(logger.isDebugEnabled()){
 	                				logger.debug("Allowed custom attributes : " + referenceAssetType.getAllowedCustomAttributes());
 	                				logger.debug("Removing attribute : "  + attribute.getName());
@@ -434,7 +447,8 @@ public class AssetCustomAttributesPanel extends BasePanel {
 	        					}//if
 	                			
 	            				activate(new IBreadCrumbPanelFactory(){
-	            					public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
+	            					@Override
+									public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
 	            						return new AssetTypeFormPagePanel(getBreadCrumbModel().getActive().getComponent().getId(), getBreadCrumbModel(), AssetCustomAttributesPanel.this.referenceAssetType);
 	            					}
 	            				});
@@ -447,7 +461,8 @@ public class AssetCustomAttributesPanel extends BasePanel {
 	                	
 	                	add.add(new Link("link"){
 	                		//Adds a custom attribute to the Asset Type in question
-	                		public void onClick() {
+	                		@Override
+							public void onClick() {
 	                			if(logger.isDebugEnabled()){
 	                				logger.debug("Allowed custom attributes : " + referenceAssetType.getAllowedCustomAttributes());
 	                				logger.debug("Added custom attribute : " + attribute.getName());
@@ -463,7 +478,8 @@ public class AssetCustomAttributesPanel extends BasePanel {
 	        					}//if
 	                			
 	            				activate(new IBreadCrumbPanelFactory(){
-	            					public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
+	            					@Override
+									public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
 	            						return new AssetTypeFormPagePanel(getBreadCrumbModel().getActive().getComponent().getId(), getBreadCrumbModel(), AssetCustomAttributesPanel.this.referenceAssetType);
 	            					}
 	            				});

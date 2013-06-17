@@ -9,7 +9,7 @@
 
 <beans>  
     
-    <bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+    <bean id="filterChainProxy" class="org.springframework.security.util.FilterChainProxy">
         <property name="filterInvocationDefinitionSource">
             <value>
                 PATTERN_TYPE_APACHE_ANT
@@ -18,14 +18,14 @@
         </property>
     </bean>      
     
-    <bean id="authenticationFilter" class="org.acegisecurity.ui.cas.CasProcessingFilter">
+    <bean id="authenticationFilter" class="org.springframework.security.ui.cas.CasProcessingFilter">
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationFailureUrl" value="/app/casError"/>
         <property name="defaultTargetUrl" value="/app/"/>
         <property name="filterProcessesUrl" value="/auth/j_acegi_cas_security_check"/>
     </bean>   
     
-    <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+    <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
         <property name="providers">
             <list>
                 <ref bean="authenticationProvider"/>
@@ -33,7 +33,7 @@
         </property>
     </bean>  
     
-    <bean id="authenticationProvider" class="org.acegisecurity.providers.cas.CasAuthenticationProvider">
+    <bean id="authenticationProvider" class="org.springframework.security.providers.cas.CasAuthenticationProvider">
         <property name="casAuthoritiesPopulator" ref="casAuthoritiesPopulator"/>
         <property name="casProxyDecider" ref="casProxyDecider"/>
         <property name="ticketValidator" ref="casProxyTicketValidator"/>
@@ -41,7 +41,7 @@
         <property name="key" value="jtrac-cas"/>
     </bean>
     
-    <bean id="serviceProperties" class="org.acegisecurity.ui.cas.ServiceProperties">
+    <bean id="serviceProperties" class="org.springframework.security.ui.cas.ServiceProperties">
         <property name="service" value="http://localhost:8080/jtrac/auth/j_acegi_cas_security_check"/>
         <property name="sendRenew" value="false"/>
     </bean>    
@@ -65,15 +65,15 @@
         <property name="cacheName" value="ticketCache"/>        
     </bean>
 
-    <bean id="statelessTicketCache" class="org.acegisecurity.providers.cas.cache.EhCacheBasedTicketCache">
+    <bean id="statelessTicketCache" class="org.springframework.security.providers.cas.cache.EhCacheBasedTicketCache">
         <property name="cache" ref="ticketCacheBackend"/>
     </bean>
 
-    <bean id="casAuthoritiesPopulator" class="org.acegisecurity.providers.cas.populator.DaoCasAuthoritiesPopulator">
+    <bean id="casAuthoritiesPopulator" class="org.springframework.security.providers.cas.populator.DaoCasAuthoritiesPopulator">
         <property name="userDetailsService" ref="calipsoService"/>
     </bean>
 
-    <bean id="casProxyDecider" class="org.acegisecurity.providers.cas.proxy.AcceptAnyCasProxy"/>   
+    <bean id="casProxyDecider" class="org.springframework.security.providers.cas.proxy.AcceptAnyCasProxy"/>   
     
 </beans>
 

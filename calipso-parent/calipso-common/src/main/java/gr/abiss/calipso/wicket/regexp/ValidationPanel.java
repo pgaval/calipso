@@ -25,23 +25,27 @@ import gr.abiss.calipso.wicket.components.validators.RegexpValidator;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 
 public class ValidationPanel extends BasePanel {
 	
 	private static final long serialVersionUID = 1L;
-	
+
+	protected static final Logger logger = Logger
+			.getLogger(ValidationPanel.class);
 	DropDownChoice<ValidationExpression> valExprChoice;
 	public ValidationPanel(String id, IModel model, boolean isMandatory) {
 		super(id);
+
+		logger.info("ValidationPanel, model: " + model);
 		setOutputMarkupId(true);
 		//setDefaultModel(model);
+		// this.setDefaultModel(model);
 
 		final List<ValidationExpression> validationExprList = getCalipso().findAllValidationExpressions();
 		
@@ -50,10 +54,12 @@ public class ValidationPanel extends BasePanel {
     		
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public Object getDisplayValue(ValidationExpression object) {
-				return ((ValidationExpression)object).getName();
+				return object.getName();
 			}
 
+			@Override
 			public String getIdValue(ValidationExpression object, int index) {
 				return index +"";
 			}

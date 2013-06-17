@@ -117,7 +117,7 @@ public class ItemView extends BasePanel {
 	private static final long serialVersionUID = 1L;
 	protected static final Logger logger = Logger.getLogger(ItemView.class);
 	private Item item;
-    private boolean hideLinks;
+    private final boolean hideLinks;
     private long itemId;
     //private RelateLink relateLink1, relateLink2;
 
@@ -242,6 +242,7 @@ public class ItemView extends BasePanel {
 			public void onClick() {
 				//breadcrum must be activated in the active panel, that is ItemViewPanel
 				((BreadCrumbPanel)getBreadCrumbModel().getActive()).activate(new IBreadCrumbPanelFactory() {
+					@Override
 					public BreadCrumbPanel create(String componentId, IBreadCrumbModel breadCrumbModel) {
 						return new ItemFormPanel(componentId, breadCrumbModel, item.getId());
 					}				
@@ -254,7 +255,8 @@ public class ItemView extends BasePanel {
     	}
     	
     	add(new Link("printToPdf") {
-            public void onClick() {
+            @Override
+			public void onClick() {
             	// TODO: pickup print template from DB if appropriate
     			// TODO: is this needed?
     	        //panels that change with navigation
@@ -268,7 +270,7 @@ public class ItemView extends BasePanel {
     	        }
     	        		
     	        		
-    	        //logger.info("printToPdf: "+markup);
+				logger.info("printToPdf: " + markup);
             	getRequestCycle().scheduleRequestHandlerAfterCurrent(
 
             			new PdfRequestTarget(
@@ -299,7 +301,8 @@ public class ItemView extends BasePanel {
         }
         if(item.getRelatedItems() != null) {        
             add(new ListView("relatedItems", new ArrayList(item.getRelatedItems())) {            
-                protected void populateItem(ListItem listItem) {
+                @Override
+				protected void populateItem(ListItem listItem) {
                     final ItemItem itemItem = (ItemItem) listItem.getModelObject();
                     String message = null;
                     if(itemItem.getType() == DUPLICATE_OF) {
@@ -315,7 +318,8 @@ public class ItemView extends BasePanel {
                     }
                     listItem.add(new Label("message", message));
                     Link link = new Link("link") {
-                        public void onClick() {
+                        @Override
+						public void onClick() {
                             setResponsePage(ItemViewPage.class, new PageParameters("0=" + refId));
                         }
                     };
@@ -323,7 +327,8 @@ public class ItemView extends BasePanel {
                     link.setVisible(!hideLinks);
                     listItem.add(link);
                     listItem.add(new Link("remove") {
-                        public void onClick() {
+                        @Override
+						public void onClick() {
                             setResponsePage(new ItemRelateRemovePage(item.getId(), itemItem));
                         }
                     }.setVisible(!hideLinks));
@@ -335,7 +340,8 @@ public class ItemView extends BasePanel {
         
         if(item.getRelatingItems() != null) {
             add(new ListView("relatingItems", new ArrayList(item.getRelatingItems())) {            
-                protected void populateItem(ListItem listItem) {
+                @Override
+				protected void populateItem(ListItem listItem) {
                     final ItemItem itemItem = (ItemItem) listItem.getModelObject();
                     // this looks very similar to related items block above
                     // but the display strings could be different and in future handling of the 
@@ -355,7 +361,8 @@ public class ItemView extends BasePanel {
                     }                    
                     listItem.add(new Label("message", message));
                     Link link = new Link("link") {
-                        public void onClick() {
+                        @Override
+						public void onClick() {
                             setResponsePage(ItemViewPage.class, new PageParameters("0=" + refId));
                         }
                     };
@@ -363,7 +370,8 @@ public class ItemView extends BasePanel {
                     link.setVisible(!hideLinks);
                     listItem.add(link);
                     listItem.add(new Link("remove") {
-                        public void onClick() {
+                        @Override
+						public void onClick() {
                             setResponsePage(new ItemRelateRemovePage(item.getId(), itemItem));
                         }
                     }.setVisible(!hideLinks)); 
@@ -448,6 +456,7 @@ public class ItemView extends BasePanel {
 					}
 				}
 				ListView listView = new ListView("fields", viewbleFieldGroups) {
+					@Override
 					@SuppressWarnings("deprecation")
 					protected void populateItem(ListItem listItem) {
 						addFieldValueDisplay(item, sam, dateFormat, listItem);
@@ -503,7 +512,8 @@ public class ItemView extends BasePanel {
         //final List<Field> editable = item.getSpace().getMetadata().getEditableFields();
         final List<Field> readable = item.getSpace().getMetadata().getReadableFields(currentUser.getSpaceRoles(item.getSpace()), item.getStatus());
         add(new ListView("labels", readable) {
-            protected void populateItem(ListItem listItem) {
+            @Override
+			protected void populateItem(ListItem listItem) {
                 Field field = (Field) listItem.getModelObject();
                 listItem.add(new Label("label", field.getLabel()));
             }            
@@ -521,7 +531,8 @@ public class ItemView extends BasePanel {
 
         //Render Standard field
         add(new ListView("stdFields", standardFields) {
-        	protected void populateItem(ListItem listItem) {
+        	@Override
+			protected void populateItem(ListItem listItem) {
         		RoleSpaceStdField stdField = (RoleSpaceStdField) listItem.getModelObject();
         		boolean invisible = stdField.getStdField().getField().getFieldType().getType().equals(StdFieldType.Type.ASSET) || 
             						stdField.getStdField().getField().getFieldType().getType().equals(StdFieldType.Type.ASSETTYPE) ||
@@ -599,6 +610,7 @@ public class ItemView extends BasePanel {
 			public void onClick() {
 				//breadCrumb must be activated in the active panel, that is ItemViewPanel
 				((BreadCrumbPanel)getBreadCrumbModel().getActive()).activate(new IBreadCrumbPanelFactory() {
+					@Override
 					public BreadCrumbPanel create(String componentId, IBreadCrumbModel breadCrumbModel) {
 						return new ItemAssetFormPanel(componentId, breadCrumbModel, item.getId());
 					}
@@ -654,7 +666,8 @@ public class ItemView extends BasePanel {
         if (item.getHistory() != null && userCanSeeComments) {
         	List<History> history = new ArrayList(item.getHistory());
             historyContainer.add(new ListView("history", history) {
-                protected void populateItem(ListItem listItem) {
+                @Override
+				protected void populateItem(ListItem listItem) {
                     final History h = (History) listItem.getModelObject();
                     
                     //First history entry is empty => Add item detail to first history item for view harmonization.  

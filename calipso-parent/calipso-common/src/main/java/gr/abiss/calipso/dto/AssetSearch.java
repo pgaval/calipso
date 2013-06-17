@@ -84,6 +84,7 @@ public class AssetSearch extends AbstractQuerySearch implements Serializable {
 		columnHeadings.add("space");				
 		return columnHeadings;
 	}
+	@Override
 	public String getQueryString() {
 		StringBuffer query = new StringBuffer();
 		params = new LinkedList<Serializable>();
@@ -193,7 +194,7 @@ public class AssetSearch extends AbstractQuerySearch implements Serializable {
 					}
 					if (hasValue){
 						customAttributeConditions.append(customAttrsIndex > 0 ?"and ":"")
-							.append("(index(customAttribute) = ? and customAttribute = ?) ");
+								.append("(index(customAttribute) = ? and customAttribute like ?) ");
 						params.add(customAttribute);
 						params.add(value);
 						customAttrsIndex++;

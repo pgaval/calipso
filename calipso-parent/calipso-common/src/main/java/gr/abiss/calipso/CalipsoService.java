@@ -99,7 +99,7 @@ import java.util.Set;
 import javax.activation.DataSource;
 import javax.mail.internet.MimeBodyPart;
 
-import org.acegisecurity.userdetails.UserDetailsService;
+import org.springframework.security.userdetails.UserDetailsService;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.springframework.context.MessageSource;

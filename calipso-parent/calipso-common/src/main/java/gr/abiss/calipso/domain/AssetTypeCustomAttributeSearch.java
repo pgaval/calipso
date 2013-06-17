@@ -33,8 +33,9 @@ import org.hibernate.criterion.Restrictions;
 
 public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private AssetTypeCustomAttribute assetTypeCustomAttribute;
+	private final AssetTypeCustomAttribute assetTypeCustomAttribute;
 
+	private Long id;
 	private String name;
 	private String mappingKey;
 	private ValuePair active;
@@ -57,9 +58,15 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	@Override
 	public DetachedCriteria getDetachedCriteria(){
 		DetachedCriteria criteria = DetachedCriteria.forClass(AssetTypeCustomAttribute.class);
 
+		if (this.id!=null){
+			this.assetTypeCustomAttribute.setId(id);
+			criteria.add(Restrictions.eq("id",
+					this.assetTypeCustomAttribute.getId()));
+		}
 		if (this.name!=null){
 			this.assetTypeCustomAttribute.setName(name);
 			criteria.add(Restrictions.ilike("name", this.assetTypeCustomAttribute.getName(), MatchMode.START));
@@ -96,6 +103,7 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 	
 	//--------------------------------------------------------------------------------------------------
 	
+	@Override
 	public DetachedCriteria getDetachedCriteriaForCount(){
 		DetachedCriteria criteria = DetachedCriteria.forClass(AssetTypeCustomAttribute.class);
 		criteria = this.getDetachedCriteria();
@@ -106,6 +114,7 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 
 	//--------------------------------------------------------------------------------------------------
 
+	@Override
 	public List<String> getColumnHeaders(){
 		List<String> columnHeadings = new LinkedList<String>();
 		
@@ -119,6 +128,7 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 	
 	//---------------------------------------------------------------------------------------------
 	
+	@Override
 	public CustomAttribute getSearchObject() {
 		return this.assetTypeCustomAttribute;
 	}//getAssetObject
@@ -155,6 +165,13 @@ public class AssetTypeCustomAttributeSearch extends AbstractSearch implements Se
 
 	//---------------------------------------------------------------------------------------------
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public void setName(String name) {
 		this.name = name;
 	}

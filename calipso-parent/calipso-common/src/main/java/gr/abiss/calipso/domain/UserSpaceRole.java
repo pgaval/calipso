@@ -39,7 +39,7 @@ package gr.abiss.calipso.domain;
 import gr.abiss.calipso.wicket.DashboardRowPanel;
 
 import java.io.Serializable;
-import org.acegisecurity.GrantedAuthority;
+import org.springframework.security.GrantedAuthority;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
@@ -199,5 +199,11 @@ public class UserSpaceRole implements GrantedAuthority, Serializable {
     public String toString() {
         return getAuthority();
     }
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		return this.toString().compareTo(arg0.toString());
+	}
     
 }

@@ -47,7 +47,7 @@ import gr.abiss.calipso.wicket.register.RegisterAnonymousUserFormPage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.Cookie;
-import org.acegisecurity.context.SecurityContextHolder;
+import org.springframework.security.context.SecurityContextHolder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.log4j.Logger;

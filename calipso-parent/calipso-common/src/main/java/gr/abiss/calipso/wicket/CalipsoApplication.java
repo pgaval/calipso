@@ -60,11 +60,11 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.AuthenticationManager;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationException;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.apache.velocity.app.Velocity;
@@ -336,8 +336,8 @@ public class CalipsoApplication extends WebApplication {
 							// logger.debug("not authenticated, forcing login, page requested was "
 							// + clazz.getName());
 							if (calipsoCasProxyTicketValidator != null) {
-								String serviceUrl = calipsoCasProxyTicketValidator
-										.getServiceProperties().getService();
+								String serviceUrl = calipsoCasProxyTicketValidator.getLoginUrl();
+//										.getServiceProperties().getService();
 								String loginUrl = calipsoCasProxyTicketValidator
 										.getLoginUrl();
 								// logger.debug("cas authentication: service URL: "

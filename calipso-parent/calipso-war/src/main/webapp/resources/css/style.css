@@ -165,6 +165,24 @@ img.link { border: 2px solid #2D7BB2 }
 /*----------------------------------
 *   Sections
 *----------------------------------*/
+
+
+div.top_nav {
+    background:#f0f0f0 url('../heading-container-background.png') repeat-x left center;
+ color:#5278BA;
+ border: 1px solid #f0f0f0;
+ -moz-border-radius: 6px;
+ -webkit-border-radius: 6px;
+ border-radius: 6px;
+ margin: 0px;
+ padding: 6px 0px;
+    display: block;
+    height: 30px;
+    margin-bottom: 10px;
+    padding-left: 2px;
+}
+
+
 .hide{display:none;}
 .section {
  margin: 0 0 20px 0;

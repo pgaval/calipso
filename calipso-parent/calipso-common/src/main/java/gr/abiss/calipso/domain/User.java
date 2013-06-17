@@ -37,8 +37,6 @@
 package gr.abiss.calipso.domain;
 
 
-import gr.abiss.calipso.domain.RoleType;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,13 +49,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.UserDetails;
 
 /**
  * Standard User entity with attributes such as name, password etc.
@@ -401,9 +399,16 @@ public class User implements UserDetails, Serializable, IUser {
             	Space space = sr.getSpace();
             	if(StringUtils.isNotBlank(space.getName())){
                     userSpaceRoleMap.put(space.getName(), usr);
-            	}
-            }
+				} else {
+					logger.warn("getSpaceRolesNoGlobal: space has no name!"
+							+ space.getId());
+				}
+			} else {
+				logger.warn("getSpaceRolesNoGlobal: role has no space!"
+						+ usr.getSpaceRole());
+			}
         }
+		logger.info("getSpaceRolesNoGlobal: " + userSpaceRoleMap);
         return userSpaceRoleMap.values();
     }        
 
@@ -479,11 +484,13 @@ public class User implements UserDetails, Serializable, IUser {
     
     //============ ACEGI UserDetails implementation ===============
     
-    public boolean isAccountNonExpired() {
+    @Override
+	public boolean isAccountNonExpired() {
         return true;
     }
     
-    public boolean isAccountNonLocked() {
+    @Override
+	public boolean isAccountNonLocked() {
         return !isLocked();
     }
     
@@ -499,7 +506,8 @@ public class User implements UserDetails, Serializable, IUser {
 //        return authorities.toArray(new GrantedAuthority[authorities.size()]);
 //    }
 
-    public GrantedAuthority[] getAuthorities() {
+    @Override
+	public GrantedAuthority[] getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         // grant full access only if not a Guest
         if (id > 0) {
@@ -512,19 +520,23 @@ public class User implements UserDetails, Serializable, IUser {
         return authorities.toArray(new GrantedAuthority[authorities.size()]);
     }
     
-    public boolean isCredentialsNonExpired() {
+    @Override
+	public boolean isCredentialsNonExpired() {
         return true;
     }
     
-    public boolean isEnabled() {
+    @Override
+	public boolean isEnabled() {
         return true;
     }
     
-    public String getUsername() {
+    @Override
+	public String getUsername() {
         return getLoginName();
     }
     
-    public String getPassword() {
+    @Override
+	public String getPassword() {
         return password;
     } 
     
@@ -549,7 +561,8 @@ public class User implements UserDetails, Serializable, IUser {
     /* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getName()
 	 */
-    public String getName() {
+    @Override
+	public String getName() {
         return name;
     }
 
@@ -568,7 +581,8 @@ public class User implements UserDetails, Serializable, IUser {
     /* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getEmail()
 	 */
-    public String getEmail() {
+    @Override
+	public String getEmail() {
         return email;
     }
     
@@ -634,7 +648,8 @@ public class User implements UserDetails, Serializable, IUser {
     /* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getId()
 	 */
-    public long getId() {
+    @Override
+	public long getId() {
         return id;
     }
     
@@ -653,7 +668,8 @@ public class User implements UserDetails, Serializable, IUser {
     /* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getLoginName()
 	 */
-    public String getLoginName() {
+    @Override
+	public String getLoginName() {
         return loginName;
     }
     
@@ -707,6 +723,7 @@ public class User implements UserDetails, Serializable, IUser {
 	/* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getOrganization()
 	 */
+	@Override
 	public Organization getOrganization() {
 		return organization;
 	}
@@ -718,6 +735,7 @@ public class User implements UserDetails, Serializable, IUser {
 	/* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getLastname()
 	 */
+	@Override
 	public String getLastname() {
 		return lastname;
 	}
@@ -790,6 +808,7 @@ public class User implements UserDetails, Serializable, IUser {
 	/* (non-Javadoc)
 	 * @see gr.abiss.calipso.domain.IUser#getFax()
 	 */
+	@Override
 	public String getFax() {
 		return fax;
 	}

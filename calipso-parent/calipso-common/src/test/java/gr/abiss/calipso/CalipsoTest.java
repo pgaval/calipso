@@ -54,8 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.UserDetails;
+import org.springframework.security.GrantedAuthority;
+import org.springframework.security.userdetails.UserDetails;
 
 /**
  * JUnit test cases for the business implementation as well as the DAO

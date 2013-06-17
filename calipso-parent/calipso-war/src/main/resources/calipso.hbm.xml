@@ -780,7 +780,7 @@
 		<many-to-one name="createdBy"     class="User" not-null="false" column="as_createdby" /><!-- unique-key="AS_INVENTORY_CODE_AS_SPACEID" -->
 		<!-- bi-directional many-to-one association to AssetType -->
 		<many-to-one name="assetType" class="AssetType" not-null="true">
-			<column name="AS_ATID" />
+			<column name="as_atid" />
 		</many-to-one>
 		
 		<map name="customAttributes" table="asset_custom_attributes_values" cascade="all-delete-orphan" inverse="false" lazy="false" sort="natural">
