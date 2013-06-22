@@ -36,7 +36,6 @@
 
 package gr.abiss.calipso.wicket;
 
-import gr.abiss.calipso.Constants;
 import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.acegi.CalipsoCasProxyTicketValidator;
 import gr.abiss.calipso.config.CalipsoPropertiesEditor;
@@ -44,35 +43,23 @@ import gr.abiss.calipso.domain.I18nStringIdentifier;
 import gr.abiss.calipso.domain.I18nStringResource;
 import gr.abiss.calipso.domain.RoleType;
 import gr.abiss.calipso.domain.Space;
-import gr.abiss.calipso.domain.SpaceRole;
 import gr.abiss.calipso.domain.User;
-import gr.abiss.calipso.domain.UserSpaceRole;
-import gr.abiss.calipso.util.WebUtils;
 import gr.abiss.calipso.wicket.components.formfields.FieldConfig;
 import gr.abiss.calipso.wicket.register.RegisterAnonymousUserFormPage;
 import gr.abiss.calipso.wicket.register.RegisterUserFormPage;
 import gr.abiss.calipso.wicket.yui.TestPage;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import org.springframework.security.Authentication;
-import org.springframework.security.AuthenticationException;
-import org.springframework.security.AuthenticationManager;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
-import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IConverterLocator;
-import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
@@ -83,17 +70,18 @@ import org.apache.wicket.markup.html.pages.RedirectPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
-import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
-import org.apache.wicket.settings.IExceptionSettings.UnexpectedExceptionDisplay;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.cookies.CookieUtils;
 import org.apache.wicket.util.time.Duration;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationException;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * main wicket application for calipsoService holds singleton service layer
@@ -215,6 +203,7 @@ public class CalipsoApplication extends WebApplication {
 		getResourceSettings().getStringResourceLoaders().add(
 				new IStringResourceLoader() {
 
+					@Override
 					public String loadStringResource(Class<?> clazz,
 							String key, Locale locale, String style,
 							String variation) {
@@ -222,6 +211,7 @@ public class CalipsoApplication extends WebApplication {
 								locale);
 					}
 
+					@Override
 					public String loadStringResource(Component component,
 							String key, Locale locale, String style,
 							String variation) {
@@ -233,6 +223,7 @@ public class CalipsoApplication extends WebApplication {
 		// add DB i18n resources
 		getResourceSettings().getStringResourceLoaders().add(
 				new IStringResourceLoader() {
+					@Override
 					public String loadStringResource(Class<?> clazz,
 							String key, Locale locale, String style,
 							String variation) {
@@ -241,12 +232,19 @@ public class CalipsoApplication extends WebApplication {
 							locale = new Locale(locale.getLanguage(), locale
 									.getCountry());
 						}
+						String lang = locale.getLanguage();
 						I18nStringResource resource = CalipsoApplication.this.calipsoService
 								.loadI18nStringResource(new I18nStringIdentifier(
-										key, locale.getLanguage()));
+										key, lang));
+						if (resource == null && !lang.equalsIgnoreCase("en")) {
+							resource = CalipsoApplication.this.calipsoService
+									.loadI18nStringResource(new I18nStringIdentifier(
+											key, "en"));
+						}
 						return resource != null ? resource.getValue() : null;
 					}
 
+					@Override
 					public String loadStringResource(Component component,
 							String key, Locale locale, String style,
 							String variation) {
@@ -257,9 +255,15 @@ public class CalipsoApplication extends WebApplication {
 							locale = new Locale(locale.getLanguage(), locale
 									.getCountry());
 						}
+						String lang = locale.getLanguage();
 						I18nStringResource resource = CalipsoApplication.this.calipsoService
 								.loadI18nStringResource(new I18nStringIdentifier(
-										key, locale.getLanguage()));
+										key, lang));
+						if (resource == null && !lang.equalsIgnoreCase("en")) {
+							resource = CalipsoApplication.this.calipsoService
+									.loadI18nStringResource(new I18nStringIdentifier(
+											key, "en"));
+						}
 						return resource != null ? resource.getValue() : null;
 					}
 				});
@@ -267,10 +271,12 @@ public class CalipsoApplication extends WebApplication {
 		getResourceSettings().getLocalizer().setEnableCache(true);
 		getSecuritySettings().setAuthorizationStrategy(
 				new IAuthorizationStrategy() {
+					@Override
 					public boolean isActionAuthorized(Component c, Action a) {
 						return true;
 					}
 
+					@Override
 					public boolean isInstantiationAuthorized(Class clazz) {
 						if (BasePage.class.isAssignableFrom(clazz)) {
 							if (((CalipsoSession) Session.get())
@@ -389,6 +395,7 @@ public class CalipsoApplication extends WebApplication {
 		return new CalipsoSession(request);
 	}
 
+	@Override
 	public Class getHomePage() {
 		return DashboardPage.class;
 	}
@@ -448,7 +455,7 @@ public class CalipsoApplication extends WebApplication {
 
         	@Override
 			public String convertToString(FieldConfig value, Locale locale) {
-				return FieldConfig.toXML((FieldConfig) value);
+				return FieldConfig.toXML(value);
 			}
         
 		});

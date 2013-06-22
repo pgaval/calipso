@@ -44,16 +44,14 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Properties;
+
 import javax.servlet.ServletContext;
 
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.util.Log;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.context.ServletContextAware;
 
@@ -108,7 +106,8 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
 
     private ServletContext servletContext;
 
-    public void setServletContext(ServletContext servletContext) {
+    @Override
+	public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 
@@ -155,12 +154,13 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
         }
         //======================================================================
         FilenameFilter ff = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
+            @Override
+			public boolean accept(File dir, String name) {
                 return name.startsWith("messages_") && name.endsWith(".properties");
             }
         };
         //File[] messagePropsFiles = jtracInitResource.getFile().getParentFile().listFiles(ff);
-        String locales = props.getProperty("calipso.locales", "en,el");
+		String locales = props.getProperty("calipso.locales", "en,el,ja");
 //        for(File f : messagePropsFiles) {
 //            int endIndex = f.getName().indexOf('.');
 //            String localeCode = f.getName().substring(9, endIndex);
