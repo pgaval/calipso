@@ -153,86 +153,86 @@
 		<property name="cusInt39"  type="int" column="cus_int_39" />
 		<property name="cusInt40"  type="int" column="cus_int_40" />
 		
-		<property name="cusStr01" column="cus_str_01" />
-		<property name="cusStr02" column="cus_str_02" />
-		<property name="cusStr03" column="cus_str_03" />
-		<property name="cusStr04" column="cus_str_04" />
-		<property name="cusStr05" column="cus_str_05" />
-		<property name="cusStr06" column="cus_str_06" />
-		<property name="cusStr07" column="cus_str_07" />
-		<property name="cusStr08" column="cus_str_08" />
-		<property name="cusStr09" column="cus_str_09" />
-		<property name="cusStr10" column="cus_str_10" />
-		<property name="cusStr11" column="cus_str_11" />
-		<property name="cusStr12" column="cus_str_12" />
-		<property name="cusStr13" column="cus_str_13" />
-		<property name="cusStr14" column="cus_str_14" />
-		<property name="cusStr15" column="cus_str_15" />
-		<property name="cusStr16" column="cus_str_16" />
-		<property name="cusStr17" column="cus_str_17" />
-		<property name="cusStr18" column="cus_str_18" />
-		<property name="cusStr19" column="cus_str_19" />
-		<property name="cusStr20" column="cus_str_20" />
-		<property name="cusStr21" column="cus_str_21" />
-		<property name="cusStr22" column="cus_str_22" />
-		<property name="cusStr23" column="cus_str_23" />
-		<property name="cusStr24" column="cus_str_24" />
-		<property name="cusStr25" column="cus_str_25" />
-		<property name="cusStr26" column="cus_str_26" />
-		<property name="cusStr27" column="cus_str_27" />
-		<property name="cusStr28" column="cus_str_28" />
-		<property name="cusStr29" column="cus_str_29" />
-		<property name="cusStr30" column="cus_str_30" />
-		<property name="cusStr31" column="cus_str_31" />
-		<property name="cusStr32" column="cus_str_32" />
-		<property name="cusStr33" column="cus_str_33" />
-		<property name="cusStr34" column="cus_str_34" />
-		<property name="cusStr35" column="cus_str_35" />
-		<property name="cusStr36" column="cus_str_36" />
-		<property name="cusStr37" column="cus_str_37" />
-		<property name="cusStr38" column="cus_str_38" />
-		<property name="cusStr39" column="cus_str_39" />
-		<property name="cusStr40" column="cus_str_40" />
-		<property name="cusStr41" column="cus_str_41" />
-		<property name="cusStr42" column="cus_str_42" />
-		<property name="cusStr43" column="cus_str_43" />
-		<property name="cusStr44" column="cus_str_44" />
-		<property name="cusStr45" column="cus_str_45" />
-		<property name="cusStr46" column="cus_str_46" />
-		<property name="cusStr47" column="cus_str_47" />
-		<property name="cusStr48" column="cus_str_48" />
-		<property name="cusStr49" column="cus_str_49" />
-		<property name="cusStr50" column="cus_str_50" />
-		<property name="cusStr51" column="cus_str_51" />
-		<property name="cusStr52" column="cus_str_52" />
-		<property name="cusStr53" column="cus_str_53" />
-		<property name="cusStr54" column="cus_str_54" />
-		<property name="cusStr55" column="cus_str_55" />
-		<property name="cusStr56" column="cus_str_56" />
-		<property name="cusStr57" column="cus_str_57" />
-		<property name="cusStr58" column="cus_str_58" />
-		<property name="cusStr59" column="cus_str_59" />
-		<property name="cusStr60" column="cus_str_60" />
-		<property name="cusStr61" column="cus_str_61" />
-		<property name="cusStr62" column="cus_str_62" />
-		<property name="cusStr63" column="cus_str_63" />
-		<property name="cusStr64" column="cus_str_64" />
-		<property name="cusStr65" column="cus_str_65" />
-		<property name="cusStr66" column="cus_str_66" />
-		<property name="cusStr67" column="cus_str_67" />
-		<property name="cusStr68" column="cus_str_68" />
-		<property name="cusStr69" column="cus_str_69" />
-		<property name="cusStr70" column="cus_str_70" />
-		<property name="cusStr71" column="cus_str_71" />
-		<property name="cusStr72" column="cus_str_72" />
-		<property name="cusStr73" column="cus_str_73" />
-		<property name="cusStr74" column="cus_str_74" />
-		<property name="cusStr75" column="cus_str_75" />
-		<property name="cusStr76" column="cus_str_76" />
-		<property name="cusStr77" column="cus_str_77" />
-		<property name="cusStr78" column="cus_str_78" />
-		<property name="cusStr79" column="cus_str_79" />
-		<property name="cusStr80" column="cus_str_80" />
+		<property name="cusStr01" type="text" column="cus_str_01" />
+		<property name="cusStr02" type="text" column="cus_str_02" />
+		<property name="cusStr03" type="text" column="cus_str_03" />
+		<property name="cusStr04" type="text" column="cus_str_04" />
+		<property name="cusStr05" type="text" column="cus_str_05" />
+		<property name="cusStr06" type="text" column="cus_str_06" />
+		<property name="cusStr07" type="text" column="cus_str_07" />
+		<property name="cusStr08" type="text" column="cus_str_08" />
+		<property name="cusStr09" type="text" column="cus_str_09" />
+		<property name="cusStr10" type="text" column="cus_str_10" />
+		<property name="cusStr11" type="text" column="cus_str_11" />
+		<property name="cusStr12" type="text" column="cus_str_12" />
+		<property name="cusStr13" type="text" column="cus_str_13" />
+		<property name="cusStr14" type="text" column="cus_str_14" />
+		<property name="cusStr15" type="text" column="cus_str_15" />
+		<property name="cusStr16" type="text" column="cus_str_16" />
+		<property name="cusStr17" type="text" column="cus_str_17" />
+		<property name="cusStr18" type="text" column="cus_str_18" />
+		<property name="cusStr19" type="text" column="cus_str_19" />
+		<property name="cusStr20" type="text" column="cus_str_20" />
+		<property name="cusStr21" type="text" column="cus_str_21" />
+		<property name="cusStr22" type="text" column="cus_str_22" />
+		<property name="cusStr23" type="text" column="cus_str_23" />
+		<property name="cusStr24" type="text" column="cus_str_24" />
+		<property name="cusStr25" type="text" column="cus_str_25" />
+		<property name="cusStr26" type="text" column="cus_str_26" />
+		<property name="cusStr27" type="text" column="cus_str_27" />
+		<property name="cusStr28" type="text" column="cus_str_28" />
+		<property name="cusStr29" type="text" column="cus_str_29" />
+		<property name="cusStr30" type="text" column="cus_str_30" />
+		<property name="cusStr31" type="text" column="cus_str_31" />
+		<property name="cusStr32" type="text" column="cus_str_32" />
+		<property name="cusStr33" type="text" column="cus_str_33" />
+		<property name="cusStr34" type="text" column="cus_str_34" />
+		<property name="cusStr35" type="text" column="cus_str_35" />
+		<property name="cusStr36" type="text" column="cus_str_36" />
+		<property name="cusStr37" type="text" column="cus_str_37" />
+		<property name="cusStr38" type="text" column="cus_str_38" />
+		<property name="cusStr39" type="text" column="cus_str_39" />
+		<property name="cusStr40" type="text" column="cus_str_40" />
+		<property name="cusStr41" type="text" column="cus_str_41" />
+		<property name="cusStr42" type="text" column="cus_str_42" />
+		<property name="cusStr43" type="text" column="cus_str_43" />
+		<property name="cusStr44" type="text" column="cus_str_44" />
+		<property name="cusStr45" type="text" column="cus_str_45" />
+		<property name="cusStr46" type="text" column="cus_str_46" />
+		<property name="cusStr47" type="text" column="cus_str_47" />
+		<property name="cusStr48" type="text" column="cus_str_48" />
+		<property name="cusStr49" type="text" column="cus_str_49" />
+		<property name="cusStr50" type="text" column="cus_str_50" />
+		<property name="cusStr51" type="text" column="cus_str_51" />
+		<property name="cusStr52" type="text" column="cus_str_52" />
+		<property name="cusStr53" type="text" column="cus_str_53" />
+		<property name="cusStr54" type="text" column="cus_str_54" />
+		<property name="cusStr55" type="text" column="cus_str_55" />
+		<property name="cusStr56" type="text" column="cus_str_56" />
+		<property name="cusStr57" type="text" column="cus_str_57" />
+		<property name="cusStr58" type="text" column="cus_str_58" />
+		<property name="cusStr59" type="text" column="cus_str_59" />
+		<property name="cusStr60" type="text" column="cus_str_60" />
+		<property name="cusStr61" type="text" column="cus_str_61" />
+		<property name="cusStr62" type="text" column="cus_str_62" />
+		<property name="cusStr63" type="text" column="cus_str_63" />
+		<property name="cusStr64" type="text" column="cus_str_64" />
+		<property name="cusStr65" type="text" column="cus_str_65" />
+		<property name="cusStr66" type="text" column="cus_str_66" />
+		<property name="cusStr67" type="text" column="cus_str_67" />
+		<property name="cusStr68" type="text" column="cus_str_68" />
+		<property name="cusStr69" type="text" column="cus_str_69" />
+		<property name="cusStr70" type="text" column="cus_str_70" />
+		<property name="cusStr71" type="text" column="cus_str_71" />
+		<property name="cusStr72" type="text" column="cus_str_72" />
+		<property name="cusStr73" type="text" column="cus_str_73" />
+		<property name="cusStr74" type="text" column="cus_str_74" />
+		<property name="cusStr75" type="text" column="cus_str_75" />
+		<property name="cusStr76" type="text" column="cus_str_76" />
+		<property name="cusStr77" type="text" column="cus_str_77" />
+		<property name="cusStr78" type="text" column="cus_str_78" />
+		<property name="cusStr79" type="text" column="cus_str_79" />
+		<property name="cusStr80" type="text" column="cus_str_80" />
 		
 		<property name="cusTim01" column="cus_tim_01" />
 		<property name="cusTim02" column="cus_tim_02" />
@@ -415,86 +415,86 @@
 		<property name="cusInt39"  type="int" column="cus_int_39" />
 		<property name="cusInt40"  type="int" column="cus_int_40" />
 		
-		<property name="cusStr01" column="cus_str_01" />
-		<property name="cusStr02" column="cus_str_02" />
-		<property name="cusStr03" column="cus_str_03" />
-		<property name="cusStr04" column="cus_str_04" />
-		<property name="cusStr05" column="cus_str_05" />
-		<property name="cusStr06" column="cus_str_06" />
-		<property name="cusStr07" column="cus_str_07" />
-		<property name="cusStr08" column="cus_str_08" />
-		<property name="cusStr09" column="cus_str_09" />
-		<property name="cusStr10" column="cus_str_10" />
-		<property name="cusStr11" column="cus_str_11" />
-		<property name="cusStr12" column="cus_str_12" />
-		<property name="cusStr13" column="cus_str_13" />
-		<property name="cusStr14" column="cus_str_14" />
-		<property name="cusStr15" column="cus_str_15" />
-		<property name="cusStr16" column="cus_str_16" />
-		<property name="cusStr17" column="cus_str_17" />
-		<property name="cusStr18" column="cus_str_18" />
-		<property name="cusStr19" column="cus_str_19" />
-		<property name="cusStr20" column="cus_str_20" />
-		<property name="cusStr21" column="cus_str_21" />
-		<property name="cusStr22" column="cus_str_22" />
-		<property name="cusStr23" column="cus_str_23" />
-		<property name="cusStr24" column="cus_str_24" />
-		<property name="cusStr25" column="cus_str_25" />
-		<property name="cusStr26" column="cus_str_26" />
-		<property name="cusStr27" column="cus_str_27" />
-		<property name="cusStr28" column="cus_str_28" />
-		<property name="cusStr29" column="cus_str_29" />
-		<property name="cusStr30" column="cus_str_30" />
-		<property name="cusStr31" column="cus_str_31" />
-		<property name="cusStr32" column="cus_str_32" />
-		<property name="cusStr33" column="cus_str_33" />
-		<property name="cusStr34" column="cus_str_34" />
-		<property name="cusStr35" column="cus_str_35" />
-		<property name="cusStr36" column="cus_str_36" />
-		<property name="cusStr37" column="cus_str_37" />
-		<property name="cusStr38" column="cus_str_38" />
-		<property name="cusStr39" column="cus_str_39" />
-		<property name="cusStr40" column="cus_str_40" />
-		<property name="cusStr41" column="cus_str_41" />
-		<property name="cusStr42" column="cus_str_42" />
-		<property name="cusStr43" column="cus_str_43" />
-		<property name="cusStr44" column="cus_str_44" />
-		<property name="cusStr45" column="cus_str_45" />
-		<property name="cusStr46" column="cus_str_46" />
-		<property name="cusStr47" column="cus_str_47" />
-		<property name="cusStr48" column="cus_str_48" />
-		<property name="cusStr49" column="cus_str_49" />
-		<property name="cusStr50" column="cus_str_50" />
-		<property name="cusStr51" column="cus_str_51" />
-		<property name="cusStr52" column="cus_str_52" />
-		<property name="cusStr53" column="cus_str_53" />
-		<property name="cusStr54" column="cus_str_54" />
-		<property name="cusStr55" column="cus_str_55" />
-		<property name="cusStr56" column="cus_str_56" />
-		<property name="cusStr57" column="cus_str_57" />
-		<property name="cusStr58" column="cus_str_58" />
-		<property name="cusStr59" column="cus_str_59" />
-		<property name="cusStr60" column="cus_str_60" />
-		<property name="cusStr61" column="cus_str_61" />
-		<property name="cusStr62" column="cus_str_62" />
-		<property name="cusStr63" column="cus_str_63" />
-		<property name="cusStr64" column="cus_str_64" />
-		<property name="cusStr65" column="cus_str_65" />
-		<property name="cusStr66" column="cus_str_66" />
-		<property name="cusStr67" column="cus_str_67" />
-		<property name="cusStr68" column="cus_str_68" />
-		<property name="cusStr69" column="cus_str_69" />
-		<property name="cusStr70" column="cus_str_70" />
-		<property name="cusStr71" column="cus_str_71" />
-		<property name="cusStr72" column="cus_str_72" />
-		<property name="cusStr73" column="cus_str_73" />
-		<property name="cusStr74" column="cus_str_74" />
-		<property name="cusStr75" column="cus_str_75" />
-		<property name="cusStr76" column="cus_str_76" />
-		<property name="cusStr77" column="cus_str_77" />
-		<property name="cusStr78" column="cus_str_78" />
-		<property name="cusStr79" column="cus_str_79" />
-		<property name="cusStr80" column="cus_str_80" />
+		<property name="cusStr01" type="text" column="cus_str_01" />
+		<property name="cusStr02" type="text" column="cus_str_02" />
+		<property name="cusStr03" type="text" column="cus_str_03" />
+		<property name="cusStr04" type="text" column="cus_str_04" />
+		<property name="cusStr05" type="text" column="cus_str_05" />
+		<property name="cusStr06" type="text" column="cus_str_06" />
+		<property name="cusStr07" type="text" column="cus_str_07" />
+		<property name="cusStr08" type="text" column="cus_str_08" />
+		<property name="cusStr09" type="text" column="cus_str_09" />
+		<property name="cusStr10" type="text" column="cus_str_10" />
+		<property name="cusStr11" type="text" column="cus_str_11" />
+		<property name="cusStr12" type="text" column="cus_str_12" />
+		<property name="cusStr13" type="text" column="cus_str_13" />
+		<property name="cusStr14" type="text" column="cus_str_14" />
+		<property name="cusStr15" type="text" column="cus_str_15" />
+		<property name="cusStr16" type="text" column="cus_str_16" />
+		<property name="cusStr17" type="text" column="cus_str_17" />
+		<property name="cusStr18" type="text" column="cus_str_18" />
+		<property name="cusStr19" type="text" column="cus_str_19" />
+		<property name="cusStr20" type="text" column="cus_str_20" />
+		<property name="cusStr21" type="text" column="cus_str_21" />
+		<property name="cusStr22" type="text" column="cus_str_22" />
+		<property name="cusStr23" type="text" column="cus_str_23" />
+		<property name="cusStr24" type="text" column="cus_str_24" />
+		<property name="cusStr25" type="text" column="cus_str_25" />
+		<property name="cusStr26" type="text" column="cus_str_26" />
+		<property name="cusStr27" type="text" column="cus_str_27" />
+		<property name="cusStr28" type="text" column="cus_str_28" />
+		<property name="cusStr29" type="text" column="cus_str_29" />
+		<property name="cusStr30" type="text" column="cus_str_30" />
+		<property name="cusStr31" type="text" column="cus_str_31" />
+		<property name="cusStr32" type="text" column="cus_str_32" />
+		<property name="cusStr33" type="text" column="cus_str_33" />
+		<property name="cusStr34" type="text" column="cus_str_34" />
+		<property name="cusStr35" type="text" column="cus_str_35" />
+		<property name="cusStr36" type="text" column="cus_str_36" />
+		<property name="cusStr37" type="text" column="cus_str_37" />
+		<property name="cusStr38" type="text" column="cus_str_38" />
+		<property name="cusStr39" type="text" column="cus_str_39" />
+		<property name="cusStr40" type="text" column="cus_str_40" />
+		<property name="cusStr41" type="text" column="cus_str_41" />
+		<property name="cusStr42" type="text" column="cus_str_42" />
+		<property name="cusStr43" type="text" column="cus_str_43" />
+		<property name="cusStr44" type="text" column="cus_str_44" />
+		<property name="cusStr45" type="text" column="cus_str_45" />
+		<property name="cusStr46" type="text" column="cus_str_46" />
+		<property name="cusStr47" type="text" column="cus_str_47" />
+		<property name="cusStr48" type="text" column="cus_str_48" />
+		<property name="cusStr49" type="text" column="cus_str_49" />
+		<property name="cusStr50" type="text" column="cus_str_50" />
+		<property name="cusStr51" type="text" column="cus_str_51" />
+		<property name="cusStr52" type="text" column="cus_str_52" />
+		<property name="cusStr53" type="text" column="cus_str_53" />
+		<property name="cusStr54" type="text" column="cus_str_54" />
+		<property name="cusStr55" type="text" column="cus_str_55" />
+		<property name="cusStr56" type="text" column="cus_str_56" />
+		<property name="cusStr57" type="text" column="cus_str_57" />
+		<property name="cusStr58" type="text" column="cus_str_58" />
+		<property name="cusStr59" type="text" column="cus_str_59" />
+		<property name="cusStr60" type="text" column="cus_str_60" />
+		<property name="cusStr61" type="text" column="cus_str_61" />
+		<property name="cusStr62" type="text" column="cus_str_62" />
+		<property name="cusStr63" type="text" column="cus_str_63" />
+		<property name="cusStr64" type="text" column="cus_str_64" />
+		<property name="cusStr65" type="text" column="cus_str_65" />
+		<property name="cusStr66" type="text" column="cus_str_66" />
+		<property name="cusStr67" type="text" column="cus_str_67" />
+		<property name="cusStr68" type="text" column="cus_str_68" />
+		<property name="cusStr69" type="text" column="cus_str_69" />
+		<property name="cusStr70" type="text" column="cus_str_70" />
+		<property name="cusStr71" type="text" column="cus_str_71" />
+		<property name="cusStr72" type="text" column="cus_str_72" />
+		<property name="cusStr73" type="text" column="cus_str_73" />
+		<property name="cusStr74" type="text" column="cus_str_74" />
+		<property name="cusStr75" type="text" column="cus_str_75" />
+		<property name="cusStr76" type="text" column="cus_str_76" />
+		<property name="cusStr77" type="text" column="cus_str_77" />
+		<property name="cusStr78" type="text" column="cus_str_78" />
+		<property name="cusStr79" type="text" column="cus_str_79" />
+		<property name="cusStr80" type="text" column="cus_str_80" />
 		
 		<property name="cusTim01" column="cus_tim_01" />
 		<property name="cusTim02" column="cus_tim_02" />
