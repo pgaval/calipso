@@ -58,7 +58,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.springframework.web.util.HtmlUtils;
 
 public class MultipleValuesTextField extends FormComponentPanel {
@@ -82,8 +81,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	private String originalValues = "";
 	private WebMarkupContainer mainContainer;
 	private FieldConfig fieldConfig;
-	private List<Serializable> newSubFieldValues = new LinkedList<Serializable>();
-	private MultipleValuesTextFieldValidator subFieldNoCommasValidator = new MultipleValuesTextFieldValidator();
+	private final List<Serializable> newSubFieldValues = new LinkedList<Serializable>();
+	private final MultipleValuesTextFieldValidator subFieldNoCommasValidator = new MultipleValuesTextFieldValidator();
 
 	public MultipleValuesTextField(String id, IModel<String> model,
 			FieldConfig config) {
@@ -414,6 +413,88 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						target.addComponent(mainContainer);
 					}
 				});
+				rowItem.add(new IndicatingAjaxLink("moveup") {
+
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						// remove the line
+						List<String> currentValueRows = Arrays
+								.asList(valuesField.getModelObject().split(
+										"\\r?\\n"));
+
+						// update the model
+						StringBuffer subValues = new StringBuffer();
+						if (CollectionUtils.isNotEmpty(currentValueRows)) {
+							// obtain and clear sub-values
+							for (int i = 0; i < currentValueRows.size(); i++) {
+								if (i == (rowIndex - 1)) {
+									subValues.append(currentValueRows
+											.get(i + 1));
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+									subValues.append(currentValueRows.get(i));
+									i++;
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+								} else {
+									subValues.append(currentValueRows.get(i));
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+								}
+
+							}
+						}
+						valuesField.setModelObject(subValues.toString());
+
+						// repaint component
+						paintSubValuesTable(form);
+						target.addComponent(mainContainer);
+					}
+				});
+				rowItem.add(new IndicatingAjaxLink("movedown") {
+
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						// remove the line
+						List<String> currentValueRows = Arrays
+								.asList(valuesField.getModelObject().split(
+										"\\r?\\n"));
+
+						// update the model
+						StringBuffer subValues = new StringBuffer();
+						if (CollectionUtils.isNotEmpty(currentValueRows)) {
+							// obtain and clear sub-values
+							for (int i = 0; i < currentValueRows.size(); i++) {
+								if (i == rowIndex) {
+									subValues.append(currentValueRows
+											.get(i + 1));
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+									subValues.append(currentValueRows.get(i));
+									i++;
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+								} else {
+									subValues.append(currentValueRows.get(i));
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+								}
+
+							}
+						}
+						valuesField.setModelObject(subValues.toString());
+
+						// repaint component
+						paintSubValuesTable(form);
+						target.addComponent(mainContainer);
+					}
+				});
 			}
 
 		});
@@ -467,6 +548,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			error.addMessageKey("MultipleValuesTextFieldValidator." + errorKey);
 			validatable.error(error);
 		}
+		@Override
 		public void validate(IValidatable<Serializable> validatable) {
 			Serializable value = validatable.getValue();
 			if (value != null && value.toString().contains(SEPARATOR_LINE_SUBVALUE)) {
