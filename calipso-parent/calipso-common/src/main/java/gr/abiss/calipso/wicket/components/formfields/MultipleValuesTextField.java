@@ -496,6 +496,42 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						target.addComponent(mainContainer);
 					}
 				}.setVisible(rowIndex < (originalValueRows.size() - 1)));
+				rowItem.add(new IndicatingAjaxLink("edit") {
+
+					@Override
+					public void onClick(AjaxRequestTarget target) {
+						// remove the line
+						List<String> currentValueRows = Arrays
+								.asList(valuesField.getModelObject().split(
+										"\\r?\\n"));
+
+						// update the model
+						StringBuffer subValues = new StringBuffer();
+						if (CollectionUtils.isNotEmpty(currentValueRows)) {
+							// obtain and clear sub-values
+							for (int i = 0; i < currentValueRows.size(); i++) {
+								if (i != rowIndex) {
+									subValues.append(currentValueRows
+											.get(i));
+									if (i + 1 < currentValueRows.size()) {
+										subValues.append('\n');
+									}
+								} else {
+									List<String> editableValues = new ArrayList(Arrays.asList(StringUtils.splitByWholeSeparator(" "+currentValueRows.get(i)+" ", SEPARATOR_LINE_SUBVALUE))); 
+									newSubFieldValues.clear();
+									newSubFieldValues.addAll(editableValues);
+								}
+
+							}
+						}
+						valuesField.setModelObject(subValues.toString());
+
+						// repaint component
+						paintSubValuesTable(form);
+						target.addComponent(mainContainer);
+					}
+				});
+				
 			}
 
 		});
