@@ -813,7 +813,10 @@ public class CustomFieldsFormPanel extends BasePanel {
 						
 						// add label
 						labelContainer.add(label != null? label : new Label("label", ""));
-						if(StringUtils.isBlank(field.getCustomAttribute().getHtmlDescription())){
+						if (field.getCustomAttribute() != null
+								&& StringUtils.isBlank(field
+										.getCustomAttribute()
+										.getHtmlDescription())) {
 							labelContainer.add(new SimpleAttributeModifier("class","labelContainer"));
 						}
 						// mandatory?
@@ -980,11 +983,22 @@ public class CustomFieldsFormPanel extends BasePanel {
 						
 						// drop down list
 							final Fragment fragment = new Fragment("field", "dropDown", CustomFieldsFormPanel.this);
-							// add HTML description through velocity
-							addVelocityTemplatePanel(fragment, "htmlDescriptionContainer", "htmlDescription", field.getCustomAttribute().getHtmlDescription(), null, true);
 							if(field.getCustomAttribute() == null){
 								field.setCustomAttribute(getCalipso().loadItemCustomAttribute(getCurrentSpace(), field.getName().getText()));
 							}
+						// add HTML description through velocity
+						logger.info("field name:" + field.getName()
+								+ ", custom atribute: "
+								+ field.getCustomAttribute());
+						addVelocityTemplatePanel(
+								fragment,
+								"htmlDescriptionContainer",
+								"htmlDescription",
+								field.getCustomAttribute() != null ? field
+										.getCustomAttribute()
+										.getHtmlDescription() : "",
+								null, true);
+
 							final List<CustomAttributeLookupValue> lookupValues = getCalipso().findActiveLookupValuesByCustomAttribute(field.getCustomAttribute());
 							// preselect previous user choice from DB if available
 							Object preselected = item.getValue(field.getName());
@@ -1002,7 +1016,10 @@ public class CustomFieldsFormPanel extends BasePanel {
 							// else set using the default string value instead, if any
 							// TODO: move this into a LookupValueDropDownChoice class
 							else{
-								String defaultStringValue = field.getCustomAttribute().getDefaultStringValue();
+							String defaultStringValue = field
+									.getCustomAttribute() != null ? field
+									.getCustomAttribute()
+									.getDefaultStringValue() : null;
 								if(defaultStringValue != null && CollectionUtils.isNotEmpty(lookupValues)){
 									for(CustomAttributeLookupValue value : lookupValues){
 										if(value.getValue().equals(defaultStringValue)){

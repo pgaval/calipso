@@ -41,16 +41,16 @@ import gr.abiss.calipso.domain.AbstractItem;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.ColumnHeading;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.AssetTypeCustomAttributeSearch;
 import gr.abiss.calipso.domain.AssetTypeSearch;
 import gr.abiss.calipso.domain.Attachment;
+import gr.abiss.calipso.domain.ColumnHeading;
 import gr.abiss.calipso.domain.Config;
 import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.Counts;
 import gr.abiss.calipso.domain.CountsHolder;
 import gr.abiss.calipso.domain.CustomAttribute;
+import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.I18nStringIdentifier;
@@ -60,8 +60,8 @@ import gr.abiss.calipso.domain.InforamaDocumentParameter;
 import gr.abiss.calipso.domain.InforamaDocumentParameterSearch;
 import gr.abiss.calipso.domain.InforamaDocumentSearch;
 import gr.abiss.calipso.domain.Item;
-import gr.abiss.calipso.domain.ItemItem;
 import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
+import gr.abiss.calipso.domain.ItemItem;
 import gr.abiss.calipso.domain.ItemRenderingTemplate;
 import gr.abiss.calipso.domain.ItemSearch;
 import gr.abiss.calipso.domain.Language;
@@ -99,10 +99,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -146,6 +145,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     /**
      * 
      */
+	@Override
 	public Set<SpaceGroup> getSpaceGroupsForUser(Serializable userId){
 		User user = (User) getHibernateTemplate().load(User.class, userId);
         @SuppressWarnings("unchecked")
@@ -160,31 +160,37 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	}
 
     
-    public Serializable save(Serializable o) {
+    @Override
+	public Serializable save(Serializable o) {
         return getHibernateTemplate().save(o);
     }
 
     
-    public void saveOrUpdate(Serializable o) {
+    @Override
+	public void saveOrUpdate(Serializable o) {
         getHibernateTemplate().saveOrUpdate(o);
     }
 
     
-    public void update(Serializable o) {
+    @Override
+	public void update(Serializable o) {
         getHibernateTemplate().update(o);
     }
     
 
-    public void refresh(Serializable o) {
+    @Override
+	public void refresh(Serializable o) {
         getHibernateTemplate().refresh(o);
     }
     
     
-    public Object get(Class entityClass, Serializable id) {
+    @Override
+	public Object get(Class entityClass, Serializable id) {
         return getHibernateTemplate().get(entityClass, id);
     }
     
-    public void saveOrUpdateAll(Collection all) {
+    @Override
+	public void saveOrUpdateAll(Collection all) {
     	if(all != null && all.size() > 0){
     		for(Object o : all){
     			getHibernateTemplate().merge(o);
@@ -193,27 +199,33 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     }
 
     
-    public void merge(Serializable o) {
+    @Override
+	public void merge(Serializable o) {
         getHibernateTemplate().merge(o);
     }
     
-    public void storeItem(Item item) {
+    @Override
+	public void storeItem(Item item) {
         getHibernateTemplate().merge(item);
     }
     
-    public Item loadItem(long id) {
+    @Override
+	public Item loadItem(long id) {
         return (Item) getHibernateTemplate().get(Item.class, id);
     }
     
-    public void storeHistory(History history) {        
+    @Override
+	public void storeHistory(History history) {        
         getHibernateTemplate().merge(history);
     }    
     
-    public History loadHistory(long id) {
+    @Override
+	public History loadHistory(long id) {
         return (History) getHibernateTemplate().get(History.class, id);
     }
 
-    public List<Item> findItems(long sequenceNum, String prefixCode) {
+    @Override
+	public List<Item> findItems(long sequenceNum, String prefixCode) {
         Object[] params = new Object[] {sequenceNum, prefixCode};
         return getHibernateTemplate().find("from Item item where item.sequenceNum = ? and item.space.prefixCode = ?", params);
     }
@@ -247,7 +259,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 			throw new IllegalArgumentException("Space id cannot be null");
 		}
         return (ItemRenderingTemplate) getHibernateTemplate().execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) {
+            @Override
+			public Object doInHibernate(Session session) {
 //            	TreeSet<ItemRenderingTemplate> templs = new TreeSet<ItemRenderingTemplate>();
 //            	if(CollectionUtils.isNotEmpty(user.getSpaceRoles(item.getSpace()))){
 //            		Query query = session.createQuery("from ");
@@ -276,7 +289,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         });
     }
     
-    public List<Item> findItems(ItemSearch itemSearch) {
+    @Override
+	public List<Item> findItems(ItemSearch itemSearch) {
         int pageSize = itemSearch.getPageSize();
         if (pageSize == -1) {
             List<Item> list = getHibernateTemplate().findByCriteria(itemSearch.getCriteria());
@@ -314,10 +328,12 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 		return results;	
 	}
     
-    public List<AbstractItem> findAllItems() {
+    @Override
+	public List<AbstractItem> findAllItems() {
         // return getHibernateTemplate().loadAll(AbstractItem.class);
         return (List<AbstractItem>) getHibernateTemplate().execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) {
+            @Override
+			public Object doInHibernate(Session session) {
                 Criteria criteria = session.createCriteria(AbstractItem.class);
                 criteria.setFetchMode("space", FetchMode.JOIN);                              
                 return criteria.list();
@@ -328,6 +344,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     /**
      * Returns an iterator for items due within 24 hours.
      */
+	@Override
 	public Iterator<Item> findItemsDueIn24Hours(){
 		// get a calendar instance, which defaults to "now"
 	    Calendar calendar = Calendar.getInstance();
@@ -338,36 +355,44 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	    // we prefer an iterator VS a list or other collection as it is more efficient for larger datasets and batch jobs in general
     	return getHibernateTemplate().iterate("from Item item where item.sentDueToNotifications = false and (item.dueTo < ? or item.stateDueTo < ? )", new Object[]{thisTimeTommorow, thisTimeTommorow});
 	}
-    public List<History> findHistoryForItem(Item item){
+    @Override
+	public List<History> findHistoryForItem(Item item){
     	return getHibernateTemplate().find("from History history where history.parent.id = ?", item.getId());
     } 
 
-    public void removeItem(Item item) {
+    @Override
+	public void removeItem(Item item) {
         getHibernateTemplate().delete(item);
     }    
     
-    public List<Item> findUnassignedItemsForSpace(Space space){
+    @Override
+	public List<Item> findUnassignedItemsForSpace(Space space){
     	return getHibernateTemplate().find("from Item item where item.space.id=? and item.assignedTo is null", space.getId());
     }
     
-    public int loadCountUnassignedItemsForSpace(Space space){
+    @Override
+	public int loadCountUnassignedItemsForSpace(Space space){
     	Long count = (Long) getHibernateTemplate().find("select count(item) from Item item where item.space.id=? and item.assignedTo is null", space.getId()).get(0);
     	return count.intValue();
     }
     
-    public void removeItemItem(ItemItem itemItem) {
+    @Override
+	public void removeItemItem(ItemItem itemItem) {
         getHibernateTemplate().delete(itemItem);
     }    
     
-    public List<Attachment> findTemporaryAttachments(){
+    @Override
+	public List<Attachment> findTemporaryAttachments(){
     	return getHibernateTemplate().find("from Attachment attachment where attachment.temporary=true");
     }
     
-    public void removeAttachment(Attachment attachment) {
+    @Override
+	public void removeAttachment(Attachment attachment) {
         getHibernateTemplate().delete(attachment);
     }
     
-    public void storeAttachment(Attachment attachment) {
+    @Override
+	public void storeAttachment(Attachment attachment) {
         getHibernateTemplate().merge(attachment);
     }
     
@@ -379,7 +404,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 //        return (Metadata) getHibernateTemplate().get(Metadata.class, id);
 //    }
 //    
-    public Space storeSpace(Space space) {
+    @Override
+	public Space storeSpace(Space space) {
     	Map<String, Map<String, String>> translations = space.getId() > 0 ? space.getTranslations() :null;
     	logger.info("storeSpace "+space.getId()+", translations: "+translations);
     	// get the field list before persisting or the custom attributes will be lost
@@ -489,7 +515,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return space;
     }
 
-    public Space loadSpace(long id) {
+    @Override
+	public Space loadSpace(long id) {
         Space space = (Space) getHibernateTemplate().get(Space.class, id);
         loadSpaceMetadataFromCache(space);
         return space;
@@ -505,9 +532,11 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         	space.setMetadata(meta);//this.getHibernateTemplate().merge(meta);
         }
 	}
-    public Space loadSpace(final SpaceRole spaceRole) {
+    @Override
+	public Space loadSpace(final SpaceRole spaceRole) {
     	Space space = (Space) getHibernateTemplate().execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) {
+            @Override
+			public Object doInHibernate(Session session) {
                 Query q = session.createQuery("select space from SpaceRole sr, Space space where sr = ?");
                 q.setParameter(0, spaceRole);
                 q.setMaxResults(1);
@@ -519,21 +548,25 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	return space;
     }
     
-    public UserSpaceRole loadUserSpaceRole(long id) {
+    @Override
+	public UserSpaceRole loadUserSpaceRole(long id) {
         return (UserSpaceRole) getHibernateTemplate().get(UserSpaceRole.class, id);
     }    
     
-    public SpaceSequence loadSpaceSequence(long id) {                
+    @Override
+	public SpaceSequence loadSpaceSequence(long id) {                
         return (SpaceSequence) getHibernateTemplate().get(SpaceSequence.class, id);           
     }    
     
-    public void storeSpaceSequence(SpaceSequence spaceSequence) {
+    @Override
+	public void storeSpaceSequence(SpaceSequence spaceSequence) {
         getHibernateTemplate().saveOrUpdate(spaceSequence);
         // important to prevent duplicate sequence numbers, see CalipsoServiceImpl#storeItem()
         getHibernateTemplate().flush();
     }
     
-    public List<Space> findSpacesByPrefixCode(String prefixCode) {
+    @Override
+	public List<Space> findSpacesByPrefixCode(String prefixCode) {
         return getHibernateTemplate().find("from Space space where space.prefixCode = ?", prefixCode);
     }
     
@@ -541,6 +574,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * Returns all other Spaces of which the Assets are visible for the given Space
 	 * @see gr.abiss.calipso.CalipsoDao#getVisibleAssetsForSpace(gr.abiss.calipso.domain.Space)
 	 */
+	@Override
 	public Collection<Asset> getVisibleAssetsForSpace(Space space) {
 		return getHibernateTemplate()
 			.find("from Asset asset where asset.space = ? or " +
@@ -553,6 +587,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * Returns all other Spaces of which the Assets are visible for the given Space
 	 * @see gr.abiss.calipso.CalipsoDao#getVisibleAssetSpacesForSpace(gr.abiss.calipso.domain.Space)
 	 */
+	@Override
 	public Collection<Space> getVisibleAssetSpacesForSpace(Space space) {
 		return getHibernateTemplate()
 			.find("from Space space where space !=? and " +
@@ -561,19 +596,23 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 					new Object[] {space, space.getSpaceGroup()});
 	}
 
-    public List<Space> findAllSpaces() {
+    @Override
+	public List<Space> findAllSpaces() {
         return getHibernateTemplate().find("from Space space order by space.prefixCode");
     }
     
-    public List<Space> findAllTemplateSpaces() {
+    @Override
+	public List<Space> findAllTemplateSpaces() {
         return getHibernateTemplate().find("from Space space where space.isTemplate = true order by space.prefixCode");
     }
     
-    public List<Space> findSpacesWhereIdIn(List<Long> ids) {
+    @Override
+	public List<Space> findSpacesWhereIdIn(List<Long> ids) {
         return getHibernateTemplate().findByNamedParam("from Space space where space.id in (:ids)", "ids", ids);
     }   
     
-    public List<Space> findSpacesWhereGuestAllowed() { 
+    @Override
+	public List<Space> findSpacesWhereGuestAllowed() { 
     	// left join fetch space.spaceRoles
     	@SuppressWarnings("unchecked")
     	List<Space> spaces = getHibernateTemplate().find(
@@ -591,7 +630,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	return spaces;
     }
 
-    public List<Space> findSpacesWhereAnonymousAllowed() { 
+    @Override
+	public List<Space> findSpacesWhereAnonymousAllowed() { 
     	@SuppressWarnings("unchecked")
 		List<Space> spaces =  getHibernateTemplate()
     		.find("from Space space join fetch space.metadata where space.itemVisibility in ("
@@ -608,11 +648,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	return spaces;
     }
     
-    public void removeSpace(Space space) {        
+    @Override
+	public void removeSpace(Space space) {        
         getHibernateTemplate().delete(space);
     }    
     
-    public void storeUser(User user) {
+    @Override
+	public void storeUser(User user) {
     	Organization org = user.getOrganization();
     	// save org if not-null and new
     	if(org != null && org.getId() == 0){
@@ -621,26 +663,32 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         getHibernateTemplate().merge(user);
     }
     
-    public User loadUser(long id) {
+    @Override
+	public User loadUser(long id) {
         return (User) getHibernateTemplate().get(User.class, id);
     }
     
-    public void removeUser(User user) {
+    @Override
+	public void removeUser(User user) {
         getHibernateTemplate().delete(user);
     }
 
-    public List<User> findAllUsers() {
+    @Override
+	public List<User> findAllUsers() {
         return getHibernateTemplate().find("from User user order by user.name");
     }
-    public List<Organization> findAllOrganizations() {
+    @Override
+	public List<Organization> findAllOrganizations() {
         return getHibernateTemplate().find("from Organization org order by org.name");
     }
     
-    public List<User> findUsersWhereIdIn(List<Long> ids) {
+    @Override
+	public List<User> findUsersWhereIdIn(List<Long> ids) {
         return getHibernateTemplate().findByNamedParam("from User user where user.id in (:ids)", "ids", ids);
     }    
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
 	public List<User> findUsersMatching(final String searchText, final String searchOn, Space space) {
     	//logger.debug("findUsersMatching searchText: "+searchText+", searchOn: "+searchOn+", space: space");
     	if(space != null && (space.getItemVisibility().equals(Space.ITEMS_VISIBLE_TO_ANY_LOGGEDIN_USER) 
@@ -648,7 +696,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     			|| space.getItemVisibility().equals(Space.ITEMS_VISIBLE_TO_LOGGEDIN_REPORTERS_NO_COMMENTS))){
     		// if GUESTs are allowed just search all registered based on the text-based stuff
     		return (List<User>) getHibernateTemplate().execute(new HibernateCallback() {
-                public Object doInHibernate(Session session) {
+                @Override
+				public Object doInHibernate(Session session) {
                     Criteria criteria = session.createCriteria(User.class);
                     criteria.add(Restrictions.ilike(searchOn, searchText, MatchMode.ANYWHERE));
                     criteria.addOrder(Order.asc("name"));
@@ -669,10 +718,12 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	
     }
     
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
 	public List<User> findUsersMatching(final String searchText, final String searchOn) {   
         return (List<User>) getHibernateTemplate().execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) {
+            @Override
+			public Object doInHibernate(Session session) {
                 Criteria criteria = session.createCriteria(User.class);
                 criteria.add(Restrictions.ilike(searchOn, searchText, MatchMode.ANYWHERE));
                 criteria.addOrder(Order.asc("name"));
@@ -681,15 +732,18 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         });
     }
     
-    public List<User> findUsersByLoginName(String loginName) {
+    @Override
+	public List<User> findUsersByLoginName(String loginName) {
         return getHibernateTemplate().find("from User user where user.loginName = ?", loginName);
     }
     
-    public List<User> findUsersByEmail(String email) {
+    @Override
+	public List<User> findUsersByEmail(String email) {
         return getHibernateTemplate().find("from User user where user.email = ?", email);
     }
     
-    public List<UserSpaceRole> findUserRolesForSpace(long spaceId) {
+    @Override
+	public List<UserSpaceRole> findUserRolesForSpace(long spaceId) {
         // join fetch for user object
 //         return getHibernateTemplate().find("select usr from UserSpaceRole usr join fetch usr.user"
 //                 + " where usr.space.id = ? order by usr.user.name", spaceId);
@@ -704,13 +758,15 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 //                + " and usr.roleKey = ? order by user.name", new Object[] {spaceId, roleKey});        
 //    }    
 
-    public List<User> findUsersWithRoleForSpace(SpaceRole spaceRole) {
+    @Override
+	public List<User> findUsersWithRoleForSpace(SpaceRole spaceRole) {
         return getHibernateTemplate().find("from User user"
                 + " join user.userSpaceRoles as usr where usr.spaceRole.id = ?"
                 + " order by user.name", spaceRole.getId());        
     }
 
-    public int loadCountOfHistoryInvolvingUser(User user) {
+    @Override
+	public int loadCountOfHistoryInvolvingUser(User user) {
         Long count = (Long) getHibernateTemplate().find("select count(history) from History history where "
                 + " history.loggedBy = ? or history.assignedTo = ?", new Object[] {user, user}).get(0);
         return count.intValue();        
@@ -737,7 +793,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	
     }
     
-    public CountsHolder loadCountsForUser(User user) {
+    @Override
+	public CountsHolder loadCountsForUser(User user) {
         Collection<Space> spaces = user.getSpaces();
         if (spaces.size() == 0) {
             return null;
@@ -769,7 +826,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return ch;
     }
     
-    public Counts loadCountsForUserSpace(User user, Space space) {
+    @Override
+	public Counts loadCountsForUserSpace(User user, Space space) {
         HibernateTemplate ht = getHibernateTemplate();        
         List<Object[]> loggedByList = ht.find("select status, count(item) from Item item" 
                 + " where item.loggedBy.id = ? and item.space.id = ? group by item.status", new Object[] {user.getId(), space.getId()});
@@ -800,12 +858,14 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     
     //==========================================================================
     
-    public List<User> findUsersForSpace(long spaceId) {
+    @Override
+	public List<User> findUsersForSpace(long spaceId) {
         return getHibernateTemplate().find("select distinct u from User u join u.userSpaceRoles usr join usr.spaceRole sr" 
                 + " where sr.space.id = ? order by u.name", spaceId);
     }
     
-    public List<User> findUsersInOrganizations(List<Organization> organizations){
+    @Override
+	public List<User> findUsersInOrganizations(List<Organization> organizations){
     	 List<User> findByNamedParam = getHibernateTemplate()
     	 	.findByNamedParam("select user from User user join user.organization org " +
     	 			" where user.organization in (:organizations) order by user.name", 
@@ -814,30 +874,36 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     }
     
     
-    public List<User> findUsersForSpaceSet(Collection<Space> spaces) {
+    @Override
+	public List<User> findUsersForSpaceSet(Collection<Space> spaces) {
         return getHibernateTemplate().findByNamedParam("select u from User u join u.userSpaceRoles usr join usr.spaceRole sr" 
                 + " where sr.space in (:spaces) order by u.name", "spaces", spaces);
     }
     
-    public void removeUserSpaceRole(UserSpaceRole userSpaceRole) {        
+    @Override
+	public void removeUserSpaceRole(UserSpaceRole userSpaceRole) {        
         //getHibernateTemplate().delete(userSpaceRole);
     	
     	getHibernateTemplate().bulkUpdate("delete from UserSpaceRole usr where usr.id = ?", userSpaceRole.getId());
     }
     
-    public List<Config> findAllConfig() {
+    @Override
+	public List<Config> findAllConfig() {
         return getHibernateTemplate().loadAll(Config.class);
     }
     
-    public void storeConfig(Config config) {
+    @Override
+	public void storeConfig(Config config) {
         getHibernateTemplate().merge(config);
     }
     
-    public Config loadConfig(String param) {
+    @Override
+	public Config loadConfig(String param) {
         return (Config) getHibernateTemplate().get(Config.class, param);
     }
 
-    public int loadCountOfRecordsHavingFieldNotNull(Space space, Field field) {
+    @Override
+	public int loadCountOfRecordsHavingFieldNotNull(Space space, Field field) {
         Criteria criteria = getSession().createCriteria(Item.class);
         criteria.add(Restrictions.eq("space", space));
         criteria.add(Restrictions.isNotNull(field.getName().toString()));
@@ -852,7 +918,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return itemCount + NumberUtils.toInt(criteria.list().get(0).toString());        
     }
 
-    public int bulkUpdateFieldToNull(Space space, Field field) {
+    @Override
+	public int bulkUpdateFieldToNull(Space space, Field field) {
         int itemCount = getHibernateTemplate().bulkUpdate("update Item item set item." + field.getName() + " = null" 
                 + " where item.space.id = ?", space.getId());
         //logger.info("no of Item rows where " + field.getName() + " set to null = " + itemCount);
@@ -862,7 +929,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return itemCount;
     }
 
-    public int loadCountOfRecordsHavingFieldWithValue(Space space, Field field, int optionKey) {
+    @Override
+	public int loadCountOfRecordsHavingFieldWithValue(Space space, Field field, int optionKey) {
         Criteria criteria = getSession().createCriteria(Item.class);
         criteria.add(Restrictions.eq("space", space));
         criteria.add(Restrictions.eq(field.getName().toString(), optionKey));
@@ -877,7 +945,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return itemCount + NumberUtils.toInt(criteria.list().get(0).toString());        
     }
 
-    public int bulkUpdateFieldToNullForValue(Space space, Field field, int optionKey) {
+    @Override
+	public int bulkUpdateFieldToNullForValue(Space space, Field field, int optionKey) {
         int itemCount = getHibernateTemplate().bulkUpdate("update Item item set item." + field.getName() + " = null" 
                 + " where item.space.id = ?"
                 + " and item." + field.getName() + " = ?", new Object[] {space.getId(), optionKey});
@@ -889,7 +958,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return itemCount;        
     }
     
-    public int loadCountOfRecordsHavingStatus(Space space, int status) {
+    @Override
+	public int loadCountOfRecordsHavingStatus(Space space, int status) {
         Criteria criteria = getSession().createCriteria(Item.class);
         criteria.add(Restrictions.eq("space", space));
         criteria.add(Restrictions.eq("status", status));
@@ -904,7 +974,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return itemCount.intValue() + ((Long) criteria.list().get(0)).intValue();
     }    
     
-    public int bulkUpdateStatusToOpen(Space space, int status) {
+    @Override
+	public int bulkUpdateStatusToOpen(Space space, int status) {
         int itemCount = getHibernateTemplate().bulkUpdate("update Item item set item.status = " + State.OPEN 
                 + " where item.status = ? and item.space.id = ?", new Object[] {status, space.getId()});
         //logger.info("no of Item rows where status changed from " + status + " to " + State.OPEN + " = " + itemCount);
@@ -915,7 +986,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return itemCount;
     }    
     
-    public int bulkUpdateRenameSpaceRole(Space space, String oldRoleKey, String newRoleKey) {
+    @Override
+	public int bulkUpdateRenameSpaceRole(Space space, String oldRoleKey, String newRoleKey) {
         return getHibernateTemplate().bulkUpdate("update UserSpaceRole usr set usr.roleKey = ?"
                 + " where usr.roleKey = ? and usr.space.id = ?", new Object[] {newRoleKey, oldRoleKey, space.getId()});
     }
@@ -931,7 +1003,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     //public  
 
-    public int bulkUpdateDeleteUserSpaceRolesForSpace(Space space){
+    @Override
+	public int bulkUpdateDeleteUserSpaceRolesForSpace(Space space){
     	List<SpaceRole> spaceRolesList = this.findSpaceRolesForSpace(space);
     	int records = 0;
     	if (spaceRolesList!=null){
@@ -942,7 +1015,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	return records;
     }
 
-    public int bulkUpdateDeleteItemsForSpace(Space space) {
+    @Override
+	public int bulkUpdateDeleteItemsForSpace(Space space) {
         int historyCount = getHibernateTemplate().bulkUpdate("delete History history where history.parent in"
                 + " ( from Item item where item.space.id = ? )", space.getId());
         //logger.debug("deleted " + historyCount + " records from history");
@@ -956,19 +1030,23 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     // Saved Search============================
     
-    public void storeSavedSearch(SavedSearch savedSearch) {        
+    @Override
+	public void storeSavedSearch(SavedSearch savedSearch) {        
         getHibernateTemplate().merge(savedSearch);
     }
     
-    public SavedSearch loadSavedSearch(long id) {
+    @Override
+	public SavedSearch loadSavedSearch(long id) {
         return (SavedSearch) getHibernateTemplate().get(SavedSearch.class, id);
     }
     
-    public void removeSavedSearch(SavedSearch savedSearch) {        
+    @Override
+	public void removeSavedSearch(SavedSearch savedSearch) {        
         getHibernateTemplate().delete(savedSearch);
     }
     
-    public List<SavedSearch> findSavedSearches(User user) {
+    @Override
+	public List<SavedSearch> findSavedSearches(User user) {
         return getHibernateTemplate().find("from SavedSearch savedSearch where savedSearch.user = ?", user);
     }
     
@@ -977,7 +1055,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
      * @param user
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
 	public List<SavedSearch> findVisibleSearches(User user){
     	// init query string and params
     	List<Object> params = new LinkedList<Object>();
@@ -1015,7 +1094,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         return getHibernateTemplate().find(queryString.toString(), params.toArray());
     }
         
-    public List<SavedSearch> findSavedSearches(User user, Space space) {
+    @Override
+	public List<SavedSearch> findSavedSearches(User user, Space space) {
     	if (space==null){
     		return getHibernateTemplate().find("from SavedSearch savedSearch where savedSearch.user = ? and savedSearch.space is null", user);
     	}
@@ -1034,11 +1114,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
      * Store the given Custom Attribute
      *
      */
-    public void storeCustomAttribute(CustomAttribute assetTypeCustomAttribute){
+    @Override
+	public void storeCustomAttribute(CustomAttribute assetTypeCustomAttribute){
     	getHibernateTemplate().saveOrUpdate(assetTypeCustomAttribute);
     }
     
-    public void saveOrUpdateTranslations(I18nResourceTranslatable nt){
+    @Override
+	public void saveOrUpdateTranslations(I18nResourceTranslatable nt){
     	Map<String,Map<String,String>> translationsMap = nt.getTranslations();
     	logger.info("Saving translations of: "+nt.getName()+", translations: "+translationsMap);
     	if(MapUtils.isNotEmpty(translationsMap)){
@@ -1063,7 +1145,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     /**
      * Get a list of all Asset type custom attributes
      */
-    public List<AssetTypeCustomAttribute> findAllCustomAttributes(){
+    @Override
+	public List<AssetTypeCustomAttribute> findAllCustomAttributes(){
     	return getHibernateTemplate().find("select customAttribute from AssetTypeCustomAttribute customAttribute order by customAttribute.name");
     }
     
@@ -1072,14 +1155,16 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     /**
      * Load AssetTypeCustomAttribute by id
      */
-    public AssetTypeCustomAttribute loadAssetTypeCustomAttribute(long id){
+    @Override
+	public AssetTypeCustomAttribute loadAssetTypeCustomAttribute(long id){
     	return (AssetTypeCustomAttribute)getHibernateTemplate().get(AssetTypeCustomAttribute.class, id);
 }
     
     /**
      * Load ItemFieldCustomAttribute by item and field name
      */
-    public ItemFieldCustomAttribute loadItemCustomAttribute(Space space, String fieldName){
+    @Override
+	public ItemFieldCustomAttribute loadItemCustomAttribute(Space space, String fieldName){
     	ItemFieldCustomAttribute attr = null;
     	Object[] params = new Object[2];
     	params[0] = space.getId();
@@ -1104,11 +1189,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     
     //-------------------------------------------------------------------------------------------------------------------------
 
-    public CustomAttributeLookupValue loadCustomAttributeLookupValue(long id){
+    @Override
+	public CustomAttributeLookupValue loadCustomAttributeLookupValue(long id){
     	return (CustomAttributeLookupValue)getHibernateTemplate().get(CustomAttributeLookupValue.class, id);
     }
     
-    public CustomAttributeLookupValue loadCustomAttributeLookupValue(CustomAttribute attr, String name){
+    @Override
+	public CustomAttributeLookupValue loadCustomAttributeLookupValue(CustomAttribute attr, String name){
     	CustomAttributeLookupValue value = null;
     	DetachedCriteria criteria =  DetachedCriteria.forClass(CustomAttributeLookupValue.class)
 			.add(Restrictions.eq("attribute", attr))
@@ -1116,13 +1203,14 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	@SuppressWarnings("unchecked")
 		List<CustomAttributeLookupValue> results = getHibernateTemplate().findByCriteria(criteria);
     	if(!results.isEmpty()){
-    		value = (CustomAttributeLookupValue) results.get(0);
+    		value = results.get(0);
     	}
     	return value;
     }
     //-------------------------------------------------------------------------------------------------------------------------
     
-    public void removeLookupValue(CustomAttributeLookupValue lookupValue){
+    @Override
+	public void removeLookupValue(CustomAttributeLookupValue lookupValue){
     	//logger.info("Deleting old lookupValue: "+lookupValue);
     	// delete translations
     	List<I18nStringResource> translations = this.findI18nStringResourcesFor("name", lookupValue);
@@ -1141,6 +1229,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
      * Search Custom Attributes.
      * 
      * */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<AssetTypeCustomAttribute> findCustomAttributesMatching(final AssetTypeCustomAttributeSearch searchCustomAttribute) {
 		DetachedCriteria criteria = searchCustomAttribute.getDetachedCriteria();
@@ -1160,13 +1249,15 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * 
 	 **/
 	
+	@Override
 	public void storeLookupValue(CustomAttributeLookupValue lookupValue){
 		getHibernateTemplate().merge(lookupValue);
 	}//storeLookupValue
 
 	//-------------------------------------------------------------------------------------------------------------------------
 	
-    public List<AssetType> findAllAssetTypesByCustomAttribute(AssetTypeCustomAttribute attribute){
+    @Override
+	public List<AssetType> findAllAssetTypesByCustomAttribute(AssetTypeCustomAttribute attribute){
     	
     	return getHibernateTemplate().find("select at from AssetType at join at.allowedCustomAttributes atca where atca.id = ?", attribute.getId());
     	
@@ -1177,7 +1268,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     /**
      * Counts records for a given Custom Attribute. 
      * */
-    public int loadCountAssetsForCustomAttribute(AssetTypeCustomAttribute customAttribute){
+    @Override
+	public int loadCountAssetsForCustomAttribute(AssetTypeCustomAttribute customAttribute){
     	Long count = (Long) getHibernateTemplate().find("select count(*) from AssetTypeCustomAttribute atca join atca.assetTypes at join at.assets a where atca.id =?", customAttribute.getId()).get(0);
     	return count.intValue();
     }//loadCountAssetsForCustomAttribute
@@ -1187,6 +1279,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     /**
 	 * Counts records for a given Asset Type and a Custom Attribute
 	 * */
+	@Override
 	public int loadCountForAssetTypeAndCustomAttribute(AssetType assetType,	CustomAttribute customAttribute) {
 		//Long count = (Long) getHibernateTemplate()
 		//		.find("select count(*) from AssetCustomAttributeValue acav join acav.asset a where a.assetType.id = ? and acav.customAttribute.id = ?",
@@ -1201,7 +1294,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * Check how many times the given option value has been used.
 	 */
-    public int loadCountForCustomAttributeLookupValue(CustomAttributeLookupValue lookupValue){
+    @Override
+	public int loadCountForCustomAttributeLookupValue(CustomAttributeLookupValue lookupValue){
     	//Long count = (Long) getHibernateTemplate().find("select count(*) from AssetCustomAttributeValue acav where acav.attributeValue = ?", String.valueOf(lookupValue.getId())).get(0);
     	Long count = (Long) getHibernateTemplate().find("select count(asset) from Asset asset left join asset.customAttributes as customAttribute where customAttribute=?", String.valueOf(lookupValue.getId())).get(0);
     	return count.intValue();    	
@@ -1212,7 +1306,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
      * Deletes the given custom attribute. 
      * If custom attribute's type is "Dropdown List" then deletes its values as well.  
      * */
-    public void removeCustomAttribute(CustomAttribute customAttribute){
+    @Override
+	public void removeCustomAttribute(CustomAttribute customAttribute){
     	getHibernateTemplate().delete(customAttribute);
     }
     
@@ -1226,6 +1321,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * Get a list of all persisted AssetType instances. May return null or an empty List
 	 * @see gr.abiss.calipso.CalipsoDao#findAllAssetTypes()
 	 */
+	@Override
 	public List<AssetType> findAllAssetTypes() {
 		return getHibernateTemplate().find("select assetType from AssetType assetType");
 	}
@@ -1234,6 +1330,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * for the given Space instance. May return null or an empty List
 	 * @see gr.abiss.calipso.CalipsoDao#findAllAssetTypes()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<AssetType> findAllAssetTypesForSpace(Space space) {
 		String query = new StringBuffer("select distinct assetType from AssetType assetType join assetType.assets as asset ")
@@ -1248,12 +1345,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 			.append(" and asset.space.spaceGroup = ?)")
 			.toString();
 		//logger.debug("Looking gor asset types of the give space, query: "+query);
-		return (List<AssetType>) getHibernateTemplate().find(query, new Object[]{space, space.getSpaceGroup()});
+		return getHibernateTemplate().find(query, new Object[]{space, space.getSpaceGroup()});
 	}
 	
 	
 	
-    public List<AssetType> findAssetTypesWhereIdIn(List<Long> ids) {
+    @Override
+	public List<AssetType> findAssetTypesWhereIdIn(List<Long> ids) {
         return getHibernateTemplate().findByNamedParam("from AssetType assetType where assetType.id in (:ids)", "ids", ids);
     }   
 
@@ -1264,6 +1362,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * @return a list of Asset Types matching given criteria 
 	 * 
 	 **/
+	@Override
 	public List<AssetType> findAssetTypesMatching(AssetTypeSearch assetTypeSearch){
 		
 		DetachedCriteria criteria = assetTypeSearch.getDetachedCriteria();
@@ -1279,13 +1378,15 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * Store the given AssetType instance
 	 */
-    public void storeAssetType(AssetType assetType) {
+    @Override
+	public void storeAssetType(AssetType assetType) {
         getHibernateTemplate().merge(assetType);
     }
 	/**
 	 * Get a list of all allowed AssetTypeCustomAttributes for this AssetType. May return null or an empty List
 	 * @see gr.abiss.calipso.CalipsoDao#findAllAssetTypes()
 	 */
+	@Override
 	public List<AssetTypeCustomAttribute> findAllAssetTypeCustomAttributesByAssetType(AssetType assetType) {
 		return getHibernateTemplate().find("select att from AssetTypeCustomAttribute att join att.assetTypes at where at.id = ?", assetType.getId());
 	}
@@ -1293,9 +1394,11 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * Load AssetType by id. May return null if no match is found
 	 */
+	@Override
 	public AssetType loadAssetType(long id){
         return (AssetType) getHibernateTemplate().get(AssetType.class, id);
     }
+	@Override
 	public AssetType loadAssetTypeByAssetId(Long assetId){
 		AssetType assetType = null;
 		@SuppressWarnings("unchecked")
@@ -1308,6 +1411,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * Load AssetType by id. May return null if no match is found
 	 */
+	@Override
 	public AssetType loadAssetTypeByName(String name){
         @SuppressWarnings("unchecked")
 		List<AssetType> list = getHibernateTemplate().find("from AssetType assetType where assetType.name = ?", name);
@@ -1322,6 +1426,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * Get a list of all level 1 (root) lookup values for a given CustomAttribute. They will contain their children. May return null or an empty List
 	 */
+	@Override
 	public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(CustomAttribute attr) {
 		return getHibernateTemplate().find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? and attVal.level = 1 order by attVal.showOrder ASC, attVal.id ASC", attr.getId());
 	}
@@ -1329,20 +1434,26 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * Get a list of all active level 1 (root) lookup values for a given CustomAttribute. They will contain their children. May return null or an empty List
 	 */
+	@Override
 	public List<CustomAttributeLookupValue> findActiveLookupValuesByCustomAttribute(CustomAttribute attr) {
-		return getHibernateTemplate().find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? and attVal.level = 1 and attVal.active = true order by attVal.showOrder ASC, attVal.id ASC", attr.getId());
+		return attr != null ? getHibernateTemplate()
+				.find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? and attVal.level = 1 and attVal.active = true order by attVal.showOrder ASC, attVal.id ASC",
+						attr.getId())
+				: new LinkedList<CustomAttributeLookupValue>();
 	}
 
 	
 	/**
 	 * Get a list of all lookup values matching the level for a given CustomAttribute. Only applies to Tree Options. May return null or an empty List
 	 */
+	@Override
 	public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(CustomAttribute attr, int level) {
 		return getHibernateTemplate().find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? and attVal.level = "+level+" order by attVal.id ASC", attr.getId());
 	}
 	/**
 	 * Get a list of all lookup values for a given CustomAttribute. Only applies to Tree Options. May return null or an empty List
 	 */
+	@Override
 	public List<CustomAttributeLookupValue> findAllLookupValuesByCustomAttribute(CustomAttribute attr) {
 		return getHibernateTemplate().find("select attVal from CustomAttributeLookupValue attVal where attVal.attribute.id = ? order by attVal.id ASC", attr.getId());
 	}
@@ -1355,6 +1466,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * @param asset an asset instance
 	 * Stores the given Asset instance
 	 **/
+	@Override
 	public void storeAsset(Asset asset){
 		//if(asset.getCustomAttributes() != null){
 		//	for(CustomAttribute attr : asset.getCustomAttributes().keySet()){
@@ -1371,6 +1483,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	Load Asset by id. May return null if no match is found
 	*/
 
+	@Override
 	public Asset loadAsset(Long id){
 		Asset asset = (Asset) getHibernateTemplate().get(Asset.class, id);
 		// TODO:
@@ -1387,6 +1500,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	} //loadAssset
 	
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Asset loadAssetWithAttributes(Long id){
 		Asset asset =  null;
@@ -1395,7 +1509,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 					//"from Asset asset left join fetch asset.customAttributes as customAttribute index[customAttribute] as attrIndex where asset.id = ?", id);
 					"select asset from Asset asset left join asset.customAttributes as customAttribute where asset.id = ?", id);
 			if(!results.isEmpty()){
-				asset = (Asset) results.get(0);
+				asset = results.get(0);
 				Hibernate.initialize(asset.getCustomAttributes());
 				preloadCustomAttributeEntityValuesForAsset(asset);
 			}
@@ -1411,6 +1525,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * TODO: A hack until we implement the custom attribute subclass hierarchy.
 	 * @param asset
 	 */
+	@Override
 	public void preloadCustomAttributeEntityValuesForAsset(Asset asset) {
 		Map<AssetTypeCustomAttribute,String> attrs = asset.getCustomAttributes();
 		for(Entry<AssetTypeCustomAttribute, String> entry  : attrs.entrySet()){
@@ -1443,11 +1558,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * @param assetSearch contains search parameter values
 	 * @return a list of Assets matching given criteria
 	 * */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Asset> findAssetsMatching(AssetSearch _assetSearch, final boolean fetchCustomAttributes){
 		final AssetSearch assetSearch = _assetSearch;
         return (List<Asset>) getHibernateTemplate().execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) {
+            @Override
+			public Object doInHibernate(Session session) {
             	String baseQueryString = assetSearch.getQueryString();
             	if(!fetchCustomAttributes){
             		baseQueryString = baseQueryString.replaceAll(" fetch", "");
@@ -1487,6 +1604,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	
 	//---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<Object> findCustomAttributeValueMatching(AssetSearch assetSearch){
 
 		DetachedCriteria criteria = assetSearch.getDetachedCriteria();
@@ -1507,6 +1625,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	 * @author marcello
 	 * @param item the given item
 	 *  */
+	@Override
 	public List<Asset> findAllAssetsByItem(Item item){
 		return getHibernateTemplate().find("select asset from Asset asset, Item item where asset in elements(item.assets) and item.id = ?", item.getId());
 	}//findAssetsByItem
@@ -1514,6 +1633,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	//---------------------------------------------------------------------------------------------
 	
 	
+	@Override
 	public List<Asset> findAllAssetsBySpace(Space space){
 		return getHibernateTemplate().find("select asset from Asset asset where asset.space.id = ?", space.getId());
 	}//findAssetsByItem
@@ -1524,25 +1644,30 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     // Fields // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ///////////
 
-    public List<RoleSpaceStdField> findSpaceFieldsBySpaceRole(SpaceRole spaceRole){
+    @Override
+	public List<RoleSpaceStdField> findSpaceFieldsBySpaceRole(SpaceRole spaceRole){
     	List results = getHibernateTemplate().find("select roleSpaceStdField from RoleSpaceStdField roleSpaceStdField where roleSpaceStdField.spaceRole.id = ? order by roleSpaceStdField.fieldMaskId desc", spaceRole.getId());
     	//logger.info("User role: "+spaceRole+", fields: "+results);
     	return results;
     }
 
-    public List<RoleSpaceStdField> findSpaceFieldsBySpaceandRoleType(SpaceRole spaceRole){
+    @Override
+	public List<RoleSpaceStdField> findSpaceFieldsBySpaceandRoleType(SpaceRole spaceRole){
     	return getHibernateTemplate().find("select roleSpaceStdField from RoleSpaceStdField roleSpaceStdField where roleSpaceStdField.spaceRole.space.id = ? and roleSpaceStdField.spaceRole.roleTypeId = ? order by roleSpaceStdField.fieldMaskId desc", new Object[] {spaceRole.getSpace().getId(), spaceRole.getRoleTypeId()});
     }
      
-    public List<RoleSpaceStdField> findSpaceFieldsBySpace(Space space){
+    @Override
+	public List<RoleSpaceStdField> findSpaceFieldsBySpace(Space space){
     	return getHibernateTemplate().find("select roleSpaceStdField from RoleSpaceStdField roleSpaceStdField where roleSpaceStdField.spaceRole.space.id = ? order by roleSpaceStdField.fieldMaskId desc", space.getId());
     }
 
-    public RoleSpaceStdField loadRoleSpaceField(long id){
+    @Override
+	public RoleSpaceStdField loadRoleSpaceField(long id){
     	return (RoleSpaceStdField)getHibernateTemplate().get(RoleSpaceStdField.class, id);
     }
 
-    public void storeRoleSpaceStdField(RoleSpaceStdField roleSpaceStdField){
+    @Override
+	public void storeRoleSpaceStdField(RoleSpaceStdField roleSpaceStdField){
     	getHibernateTemplate().merge(roleSpaceStdField);
     }
 
@@ -1557,11 +1682,13 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 //    	return getHibernateTemplate().find("select roleSpaceStdField from RoleSpaceStdField rsf join rsf.spaceRole sr join userSpaceRoles usr where usr.user.id= ?", user.getId());
 //    }
 //
-    public void removeRoleSpaceStdField(RoleSpaceStdField roleSpaceStdField){
+    @Override
+	public void removeRoleSpaceStdField(RoleSpaceStdField roleSpaceStdField){
     	getHibernateTemplate().delete(roleSpaceStdField);
     }
 
-    public int bulkUpdateDeleteRoleSpaceStdFieldsForSpaceRole(SpaceRole spaceRole){
+    @Override
+	public int bulkUpdateDeleteRoleSpaceStdFieldsForSpaceRole(SpaceRole spaceRole){
     	return getHibernateTemplate().bulkUpdate("delete from RoleSpaceStdField rsf where rsf.spaceRole.id = ?", spaceRole.getId());
     }
     
@@ -1569,19 +1696,23 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     // Countries // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ///////////////////////////
 
-    public void storeCountry(Country country){
+    @Override
+	public void storeCountry(Country country){
     	getHibernateTemplate().merge(country);
     }
 
-    public Country loadCountry(String id){
+    @Override
+	public Country loadCountry(String id){
     	return (Country) getHibernateTemplate().get(Country.class, id);
     }  
     
-    public List<Country> findAllCountries() {
+    @Override
+	public List<Country> findAllCountries() {
         return getHibernateTemplate().find("from Country c order by c.id");
     }
     
-    public List<Language> getAllLanguages(){
+    @Override
+	public List<Language> getAllLanguages(){
     	 return getHibernateTemplate().find("from Language l");
     }
 
@@ -1591,7 +1722,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     }
     */
     
-    public List<I18nStringResource> findI18nStringResourcesFor(String propertyName, I18nResourceTranslatable nt){
+    @Override
+	public List<I18nStringResource> findI18nStringResourcesFor(String propertyName, I18nResourceTranslatable nt){
     	String key = nt.getPropertyTranslationResourceKey(propertyName);
     	return getHibernateTemplate().find("from I18nStringResource rs where rs.id.key = ?", key);
     }
@@ -1599,18 +1731,22 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     // Validation Expression // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ///////////////////////////
 
-    public void storeValidationExpression(ValidationExpression validationExpression){
+    @Override
+	public void storeValidationExpression(ValidationExpression validationExpression){
     	getHibernateTemplate().merge(validationExpression);
     }
     
-    public ValidationExpression loadValidationExpression(long id){
+    @Override
+	public ValidationExpression loadValidationExpression(long id){
     	return (ValidationExpression) getHibernateTemplate().get(ValidationExpression.class, id);
     }    
     
-    public List<ValidationExpression> findAllValidationExpressions() {
+    @Override
+	public List<ValidationExpression> findAllValidationExpressions() {
         return getHibernateTemplate().loadAll(ValidationExpression.class);
     }
 
+	@Override
 	public List<ValidationExpression> findValidationExpressionsMatching(ValidationExpressionSearch validationExpressionSearch){
 
 		DetachedCriteria criteria = validationExpressionSearch.getDetachedCriteria();
@@ -1623,6 +1759,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 		return list;
 	}
 	
+	@Override
 	public ValidationExpression findValidationExpressionByName(String name){
 		ValidationExpression exp = null;
 		DetachedCriteria criteria = DetachedCriteria.forClass(ValidationExpression.class)
@@ -1644,13 +1781,15 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     // Organization // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //////////////////
 
-    public void storeOrganization(Organization organization){
+    @Override
+	public void storeOrganization(Organization organization){
     	getHibernateTemplate().merge(organization);
     }
 
     //---------------------------------------------------------------------------------------------
     
-    public Organization loadOrganization(long id){
+    @Override
+	public Organization loadOrganization(long id){
     	return (Organization) getHibernateTemplate().get(Organization.class, id);
     }
     
@@ -1658,6 +1797,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     //---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<Organization> findOrganizationsMatching(OrganizationSearch organizationSearch){
 
 		DetachedCriteria criteria = organizationSearch.getDetachedCriteria();
@@ -1674,31 +1814,36 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     // Space Roles // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     /////////////////
 
+	@Override
 	public void storeSpaceRole(SpaceRole spaceRole){
 		getHibernateTemplate().merge(spaceRole);
 	}
 
 	//---------------------------------------------------------------------------------------------
 
+	@Override
 	public SpaceRole loadSpaceRole(long spaceRoleId){
 		return (SpaceRole)getHibernateTemplate().get(SpaceRole.class, spaceRoleId);
 	}
 
 	//---------------------------------------------------------------------------------------------
 
-    public List<SpaceRole> findSpaceRolesForSpace(Space space){
+    @Override
+	public List<SpaceRole> findSpaceRolesForSpace(Space space){
     	return getHibernateTemplate().find("select spaceRole from SpaceRole spaceRole where spaceRole.space.id = ?", space.getId());
     }
 
     //---------------------------------------------------------------------------------------------
 
-    public void removeSpaceRole(SpaceRole spaceRole){
+    @Override
+	public void removeSpaceRole(SpaceRole spaceRole){
     	getHibernateTemplate().delete(spaceRole);
     }
 
     //---------------------------------------------------------------------------------------------
 
-    public int bulkUpdateDeleteSpaceRolesForSpace(Space space){
+    @Override
+	public int bulkUpdateDeleteSpaceRolesForSpace(Space space){
     	List<SpaceRole> spaceRoleList = this.findSpaceRolesForSpace(space);
     	int records = 0;
     	if (spaceRoleList != null){
@@ -1714,7 +1859,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     //---------------------------------------------------------------------------------------------
     
-    public List<SpaceRole> findSpaceRolesForSpaceAndRoleType(Space space, int roleTypeId){
+    @Override
+	public List<SpaceRole> findSpaceRolesForSpaceAndRoleType(Space space, int roleTypeId){
     	if (space==null){
     		return getHibernateTemplate().find("select spaceRole from SpaceRole spaceRole where spaceRole.roleTypeId = ?", roleTypeId);
     	}
@@ -1727,19 +1873,22 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     ///////////////////////////////////
     
     //PageDictionary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public PageDictionary loadPageDictionary(String className){
+    @Override
+	public PageDictionary loadPageDictionary(String className){
     	return (PageDictionary) getHibernateTemplate().get(PageDictionary.class, className);
     }
     
     //---------------------------------------------------------------------------------------------
     
-    public PageDictionary loadPageDictionary(int id){
+    @Override
+	public PageDictionary loadPageDictionary(int id){
     	return (PageDictionary) getHibernateTemplate().get(PageDictionary.class, id);
     }
 
     //---------------------------------------------------------------------------------------------
 
-    public List<PageDictionary> findPageDictionaryMatching(PageDictionarySearch pageDictionarySearch){
+    @Override
+	public List<PageDictionary> findPageDictionaryMatching(PageDictionarySearch pageDictionarySearch){
     	DetachedCriteria criteria = pageDictionarySearch.getDetachedCriteria();
     	List<PageDictionary> list = getHibernateTemplate().findByCriteria(criteria, pageDictionarySearch.getPageBegin()-1, pageDictionarySearch.getPageSize());
     	criteria = pageDictionarySearch.getDetachedCriteriaForCount();
@@ -1752,26 +1901,30 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     //---------------------------------------------------------------------------------------------
 
-    public void storePageDictionary(PageDictionary pageDictionary){
+    @Override
+	public void storePageDictionary(PageDictionary pageDictionary){
     	getHibernateTemplate().merge(pageDictionary);
     }
 
     //---------------------------------------------------------------------------------------------
 
-    public void removePageDictionary(PageDictionary pageDictionary){
+    @Override
+	public void removePageDictionary(PageDictionary pageDictionary){
     	getHibernateTemplate().delete(pageDictionary);
     } 
     
     
     //InforamaDocument ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public InforamaDocument loadInforamaDocument(int id){
+    @Override
+	public InforamaDocument loadInforamaDocument(int id){
     	return (InforamaDocument) getHibernateTemplate().get(InforamaDocument.class, id);
     }
     
     //---------------------------------------------------------------------------------------------
 
-    public List<InforamaDocument> findInforamaDocumentMatching(InforamaDocumentSearch inforamaDocumentSearch){
+    @Override
+	public List<InforamaDocument> findInforamaDocumentMatching(InforamaDocumentSearch inforamaDocumentSearch){
     	DetachedCriteria criteria = inforamaDocumentSearch.getDetachedCriteria();
     	List<InforamaDocument> list = getHibernateTemplate().findByCriteria(criteria, inforamaDocumentSearch.getPageBegin()-1, inforamaDocumentSearch.getPageSize());
     	criteria = inforamaDocumentSearch.getDetachedCriteriaForCount();
@@ -1784,7 +1937,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     //---------------------------------------------------------------------------------------------
 
-    public List<InforamaDocument> findInforamaDocumentsForClassNameAndSpace(String className, Space space){
+    @Override
+	public List<InforamaDocument> findInforamaDocumentsForClassNameAndSpace(String className, Space space){
     	return getHibernateTemplate().find(
     			"select inforamaDocument from InforamaDocument inforamaDocument " +
     			"join inforamaDocument.pageDictionary pageDictionary " +
@@ -1796,37 +1950,43 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 
     //---------------------------------------------------------------------------------------------
     
-    public List<InforamaDocument> findAllInforamaDocuments(){
+    @Override
+	public List<InforamaDocument> findAllInforamaDocuments(){
 
     	return getHibernateTemplate().find("from InforamaDocument inforamaDocument");
     }
     
     //---------------------------------------------------------------------------------------------
 
-    public void storeInforamaDocument(InforamaDocument inforamaDocument){
+    @Override
+	public void storeInforamaDocument(InforamaDocument inforamaDocument){
     	getHibernateTemplate().merge(inforamaDocument);
     }
     
     //PageInforamaDocument ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public PageInforamaDocument loadPageInforamaDocument(int id){
+    @Override
+	public PageInforamaDocument loadPageInforamaDocument(int id){
     	return (PageInforamaDocument) getHibernateTemplate().get(PageInforamaDocument.class, id);
     }
     
     //---------------------------------------------------------------------------------------------
 
-    public List<PageInforamaDocument> findPageInforamaDocumentForClassName(String className, Space space){
+    @Override
+	public List<PageInforamaDocument> findPageInforamaDocumentForClassName(String className, Space space){
     	return getHibernateTemplate().find("select pageInforamaDocument from PageInforamaDocument pageInforamaDocument join pageInforamaDocument.pageDictionary pageDictionary join pageInforamaDocument.inforamaDocument inforamaDocument join inforamaDocument.spaces spaces where  pageDictionary.pageClassName = ? and spaces.id = ?", new Object[]{ className, space.getId()});
     }
 
     //---------------------------------------------------------------------------------------------
     
-    public void storePageInforamaDocument(PageInforamaDocument pageInforamaDocument){
+    @Override
+	public void storePageInforamaDocument(PageInforamaDocument pageInforamaDocument){
     	getHibernateTemplate().merge(pageInforamaDocument);
     }
 
     //---------------------------------------------------------------------------------------------
 
-    public List<PageInforamaDocument> findPageInforamaDocumentMatching(PageInforamaDocumentSearch pageInforamaDocumentSearch){
+    @Override
+	public List<PageInforamaDocument> findPageInforamaDocumentMatching(PageInforamaDocumentSearch pageInforamaDocumentSearch){
     	DetachedCriteria criteria = pageInforamaDocumentSearch.getDetachedCriteria();
     	List<PageInforamaDocument> list = getHibernateTemplate().findByCriteria(criteria, pageInforamaDocumentSearch.getPageBegin()-1, pageInforamaDocumentSearch.getPageSize());
     	criteria = pageInforamaDocumentSearch.getDetachedCriteriaForCount();
@@ -1839,14 +1999,16 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     
     //---------------------------------------------------------------------------------------------
     
-    public void removeInforamaDocument(InforamaDocument inforamaDocument){
+    @Override
+	public void removeInforamaDocument(InforamaDocument inforamaDocument){
     	getHibernateTemplate().delete(inforamaDocument);
     }
     
     
     //InforamaDocumentParameter ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    public List<InforamaDocumentParameter> findInforamaDocumentParameterMatching(InforamaDocumentParameterSearch inforamaDocumentParameterSearch){
+    @Override
+	public List<InforamaDocumentParameter> findInforamaDocumentParameterMatching(InforamaDocumentParameterSearch inforamaDocumentParameterSearch){
     	DetachedCriteria criteria = inforamaDocumentParameterSearch.getDetachedCriteria();
     	List<InforamaDocumentParameter> list = getHibernateTemplate().findByCriteria(criteria, inforamaDocumentParameterSearch.getPageBegin()-1, inforamaDocumentParameterSearch.getPageSize());
     	criteria = inforamaDocumentParameterSearch.getDetachedCriteriaForCount();
@@ -1859,37 +2021,43 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     
     //---------------------------------------------------------------------------------------------
 
-    public void storeInforamaDocumentParameter(InforamaDocumentParameter inforamaDocumentParameter){
+    @Override
+	public void storeInforamaDocumentParameter(InforamaDocumentParameter inforamaDocumentParameter){
     	getHibernateTemplate().merge(inforamaDocumentParameter);
     }
 
     //---------------------------------------------------------------------------------------------
 
-    public InforamaDocumentParameter loadInforamaDocumentParameter(int id){
+    @Override
+	public InforamaDocumentParameter loadInforamaDocumentParameter(int id){
     	return (InforamaDocumentParameter) getHibernateTemplate().get(InforamaDocumentParameter.class, id);
     }
     
     //---------------------------------------------------------------------------------------------
     
-    public List<InforamaDocumentParameter> findInforamaDocumentParametersForDocument(InforamaDocument inforamaDocument){
+    @Override
+	public List<InforamaDocumentParameter> findInforamaDocumentParametersForDocument(InforamaDocument inforamaDocument){
     	return getHibernateTemplate().find("select inforamaDocumentParameter from InforamaDocumentParameter inforamaDocumentParameter where inforamaDocumentParameter.inforamaDocument.id = ?", inforamaDocument.getId());
     }
     
     //---------------------------------------------------------------------------------------------
     
-    public void removeInforamaDocumentParameter(InforamaDocumentParameter inforamaDocumentParameter){
+    @Override
+	public void removeInforamaDocumentParameter(InforamaDocumentParameter inforamaDocumentParameter){
     	getHibernateTemplate().delete(inforamaDocumentParameter);
     }
     
     //InforamaDocument and Spaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    public List<InforamaDocument> findInforamaDocumentsForSpace(Space space){
+    @Override
+	public List<InforamaDocument> findInforamaDocumentsForSpace(Space space){
     	return getHibernateTemplate().find("select inforamaDocument from InforamaDocument inforamaDocument join inforamaDocument.spaces spaces where  spaces.id = ?", space.getId());
     }
     
     //---------------------------------------------------------------------------------------------
 
-    public List<Space> findSpacesForInforamaDocument(InforamaDocument inforamaDocument){
+    @Override
+	public List<Space> findSpacesForInforamaDocument(InforamaDocument inforamaDocument){
     	//return getHibernateTemplate().find("select pageInforamaDocument from PageInforamaDocument pageInforamaDocument join pageInforamaDocument.pageDictionary pageDictionary join pageInforamaDocument.inforamaDocument inforamaDocument join inforamaDocument.spaces spaces where  pageDictionary.pageClassName = ? and spaces.id = ?", new Object[]{ className, space.getId()});
     	//join InforamaDocument inforamaDocument where inforamaDocument.id = ?
     	                                  //select asset from Asset asset, Item item where asset in elements(item.assets) and item.id = ?
@@ -1898,7 +2066,8 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     
     //---------------------------------------------------------------------------------------------
     
-    public int loadCountSpacesForInforamaDocument(InforamaDocument inforamaDocument){
+    @Override
+	public int loadCountSpacesForInforamaDocument(InforamaDocument inforamaDocument){
     	Long count = (Long)getHibernateTemplate().find("select count(space) from Space space, InforamaDocument inforamaDocument where space in elements (inforamaDocument.spaces) and inforamaDocument.id=?", inforamaDocument.getId()).get(0);
     	
     	return count.intValue();
@@ -2838,6 +3007,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * @see gr.abiss.calipso.CalipsoDao#updateItem(gr.abiss.calipso.domain.Item, gr.abiss.calipso.domain.User, boolean)
 	 */
+	@Override
 	public void updateItem(Item item, User user, boolean updateHistory) {
 		// TODO Auto-generated method stub
 		storeItem(item);
@@ -2846,6 +3016,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	/**
 	 * @see gr.abiss.calipso.CalipsoDao#loadI18nStringResource(gr.abiss.calipso.domain.I18nStringIdentifier)
 	 */
+	@Override
 	public I18nStringResource loadI18nStringResource(I18nStringIdentifier id) {
 		//logger.info("Looking for resource: "+id);
 		return (I18nStringResource) getHibernateTemplate().get(I18nStringResource.class, id);
