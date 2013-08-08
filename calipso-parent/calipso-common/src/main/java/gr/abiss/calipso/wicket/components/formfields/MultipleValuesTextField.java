@@ -341,7 +341,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	private void paintSubValuesTable(final Form form) {
 		// show existing values table
 		String currentValue = valuesField.getModelObject();
-		List<String> originalValueRows = MultipleValuesTextField.getValueRows(currentValue);
+		final List<String> originalValueRows = MultipleValuesTextField
+				.getValueRows(currentValue);
 
 		// record the line count, used for validation
 		linesCount = originalValueRows.size();
@@ -453,7 +454,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						paintSubValuesTable(form);
 						target.addComponent(mainContainer);
 					}
-				});
+				}.setVisible(rowIndex > 0));
 				rowItem.add(new IndicatingAjaxLink("movedown") {
 
 					@Override
@@ -494,7 +495,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						paintSubValuesTable(form);
 						target.addComponent(mainContainer);
 					}
-				});
+				}.setVisible(rowIndex < (originalValueRows.size() - 1)));
 			}
 
 		});
