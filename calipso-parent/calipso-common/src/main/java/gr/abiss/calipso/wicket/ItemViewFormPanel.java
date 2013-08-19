@@ -49,23 +49,16 @@ import gr.abiss.calipso.domain.StdField;
 import gr.abiss.calipso.domain.StdFieldMask;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.domain.UserSpaceRole;
-import gr.abiss.calipso.util.AttachmentUtils;
 import gr.abiss.calipso.util.BreadCrumbUtils;
 import gr.abiss.calipso.util.UserUtils;
 import gr.abiss.calipso.util.XmlUtils;
 import gr.abiss.calipso.wicket.asset.ItemAssetsPanel;
-import gr.abiss.calipso.wicket.components.LoadableDetachableDomainObjectModels.LoadableDetachableReadOnlyItemModel;
 import gr.abiss.calipso.wicket.components.formfields.CheckBoxMultipleChoice;
 import gr.abiss.calipso.wicket.components.renderers.UserChoiceRenderer;
-import gr.abiss.calipso.wicket.fileUpload.FileUtils;
 import gr.abiss.calipso.wicket.yui.YuiCalendar;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,41 +69,32 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
 import org.apache.wicket.extensions.breadcrumb.panel.BreadCrumbPanel;
 import org.apache.wicket.extensions.breadcrumb.panel.IBreadCrumbPanelFactory;
 import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.util.file.Folder;
-import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * Form to update history for item
@@ -119,9 +103,9 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 	private static final Logger logger = Logger.getLogger(ItemViewFormPanel.class);
 	private static final long serialVersionUID = 1L;
 
-	private CalipsoFeedbackMessageFilter filter;
-	private ItemSearch itemSearch;
-	private ItemViewForm itemViewForm;
+	private final CalipsoFeedbackMessageFilter filter;
+	private final ItemSearch itemSearch;
+	private final ItemViewForm itemViewForm;
 	// TODO: move to AbstractItemFormPanel?
 	private ItemAssetsPanel availableAssetsPanel;
 
@@ -368,7 +352,8 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 
 			boolean statusChoiceVisible = true;// submitUtils.isStateChangeAllowed() && submitUtils.getSingleStateChangeAllowed() == null;
 			Button submitButton = new Button("submitButton");
-			add(submitButton.setVisible(statusChoiceVisible));
+			add(submitButton.setVisible(/* statusChoiceVisible */!submitUtils
+					.isClosedAllowedOnly()));
 
 			logger.info("states for dropdown: "+states);
 			logger.info("states for dropdown: "+statesMap);
@@ -391,6 +376,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			statusChoice.add(new ErrorHighlighter());
 
 			statusChoice.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+				@Override
 				protected void onUpdate(AjaxRequestTarget target) {
 					Integer selectedStatus = (Integer) getFormComponent()
 							.getConvertedInput();
@@ -432,7 +418,8 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				}
 			});
 			statusChoice .add(new Behavior(){
-			      public void renderHead(Component component, IHeaderResponse response) {
+			      @Override
+				public void renderHead(Component component, IHeaderResponse response) {
 			    	  response.renderJavaScript(new JavaScripts().enableAssignableSpacesDropDownChoice.asString(), "enableAssignableSpacesDropDownChoice");
 			      }
 			});
@@ -640,6 +627,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				// BreadCrumbUtils.removeActiveBreadCrumbPanel(getBreadCrumbModel());
 
 				activePanel.activate(new IBreadCrumbPanelFactory() {
+					@Override
 					public BreadCrumbPanel create(String id,
 							IBreadCrumbModel breadCrumbModel) {
 						return new HistoryPreviewPanel(id, breadCrumbModel,
@@ -693,6 +681,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 						.removeActiveBreadCrumbPanel(getBreadCrumbModel());
 
 				activePanel.activate(new IBreadCrumbPanelFactory() {
+					@Override
 					public BreadCrumbPanel create(String componentId,
 							IBreadCrumbModel breadCrumbModel) {
 						//logger.info("Before rerendering the itemViewPanel");
@@ -710,6 +699,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void renderHead(IHeaderResponse headerResponse) {
 
 		if (this.itemViewForm.hasError()) {
