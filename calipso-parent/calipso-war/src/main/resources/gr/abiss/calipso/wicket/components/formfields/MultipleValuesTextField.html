@@ -11,29 +11,17 @@
 			<table>
 				<thead>
 					<tr class="heading">
-						<th wicket:id="subFieldsListView" class="bottom">
-							<label wicket:id="newValueLabel"></label><br />
-							<input type="text" wicket:id="newValueField" /><br />
-							<span wicket:id="newValueHelp"></span><span>&nbsp;</span>
-						</th>
-						<td wicket:id="submitControls" class="right" colspan="">
-							<input type="submit" wicket:id="add" class="submit-to-add"  wicket:message="value:add" />
-							<input type="reset" wicket:id="reset"  wicket:message="value:reset" />
-						</td>
+					
+						<span wicket:id="rowLabel"></span>
 					</tr>
 				</thead>
 				<tbody>
 					<tr wicket:id="row" class="multivalue">
-						<td wicket:id="cell">
-							<span wicket:id="cellValue" ></span>
-						</td>
-						<td class="left">
-							<a wicket:id="remove"><img src="resources/delete_row_from_field.gif" wicket:message="alt:delete"/></a>
-							<a wicket:id="moveup"><img src="resources/up.gif" wicket:message="alt:up"/></a>
-							<a wicket:id="movedown"><img src="resources/down.gif" wicket:message="alt:down"/></a>
-							<a wicket:id="edit"><img src="resources/edit.gif" wicket:message="alt:edit"/></a>
-						</td>
+						<span wicket:id="rowContent"></span>
 					</tr>
+					<tr wicket:id="editableRow" class="multivalue">
+					</tr>
+					
 				</tbody>
 				<tfoot>
 					<tr class="multivalue summary">
@@ -47,7 +35,36 @@
 				
 				
 			</table>
-			
+			<wicket:fragment wicket:id="readOnlyFragment">
+				<td wicket:id="cell">
+					<span wicket:id="cellValue" ></span>
+				</td>
+				<td class="left">
+					<a wicket:id="remove"><img src="resources/delete_row_from_field.gif" wicket:message="alt:delete"/></a>
+					<a wicket:id="moveup"><img src="resources/up.gif" wicket:message="alt:up"/></a>
+					<a wicket:id="movedown"><img src="resources/down.gif" wicket:message="alt:down"/></a>
+					<a wicket:id="edit"><img src="resources/edit.gif" wicket:message="alt:edit"/></a>
+				</td>
+			</wicket:fragment>
+			<wicket:fragment wicket:id="editableFragment">
+				<th wicket:id="subFieldsListView" class="bottom">
+					<!--label wicket:id="newValueLabel"></label><br /-->
+					<input type="text" wicket:id="newValueField" /><br />
+					<!--span wicket:id="newValueHelp"></span><span>&nbsp;</span-->
+				</th>
+				<td wicket:id="submitControls" class="right" colspan="">
+					<input type="submit" wicket:id="add" class="submit-to-add"  wicket:message="value:add" />
+					<input type="reset" wicket:id="reset"  wicket:message="value:reset" />
+				</td>
+			</wicket:fragment>
+			<wicket:fragment wicket:id="labelFragment">
+				<th wicket:id="subFieldsListView" class="bottom">
+					<label wicket:id="newValueLabel"></label><br />
+					<span wicket:id="newValueHelp"></span><span>&nbsp;</span>
+				</th>
+				<td>
+				</td>
+			</wicket:fragment>
 		</form>
 	</div>
 </wicket:panel>

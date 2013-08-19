@@ -45,12 +45,12 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.HiddenField;
-import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -76,13 +76,14 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	private boolean originalLinesCountSet = false;
 	private int originalLinesCount = 0;
 	private int linesCount = 0;
-	
+	private int rowToEditIndex = -1;
 	
 	private String originalValues = "";
 	private WebMarkupContainer mainContainer;
 	private FieldConfig fieldConfig;
 	private final List<Serializable> newSubFieldValues = new LinkedList<Serializable>();
 	private final MultipleValuesTextFieldValidator subFieldNoCommasValidator = new MultipleValuesTextFieldValidator();
+	private EditableFragment editableFragment;
 
 	public MultipleValuesTextField(String id, IModel<String> model,
 			FieldConfig config) {
@@ -137,135 +138,42 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			final Form form = new Form("addValueform");
 			form.setOutputMarkupId(true);
 			form.add(new EmptyPanel("feedback").setOutputMarkupId(true));
-			final IndicatingAjaxButton addButton = new IndicatingAjaxButton("add") {
-	
-				@Override
-				protected void onError(AjaxRequestTarget target, Form<?> form) {
-					FeedbackPanel feedback = getNewFeedbackPanel(form);
-					target.addComponent(feedback);
-				}
-	
-				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-					// clear lines counter temporarily for the inner form validation to work
-					int tmpLineCount = linesCount;
-					linesCount = 0;
-					// clear feedback
-					EmptyPanel feedback = new EmptyPanel("feedback");
-					form.addOrReplace(feedback.setOutputMarkupId(true));
-					target.addComponent(feedback);
-					// restore lines counter
-					linesCount = tmpLineCount;
-					updateModelAndRepaint(form);
-					
-					// repaint component
-					target.addComponent(mainContainer);
-				}
-			};
+
 			mainContainer.add(form);
 
 			final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 			// create a backing model for each subfield label using a list
-			form.add(new ListView("subFieldsListView", subFieldConfigs) {
-	
-				@Override
-				protected void populateItem(ListItem item) {
-					int index = item.getIndex();
-					FieldConfig fieldConfig = (FieldConfig) item.getModelObject();
-	
-					// initialize our model object: a list item
-					if (index >= newSubFieldValues.size()) {
-						newSubFieldValues.add("");
-						
-					}
-					final TextField newValueField = 
-							new TextField("newValueField", new PropertyModel(newSubFieldValues, "[" + index + "]")){
-						@Override
-					    protected void onComponentTag(ComponentTag tag){
-					            super.onComponentTag(tag);
-					            // we intercept ancestor form submission and explicitly click this form's submit button instead
-					            tag.put("onkeypress", "if(event.keyCode == 13){document.getElementById('"  + addButton.getMarkupId() + "').click();return false;}");
-					    }
-						
-						@Override
-						public boolean isRequired(){
-							return super.isRequired() && linesCount <= 0;
-						}
-					};
-					newValueField.setOutputMarkupId(true);
-					String fieldType = fieldConfig.getType();
-					if(StringUtils.isNotBlank(fieldType) && !fieldType.equalsIgnoreCase(FieldConfig.TYPE_STRING)){
-						if(fieldType.equalsIgnoreCase(FieldConfig.TYPE_DECIMAL)){
-							newValueField.setType(Double.class);
-						}
-						else if(fieldType.equalsIgnoreCase(FieldConfig.TYPE_INTEGER)){
-							newValueField.setType(Integer.class);
-						}
-					}
-					else{
-						newValueField.setType(String.class);
-					}
-					newValueField.add(new ErrorHighlighter());
-					newValueField.setRequired(MultipleValuesTextField.this.isRequired() || !fieldConfig.isOptional());
-					newValueField.add(new MultipleValuesTextFieldValidator());
-					List<IValidator> validators = helper.getValidators(fieldConfig);
-					if(CollectionUtils.isNotEmpty(validators)){
-						for(IValidator validator : validators){
-							newValueField.add(validator);
-						}
-					}
-					FieldUtils.appendFieldStyles(fieldConfig, newValueField);
-					item.add(newValueField);
-					// TODO: add validator and field size etc.
-					newValueField.setLabel(fieldConfig.getLabelKey() != null ? new ResourceModel(
-							fieldConfig.getLabelKey()) : new Model(""));
-					if (fieldConfig.getSize() != null) {
-						newValueField.add(new SimpleAttributeModifier("size",
-								fieldConfig.getSize().toString()));
-					}
-					if (fieldConfig.getMaxLength() != null) {
-						newValueField.add(new SimpleAttributeModifier("maxlength",
-								fieldConfig.getMaxLength().toString()));
-					}
-					item.add(new SimpleFormComponentLabel("newValueLabel",
-							newValueField).setVisible(fieldConfig.getLabelKey() != null));
-					item.add(new Label("newValueHelp",
-							fieldConfig.getHelpKey() != null ? new ResourceModel(
-									fieldConfig.getHelpKey()) : new Model(""))
-							.setVisible(fieldConfig.getHelpKey() != null));
-				}
-	
-				
-	
-			}.setReuseItems(true));
-	
+			// editableFragment =
+			// form.addOrReplace(editableFragment.setRenderBodyOnly(true));
+			
+
+			// logger.info("rowToEditIndex: " + rowToEditIndex);
+			// if (rowToEditIndex == -1) {
+			// logger.info("adding editable fragment as heading");
+			// editableFragment = new EditableFragment(
+			// "rowLabel",
+			// getSubFieldConfigs(MultipleValuesTextField.this.fieldConfig),
+			// form, helper);
+			// form.add(editableFragment.setRenderBodyOnly(true));
+			// } else {
+				logger.info("adding label fragment as heading");
+				form.add(new LabelFragment(
+						"rowLabel",
+						"labelFragment",
+						getSubFieldConfigs(MultipleValuesTextField.this.fieldConfig),
+						form, helper).setRenderBodyOnly(true));
+			// }
 			// show sub values table
 			paintSubValuesTable(form);
-			WebMarkupContainer submitControls = new WebMarkupContainer(
-					"submitControls");
-			submitControls.add(new SimpleAttributeModifier("colspan",
-					subFieldConfigs.size() + ""));
-			form.add(submitControls);
-			submitControls.add(addButton);
-			// make the add button the default submission button
-			form.setDefaultButton(addButton);
-			submitControls.add(new IndicatingAjaxButton("reset") {
-				@Override
-				protected void onError(AjaxRequestTarget target, Form<?> form) {
-					valuesField.setModelObject(originalValues);
-					target.add(mainContainer);
-				}
 
-				@Override
-				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				}
-			}.setVisible(false));
 	
 			String s = this.getModelValue();
 			this.valuesField.setModelObject(s);
 
 		}
 	}
+
+
 
 	private List<FieldConfig> getSubFieldConfigs(FieldConfig fieldConfig) {
 		List<FieldConfig> subFieldConfigs = fieldConfig != null 
@@ -288,6 +196,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * @param form
 	 */
 	private void updateModelAndRepaint(Form<?> form) {
+		logger.info("updateModelAndRepaint rowToEditIndex: " + rowToEditIndex);
 		// get the new subvalues
 		boolean foundNonBlankValue = false;
 		StringBuffer values = new StringBuffer();
@@ -315,11 +224,25 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			if (StringUtils.isNotBlank(newSubValue)) {
 				String existingValues = valuesField.getModelObject();
 				if (StringUtils.isNotBlank(existingValues)) {
-					valuesField.setModelObject(new StringBuffer(existingValues)
-							.append("\n").append(newSubValue).toString());
+					String[] existingValuesArr = existingValues
+							.split("\\r?\\n");
+					StringBuffer newValues = new StringBuffer();
+					for (int i = 0; i < existingValuesArr.length; i++) {
+						if (rowToEditIndex == i) {
+							newValues.append(newSubValue).append("\n");
+						}
+						else{
+							newValues.append(existingValuesArr[i]).append("\n");
+						}
+					}
+					if (rowToEditIndex == -1) {
+						newValues.append(newSubValue).append("\n");
+					}
+					valuesField.setModelObject(newValues.toString());
 				} else {
 					valuesField.setModelObject(newSubValue);
 				}
+				rowToEditIndex = -1;
 				// subValuesString = (String) valuesField.getModelObject();
 				
 			}
@@ -361,180 +284,40 @@ public class MultipleValuesTextField extends FormComponentPanel {
 
 			@Override
 			protected void populateItem(ListItem rowItem) {
-				final int rowIndex = rowItem.getIndex();
-				String subValuesString = rowItem.getModelObject().toString();
-				// fix adjacent separators for lines
-				subValuesString = subValuesString.replaceAll(SEPARATOR_LINE_SUBVALUE+SEPARATOR_LINE_SUBVALUE, SEPARATOR_LINE_SUBVALUE+" "+SEPARATOR_LINE_SUBVALUE);
-				List<String> subValues = Arrays.asList(
-						StringUtils.splitByWholeSeparator(" "+subValuesString+" ", SEPARATOR_LINE_SUBVALUE));
-				rowItem.add(new ListView("cell", subValues) {
-					@Override
-					protected void populateItem(ListItem cellItem) {
-						int fieldConfigIndex = cellItem.getIndex();
-						String subValue = cellItem.getModelObject().toString();
-						subValue = StringUtils.isBlank(subValue)?"":subValue;
-						FieldConfig subConfig = fieldConfig.getSubFieldConfigs().get(fieldConfigIndex);
-						logger.info("rendering cell index: " +fieldConfigIndex+" for config: "+subConfig.getLabelKey()+", got helper for label: "+helper.getLabel());
-						helper.updateSummary(subConfig, subValue);
-						subValue = helper.parseFormat(subConfig, subValue, MultipleValuesTextField.this.getSession().getLocale());
-						
-						cellItem.add(new Label("cellValue", subValue));
-						if(subConfig.isNumberType()){
-							cellItem.add(cssTextAlignRight);
-						}
-					}
-
-				});
-				rowItem.add(new IndicatingAjaxLink("remove") {
-
-					@Override
-					public void onClick(AjaxRequestTarget target) {
-						// remove the line
-						List<String> currentValueRows = Arrays
-								.asList(valuesField.getModelObject().split(
-										"\\r?\\n"));
-						
-						// update the model
-						StringBuffer subValues = new StringBuffer();
-						if (CollectionUtils.isNotEmpty(currentValueRows)) {
-							// obtain and clear sub-values
-							for (int i = 0; i < currentValueRows.size(); i++) {
-								if (i != rowIndex) {
-									subValues.append(currentValueRows.get(i));
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-								}
-							}
-						}
-						valuesField.setModelObject(subValues.toString());
-
-						// repaint component
-						paintSubValuesTable(form);
-						target.addComponent(mainContainer);
-					}
-				});
-				rowItem.add(new IndicatingAjaxLink("moveup") {
-
-					@Override
-					public void onClick(AjaxRequestTarget target) {
-						// remove the line
-						List<String> currentValueRows = Arrays
-								.asList(valuesField.getModelObject().split(
-										"\\r?\\n"));
-
-						// update the model
-						StringBuffer subValues = new StringBuffer();
-						if (CollectionUtils.isNotEmpty(currentValueRows)) {
-							// obtain and clear sub-values
-							for (int i = 0; i < currentValueRows.size(); i++) {
-								if (i == (rowIndex - 1)) {
-									subValues.append(currentValueRows
-											.get(i + 1));
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-									subValues.append(currentValueRows.get(i));
-									i++;
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-								} else {
-									subValues.append(currentValueRows.get(i));
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-								}
-
-							}
-						}
-						valuesField.setModelObject(subValues.toString());
-
-						// repaint component
-						paintSubValuesTable(form);
-						target.addComponent(mainContainer);
-					}
-				}.setVisible(rowIndex > 0));
-				rowItem.add(new IndicatingAjaxLink("movedown") {
-
-					@Override
-					public void onClick(AjaxRequestTarget target) {
-						// remove the line
-						List<String> currentValueRows = Arrays
-								.asList(valuesField.getModelObject().split(
-										"\\r?\\n"));
-
-						// update the model
-						StringBuffer subValues = new StringBuffer();
-						if (CollectionUtils.isNotEmpty(currentValueRows)) {
-							// obtain and clear sub-values
-							for (int i = 0; i < currentValueRows.size(); i++) {
-								if (i == rowIndex) {
-									subValues.append(currentValueRows
-											.get(i + 1));
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-									subValues.append(currentValueRows.get(i));
-									i++;
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-								} else {
-									subValues.append(currentValueRows.get(i));
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-								}
-
-							}
-						}
-						valuesField.setModelObject(subValues.toString());
-
-						// repaint component
-						paintSubValuesTable(form);
-						target.addComponent(mainContainer);
-					}
-				}.setVisible(rowIndex < (originalValueRows.size() - 1)));
-				rowItem.add(new IndicatingAjaxLink("edit") {
-
-					@Override
-					public void onClick(AjaxRequestTarget target) {
-						// remove the line
-						List<String> currentValueRows = Arrays
-								.asList(valuesField.getModelObject().split(
-										"\\r?\\n"));
-
-						// update the model
-						StringBuffer subValues = new StringBuffer();
-						if (CollectionUtils.isNotEmpty(currentValueRows)) {
-							// obtain and clear sub-values
-							for (int i = 0; i < currentValueRows.size(); i++) {
-								if (i != rowIndex) {
-									subValues.append(currentValueRows
-											.get(i));
-									if (i + 1 < currentValueRows.size()) {
-										subValues.append('\n');
-									}
-								} else {
-									List<String> editableValues = new ArrayList(Arrays.asList(StringUtils.splitByWholeSeparator(" "+currentValueRows.get(i)+" ", SEPARATOR_LINE_SUBVALUE))); 
-									newSubFieldValues.clear();
-									newSubFieldValues.addAll(editableValues);
-								}
-
-							}
-						}
-						valuesField.setModelObject(subValues.toString());
-
-						// repaint component
-						paintSubValuesTable(form);
-						target.addComponent(mainContainer);
-					}
-				});
-				
+				int rowIndex = rowItem.getIndex();
+				if(rowToEditIndex == rowIndex){
+					editableFragment = new EditableFragment(
+							"rowContent",
+							getSubFieldConfigs(MultipleValuesTextField.this.fieldConfig),
+							form, helper);
+					rowItem.add(editableFragment.setRenderBodyOnly(true));
+				}
+				else{
+					rowItem.add(new ReadOnlyFragment("rowContent",
+						"readOnlyFragment",
+						form,
+						originalValueRows, cssTextAlignRight, helper, rowItem)
+						.setRenderBodyOnly(true));
+				}
 			}
 
+
+
 		});
+
+		if (rowToEditIndex == -1) {
+			logger.info("adding editable fragment as heading");
+			editableFragment = new EditableFragment(
+					"editableRow",
+					getSubFieldConfigs(MultipleValuesTextField.this.fieldConfig),
+					form, helper);
+			form.addOrReplace(editableFragment);
+		} else {
+
+			form.addOrReplace(new EmptyPanel("editableRow")
+					.setRenderBodyOnly(true));
+		}
+
 		form.addOrReplace(new ListView<FieldConfig>("summary", fieldConfig != null ? fieldConfig.getSubFieldConfigs() : new ArrayList<FieldConfig>(0)) {
 					@Override
 					protected void populateItem(ListItem<FieldConfig> cellItem) {
@@ -701,5 +484,375 @@ public class MultipleValuesTextField extends FormComponentPanel {
 		String html = escapedInput//.replaceAll("\\n", "<br />")
 				.replaceAll(MultipleValuesTextField.SEPARATOR_LINE_SUBVALUE_REGEXP, "\t");
 		return html;
+	}
+
+	public class LabelFragment extends Fragment {
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public LabelFragment(String id, String markupId,
+				List<FieldConfig> subFieldConfigs, final Form form,
+				final FieldSummaryHelper helper) {
+			super(id, markupId, form);
+			add(new ListView("subFieldsListView", subFieldConfigs) {
+
+				@Override
+				protected void populateItem(ListItem item) {
+					int index = item.getIndex();
+					FieldConfig fieldConfig = (FieldConfig) item
+							.getModelObject();
+
+					//
+					item.add(new Label("newValueLabel", fieldConfig
+							.getLabelKey() != null ? new ResourceModel(
+							fieldConfig.getLabelKey()) : new Model(""))
+							.setVisible(fieldConfig
+							.getLabelKey() != null));
+					item.add(new Label(
+							"newValueHelp",
+							fieldConfig.getHelpKey() != null ? new ResourceModel(
+									fieldConfig.getHelpKey()) : new Model(""))
+							.setVisible(fieldConfig.getHelpKey() != null));
+				}
+
+			}.setReuseItems(true));
+		}
+
+	}
+
+	public class EditableFragment extends Fragment {
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public EditableFragment(String id,
+				List<FieldConfig> subFieldConfigs, final Form form,
+				final FieldSummaryHelper helper) {
+			super(id, "editableFragment", form);
+			logger.info("editableFragment, subFieldConfigs: "
+					+ subFieldConfigs.size());
+			final IndicatingAjaxButton addButton = new IndicatingAjaxButton(
+					"add") {
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					FeedbackPanel feedback = getNewFeedbackPanel(form);
+					target.addComponent(feedback);
+				}
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+					// clear lines counter temporarily for the inner form
+					// validation to
+					// work
+					int tmpLineCount = linesCount;
+					linesCount = 0;
+					// clear feedback
+					EmptyPanel feedback = new EmptyPanel("feedback");
+					form.addOrReplace(feedback.setOutputMarkupId(true));
+					target.addComponent(feedback);
+					// restore lines counter
+					linesCount = tmpLineCount;
+					updateModelAndRepaint(form);
+
+					// repaint component
+					target.addComponent(mainContainer);
+				}
+			};
+			add(new ListView("subFieldsListView", subFieldConfigs) {
+
+				@Override
+				protected void populateItem(ListItem item) {
+					int index = item.getIndex();
+					FieldConfig fieldConfig = (FieldConfig) item
+							.getModelObject();
+
+					// initialize our model object: a list item
+					if (index >= newSubFieldValues.size()) {
+						newSubFieldValues.add("");
+
+					}
+					final TextField newValueField = new TextField(
+							"newValueField", new PropertyModel(
+									newSubFieldValues, "[" + index + "]")) {
+						@Override
+						protected void onComponentTag(ComponentTag tag) {
+							super.onComponentTag(tag);
+							// we intercept ancestor form submission and
+							// explicitly click this form's submit button
+							// instead
+							tag.put("onkeypress",
+									"if(event.keyCode == 13){document.getElementById('"
+											+ addButton.getMarkupId()
+											+ "').click();return false;}");
+						}
+
+						@Override
+						public boolean isRequired() {
+							return super.isRequired() && linesCount <= 0;
+						}
+					};
+					newValueField.setOutputMarkupId(true);
+					String fieldType = fieldConfig.getType();
+					if (StringUtils.isNotBlank(fieldType)
+							&& !fieldType
+									.equalsIgnoreCase(FieldConfig.TYPE_STRING)) {
+						if (fieldType
+								.equalsIgnoreCase(FieldConfig.TYPE_DECIMAL)) {
+							newValueField.setType(Double.class);
+						} else if (fieldType
+								.equalsIgnoreCase(FieldConfig.TYPE_INTEGER)) {
+							newValueField.setType(Integer.class);
+						}
+					} else {
+						newValueField.setType(String.class);
+					}
+					newValueField.add(new ErrorHighlighter());
+					newValueField.setRequired(MultipleValuesTextField.this
+							.isRequired() || !fieldConfig.isOptional());
+					newValueField.add(new MultipleValuesTextFieldValidator());
+					List<IValidator> validators = helper
+							.getValidators(fieldConfig);
+					if (CollectionUtils.isNotEmpty(validators)) {
+						for (IValidator validator : validators) {
+							newValueField.add(validator);
+						}
+					}
+					FieldUtils.appendFieldStyles(fieldConfig, newValueField);
+					item.add(newValueField);
+					// TODO: add validator and field size etc.
+//					newValueField
+//							.setLabel(fieldConfig.getLabelKey() != null ? new ResourceModel(
+//									fieldConfig.getLabelKey()) : new Model(""));
+					if (fieldConfig.getSize() != null) {
+						newValueField.add(new SimpleAttributeModifier("size",
+								fieldConfig.getSize().toString()));
+					}
+					if (fieldConfig.getMaxLength() != null) {
+						newValueField.add(new SimpleAttributeModifier(
+								"maxlength", fieldConfig.getMaxLength()
+										.toString()));
+					}
+//					item.add(new SimpleFormComponentLabel("newValueLabel",
+//							newValueField).setVisible(fieldConfig.getLabelKey() != null));
+//					item.add(new Label(
+//							"newValueHelp",
+//							fieldConfig.getHelpKey() != null ? new ResourceModel(
+//									fieldConfig.getHelpKey()) : new Model(""))
+//							.setVisible(fieldConfig.getHelpKey() != null));
+				}
+
+			}.setReuseItems(true));
+			WebMarkupContainer submitControls = new WebMarkupContainer(
+					"submitControls");
+			submitControls.add(new SimpleAttributeModifier("colspan",
+					subFieldConfigs.size() + ""));
+			add(submitControls);
+			submitControls.add(addButton);
+			// make the add button the default submission button
+			form.setDefaultButton(addButton);
+			submitControls.add(new IndicatingAjaxButton("reset") {
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					valuesField.setModelObject(originalValues);
+					target.add(mainContainer);
+				}
+
+				@Override
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				}
+			}.setVisible(false));
+		}
+
+	}
+
+	public class ReadOnlyFragment extends Fragment {
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public ReadOnlyFragment(String id, String markupId, final Form form,
+				final List<String> originalValueRows,
+				final SimpleAttributeModifier cssTextAlignRight,
+				final FieldSummaryHelper helper, ListItem rowItem) {
+			super(id, markupId, form);
+			final int rowIndex = rowItem.getIndex();
+			String subValuesString = rowItem.getModelObject().toString();
+			// fix adjacent separators for lines
+			subValuesString = subValuesString.replaceAll(
+					SEPARATOR_LINE_SUBVALUE + SEPARATOR_LINE_SUBVALUE,
+					SEPARATOR_LINE_SUBVALUE + " " + SEPARATOR_LINE_SUBVALUE);
+			List<String> subValues = Arrays.asList(StringUtils
+					.splitByWholeSeparator(" " + subValuesString + " ",
+							SEPARATOR_LINE_SUBVALUE));
+			add(new ListView("cell", subValues) {
+				@Override
+				protected void populateItem(ListItem cellItem) {
+					int fieldConfigIndex = cellItem.getIndex();
+					String subValue = cellItem.getModelObject().toString();
+					subValue = StringUtils.isBlank(subValue) ? "" : subValue;
+					FieldConfig subConfig = fieldConfig.getSubFieldConfigs()
+							.get(fieldConfigIndex);
+					logger.info("rendering cell index: " + fieldConfigIndex
+							+ " for config: " + subConfig.getLabelKey()
+							+ ", got helper for label: " + helper.getLabel());
+					helper.updateSummary(subConfig, subValue);
+					subValue = helper.parseFormat(subConfig, subValue,
+							MultipleValuesTextField.this.getSession()
+									.getLocale());
+
+					cellItem.add(new Label("cellValue", subValue));
+					if (subConfig.isNumberType()) {
+						cellItem.add(cssTextAlignRight);
+					}
+				}
+
+			});
+			add(new IndicatingAjaxLink("remove") {
+
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					rowToEditIndex = -1;
+					// remove the line
+					List<String> currentValueRows = Arrays.asList(valuesField
+							.getModelObject().split("\\r?\\n"));
+
+					// update the model
+					StringBuffer subValues = new StringBuffer();
+					if (CollectionUtils.isNotEmpty(currentValueRows)) {
+						// obtain and clear sub-values
+						for (int i = 0; i < currentValueRows.size(); i++) {
+							if (i != rowIndex) {
+								subValues.append(currentValueRows.get(i));
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+							}
+						}
+					}
+					valuesField.setModelObject(subValues.toString());
+
+					// repaint component
+					paintSubValuesTable(form);
+					target.addComponent(mainContainer);
+				}
+			});
+			add(new IndicatingAjaxLink("moveup") {
+
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+
+					rowToEditIndex = -1;
+					// remove the line
+					List<String> currentValueRows = Arrays.asList(valuesField
+							.getModelObject().split("\\r?\\n"));
+
+					// update the model
+					StringBuffer subValues = new StringBuffer();
+					if (CollectionUtils.isNotEmpty(currentValueRows)) {
+						// obtain and clear sub-values
+						for (int i = 0; i < currentValueRows.size(); i++) {
+							if (i == (rowIndex - 1)) {
+								subValues.append(currentValueRows.get(i + 1));
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+								subValues.append(currentValueRows.get(i));
+								i++;
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+							} else {
+								subValues.append(currentValueRows.get(i));
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+							}
+
+						}
+					}
+					valuesField.setModelObject(subValues.toString());
+
+					// repaint component
+					paintSubValuesTable(form);
+					target.addComponent(mainContainer);
+				}
+			}.setVisible(rowIndex > 0));
+			add(new IndicatingAjaxLink("movedown") {
+
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+
+					rowToEditIndex = -1;
+					// remove the line
+					List<String> currentValueRows = Arrays.asList(valuesField
+							.getModelObject().split("\\r?\\n"));
+
+					// update the model
+					StringBuffer subValues = new StringBuffer();
+					if (CollectionUtils.isNotEmpty(currentValueRows)) {
+						// obtain and clear sub-values
+						for (int i = 0; i < currentValueRows.size(); i++) {
+							if (i == rowIndex) {
+								subValues.append(currentValueRows.get(i + 1));
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+								subValues.append(currentValueRows.get(i));
+								i++;
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+							} else {
+								subValues.append(currentValueRows.get(i));
+								if (i + 1 < currentValueRows.size()) {
+									subValues.append('\n');
+								}
+							}
+
+						}
+					}
+					valuesField.setModelObject(subValues.toString());
+
+					// repaint component
+					paintSubValuesTable(form);
+					target.addComponent(mainContainer);
+				}
+			}.setVisible(rowIndex < (originalValueRows.size() - 1)));
+			add(new IndicatingAjaxLink("edit") {
+
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+
+					rowToEditIndex = rowIndex;
+					// remove the line
+					List<String> currentValueRows = Arrays.asList(valuesField
+							.getModelObject().split("\\r?\\n"));
+
+					// update the model
+					StringBuffer subValues = new StringBuffer();
+					if (CollectionUtils.isNotEmpty(currentValueRows)) {
+						// obtain and clear sub-values
+						for (int i = 0; i < currentValueRows.size(); i++) {
+							// if (i != rowIndex) {
+							subValues.append(currentValueRows.get(i));
+							if (i + 1 < currentValueRows.size()) {
+								subValues.append('\n');
+							}
+							// } else {
+							if (i == rowIndex) {
+								List<String> editableValues = new ArrayList(
+										Arrays.asList(StringUtils.splitByWholeSeparator(
+												" " + currentValueRows.get(i)
+														+ " ",
+												SEPARATOR_LINE_SUBVALUE)));
+								newSubFieldValues.clear();
+								newSubFieldValues.addAll(editableValues);
+							}
+
+						}
+					}
+					valuesField.setModelObject(subValues.toString());
+
+					// repaint component
+					paintSubValuesTable(form);
+					target.addComponent(mainContainer);
+				}
+			});
+		}
 	}
 }
