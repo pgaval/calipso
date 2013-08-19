@@ -156,7 +156,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 			// form, helper);
 			// form.add(editableFragment.setRenderBodyOnly(true));
 			// } else {
-				logger.info("adding label fragment as heading");
+			// logger.info("adding label fragment as heading");
 				form.add(new LabelFragment(
 						"rowLabel",
 						"labelFragment",
@@ -196,7 +196,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * @param form
 	 */
 	private void updateModelAndRepaint(Form<?> form) {
-		logger.info("updateModelAndRepaint rowToEditIndex: " + rowToEditIndex);
+		// logger.info("updateModelAndRepaint rowToEditIndex: " +
+		// rowToEditIndex);
 		// get the new subvalues
 		boolean foundNonBlankValue = false;
 		StringBuffer values = new StringBuffer();
@@ -306,7 +307,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 		});
 
 		if (rowToEditIndex == -1) {
-			logger.info("adding editable fragment as heading");
+			// logger.info("adding editable fragment as heading");
 			editableFragment = new EditableFragment(
 					"editableRow",
 					getSubFieldConfigs(MultipleValuesTextField.this.fieldConfig),
@@ -404,7 +405,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * @return
 	 */
 	public static String toHtmlSafeTable(String input, FieldConfig fieldConfig, Localizer localizer, Component callerComponent){
-		logger.info("toHtmlSafeTable input: "+input+", fieldConfig: "+fieldConfig+", localizer: "+localizer+", component: "+callerComponent);
+		// logger.info("toHtmlSafeTable input: "+input+", fieldConfig: "+fieldConfig+", localizer: "+localizer+", component: "+callerComponent);
 		StringBuffer html = new StringBuffer();
 		List<String> escapedLines = MultipleValuesTextField.getValueRows(HtmlUtils.htmlEscape(input));
 		final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
@@ -526,8 +527,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				List<FieldConfig> subFieldConfigs, final Form form,
 				final FieldSummaryHelper helper) {
 			super(id, "editableFragment", form);
-			logger.info("editableFragment, subFieldConfigs: "
-					+ subFieldConfigs.size());
+			// logger.info("editableFragment, subFieldConfigs: "
+			// + subFieldConfigs.size());
 			final IndicatingAjaxButton addButton = new IndicatingAjaxButton(
 					"add") {
 
@@ -687,9 +688,9 @@ public class MultipleValuesTextField extends FormComponentPanel {
 					subValue = StringUtils.isBlank(subValue) ? "" : subValue;
 					FieldConfig subConfig = fieldConfig.getSubFieldConfigs()
 							.get(fieldConfigIndex);
-					logger.info("rendering cell index: " + fieldConfigIndex
-							+ " for config: " + subConfig.getLabelKey()
-							+ ", got helper for label: " + helper.getLabel());
+					// logger.info("rendering cell index: " + fieldConfigIndex
+					// + " for config: " + subConfig.getLabelKey()
+					// + ", got helper for label: " + helper.getLabel());
 					helper.updateSummary(subConfig, subValue);
 					subValue = helper.parseFormat(subConfig, subValue,
 							MultipleValuesTextField.this.getSession()
