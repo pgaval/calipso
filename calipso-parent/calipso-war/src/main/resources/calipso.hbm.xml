@@ -589,7 +589,7 @@
 			<one-to-many class="RoleSpaceStdField" />
 		</set>
 		<!-- templates map using template type and ID for key-value pairs -->
-        <map name="itemRenderingTemplates" table="spacerole_item_templates" lazy="true" inverse="false" cascade="all"><!--   order-by="description asc" -->
+        <map name="itemRenderingTemplates" table="spacerole_item_templates" lazy="true" inverse="false" cascade="none"><!--   order-by="description asc" -->
             <key column="spacerole_id" not-null="true" />
             <map-key type="string" column="state_status" length="9"/>
             <many-to-many column="template_id" class="ItemRenderingTemplate" />
@@ -671,7 +671,7 @@
 			<list-index column="sl_sort_order"/>
 			<many-to-many column="sl_lid" class="Language" />
 		</list>
-		<list name="itemRenderingTemplates" table="space_templates" cascade="none" inverse="false">
+		<list name="itemRenderingTemplates" table="space_templates" cascade="none" inverse="true">
 			<key column="space_id" />
 			<list-index column="priority" />
 			<many-to-many class="ItemRenderingTemplate" />
@@ -906,7 +906,7 @@
 				<!--property name="hideStateSelection" type="boolean" column="HIDE_STATE_SELECTION" not-null="true" /-->
 			<!--component name="name" class="ItemRenderingTemplateName" unique="true"-->
 				<property name="description" type="string" column="description" not-null="true" unique="true" />
-				<many-to-one name="space" column="space_id" class="Space" not-null="true" />
+				<many-to-one name="space" column="space_id" class="Space" not-null="true"  />
 			<!--/component-->
 		</joined-subclass>
 	</class>

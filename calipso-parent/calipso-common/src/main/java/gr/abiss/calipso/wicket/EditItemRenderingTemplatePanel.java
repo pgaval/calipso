@@ -26,31 +26,17 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 
-import wicket.contrib.tinymce.TinyMceBehavior;
 import wicket.contrib.tinymce.ajax.TinyMceAjaxSubmitModifier;
 import wicket.contrib.tinymce.settings.ContextMenuPlugin;
-import wicket.contrib.tinymce.settings.DateTimePlugin;
-import wicket.contrib.tinymce.settings.DirectionalityPlugin;
-import wicket.contrib.tinymce.settings.EmotionsPlugin;
-import wicket.contrib.tinymce.settings.FullScreenPlugin;
-import wicket.contrib.tinymce.settings.IESpellPlugin;
-import wicket.contrib.tinymce.settings.MediaPlugin;
 import wicket.contrib.tinymce.settings.PastePlugin;
-import wicket.contrib.tinymce.settings.PreviewPlugin;
-import wicket.contrib.tinymce.settings.PrintPlugin;
-import wicket.contrib.tinymce.settings.SavePlugin;
-import wicket.contrib.tinymce.settings.SearchReplacePlugin;
-import wicket.contrib.tinymce.settings.TablePlugin;
 import wicket.contrib.tinymce.settings.TinyMCESettings;
 import wicket.contrib.tinymce.settings.TinyMCESettings.Align;
 import wicket.contrib.tinymce.settings.TinyMCESettings.EntityEncoding;
@@ -96,7 +82,7 @@ public abstract class EditItemRenderingTemplatePanel extends BasePanel {
 		setUpAndAdd(new CheckBox("hideHistory"), itemRenderingTemplateForm);
 		// itemRenderingTemplate.getTemplateText()
 		TextArea templateText = new TextArea<String>("templateText");
-		templateText.add(new TinyMceBehavior(settings)); 
+		// templateText.add(new TinyMceBehavior(settings));
 		templateText.setMarkupId("templateText");
 		templateText.setOutputMarkupId(true);
 		setUpAndAdd(templateText, itemRenderingTemplateForm);
@@ -108,6 +94,10 @@ public abstract class EditItemRenderingTemplatePanel extends BasePanel {
 
 	}
 
+	public static TinyMCESettings getSettings() {
+		initTinyMce();
+		return settings;
+	}
 	private static void initTinyMce() {
 		if(settings == null){
 
@@ -231,16 +221,15 @@ public abstract class EditItemRenderingTemplatePanel extends BasePanel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form form) {
-				log.warn("method getSaveButton was given as an example but not overriden.");
 				persist(target, form);
 				if (target != null) {
+					target.prependJavaScript("removeEditors();");
 					modalWindow.close(target);
 				}
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form form) {
-				log.warn("method getSaveButton was given as an example but not overriden.");
 				if (target != null) {
 					target.addComponent(feedbackPanel);
 				}
@@ -259,6 +248,7 @@ public abstract class EditItemRenderingTemplatePanel extends BasePanel {
 					protected void onSubmit(AjaxRequestTarget target,
 							Form<?> form) {
 						if (target != null) {
+					target.prependJavaScript("removeEditors();");
 							modalWindow.close(target);
 						}
 					}
@@ -270,6 +260,11 @@ public abstract class EditItemRenderingTemplatePanel extends BasePanel {
 
 		};
 		return cancel;
+	}
+
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		TinyMCESettings.lazyLoadTinyMCEResource(response);
 	}
 
 }

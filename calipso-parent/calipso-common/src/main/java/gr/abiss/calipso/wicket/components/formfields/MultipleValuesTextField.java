@@ -279,7 +279,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 		if(linesCount == 0){
 			clearInput();
 		}
-		final SimpleAttributeModifier cssTextAlignRight = new SimpleAttributeModifier("class", "right");
+		final SimpleAttributeModifier cssTextAlignRight = new SimpleAttributeModifier(
+				"class", "left");
 		final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 		form.addOrReplace(new ListView("row", originalValueRows) {
 

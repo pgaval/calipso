@@ -45,6 +45,11 @@ function toggleVis(name, selectedIndex){
 function getCells(){
 	
 }
+function removeEditors(){
+	tinyMCE.execCommand('mceRemoveControl',false, 'templateText');
+
+// 	tinyMCE.execCommand('mceAddControl', true, 'templateText');
+}
 
 </script>
 </wicket:head>

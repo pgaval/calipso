@@ -40,7 +40,6 @@ import gr.abiss.calipso.domain.AbstractItem;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.AssetTypeCustomAttributeSearch;
 import gr.abiss.calipso.domain.AssetTypeSearch;
 import gr.abiss.calipso.domain.Attachment;
@@ -49,6 +48,7 @@ import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.Counts;
 import gr.abiss.calipso.domain.CountsHolder;
 import gr.abiss.calipso.domain.CustomAttribute;
+import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.CustomCriteria;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.History;
@@ -59,12 +59,12 @@ import gr.abiss.calipso.domain.InforamaDocumentParameter;
 import gr.abiss.calipso.domain.InforamaDocumentParameterSearch;
 import gr.abiss.calipso.domain.InforamaDocumentSearch;
 import gr.abiss.calipso.domain.Item;
+import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
 import gr.abiss.calipso.domain.ItemItem;
 import gr.abiss.calipso.domain.ItemRefId;
 import gr.abiss.calipso.domain.ItemRenderingTemplate;
 import gr.abiss.calipso.domain.ItemSearch;
 import gr.abiss.calipso.domain.ItemUser;
-import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
 import gr.abiss.calipso.domain.Language;
 import gr.abiss.calipso.domain.MailedItem;
 import gr.abiss.calipso.domain.Metadata;
@@ -103,7 +103,6 @@ import gr.abiss.calipso.util.XmlUtils;
 import gr.abiss.calipso.wicket.regexp.ValidationExpressionSearch;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -114,7 +113,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -122,11 +120,7 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.activation.DataSource;
-import javax.mail.internet.MimeBodyPart;
 
-import org.springframework.security.providers.encoding.PasswordEncoder;
-import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -136,11 +130,10 @@ import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.jfree.util.Log;
 import org.springframework.context.MessageSource;
+import org.springframework.security.providers.encoding.PasswordEncoder;
+import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.userdetails.UsernameNotFoundException;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -189,20 +182,24 @@ public class CalipsoServiceImpl implements CalipsoService {
 		logger.info("available locales configured " + locales);
 	}
 
+	@Override
 	public List<Language> getSupportedLanguages() {
 		return dao.getAllLanguages();
 	}
 
+	@Override
 	public List<I18nStringResource> getNameTranslations(
 			I18nResourceTranslatable nt) {
 		return this.getPropertyTranslations("name", nt);
 	}
 
+	@Override
 	public List<I18nStringResource> getPropertyTranslations(
 			String propertyName, I18nResourceTranslatable nt) {
 		return this.dao.findI18nStringResourcesFor(propertyName, nt);
 	}
 	
+	@Override
 	public void updateAssets(Collection<Asset> assets){
 		if(CollectionUtils.isNotEmpty(assets)){
 			Date now = new Date();
@@ -223,6 +220,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	/**
 	 * @return the messageSource
 	 */
+	@Override
 	public MessageSource getMessageSource() {
 		return messageSource;
 	}
@@ -259,14 +257,17 @@ public class CalipsoServiceImpl implements CalipsoService {
 		this.calipsoHome = calipsoHome;
 	}
 
+	@Override
 	public String getCalipsoHome() {
 		return calipsoHome;
 	}
 
+	@Override
 	public int getAttachmentMaxSizeInMb() {
 		return attachmentMaxSizeInMb;
 	}
 
+	@Override
 	public int getSessionTimeoutInMinutes() {
 		return sessionTimeoutInMinutes;
 	}
@@ -280,6 +281,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * this has not been factored into the util package or a helper class
 	 * because it depends on the PasswordEncoder configured
 	 */
+	@Override
 	public String generatePassword() {
 		byte[] ab = new byte[1];
 		Random r = new Random();
@@ -292,6 +294,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * this has not been factored into the util package or a helper class
 	 * because it depends on the PasswordEncoder configured
 	 */
+	@Override
 	public String encodeClearText(String clearText) {
 		return passwordEncoder.encodePassword(clearText, null);
 	}
@@ -301,14 +304,17 @@ public class CalipsoServiceImpl implements CalipsoService {
 		// passwordEncoder.
 	}
 
+	@Override
 	public Map<String, String> getLocales() {
 		return locales;
 	}
 
+	@Override
 	public String getDefaultLocale() {
 		return defaultLocale;
 	}
 
+	@Override
 	public String getSupportedOrDefaultLocaleCode(Locale returnIfSupportedLocale) {
 		String localeCode = returnIfSupportedLocale.getLanguage();
 		if(localeCode.length() > 2){
@@ -454,6 +460,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	/**
 	 * Save new Items. This method is not intended for updates.
 	 */
+	@Override
 	public synchronized void storeItem(Item item,
 			Map<String, FileUpload> fileUploadsMap) {
 		try{
@@ -623,6 +630,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public void updateItem(Item item, User user) {
 		//logger.debug("update item called");
 		History history = new History(item);
@@ -642,6 +650,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public void updateItem(Item item, User user, boolean updateHistory) {
 		if (updateHistory) {
 			//logger.debug("update item called");
@@ -666,6 +675,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	/**
 	 * Moves an item from its space to another.
 	 **/
+	@Override
 	public synchronized void storeItemSpace(long itemId, Space newSpace) {
 		Item item = dao.loadItem(itemId);
 		// Get a sequence for the new space
@@ -678,6 +688,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		dao.storeItem(item);
 	}// storeItemSpace
 
+	@Override
 	public List<Attachment> findTemporaryAttachments() {
 		return dao.findTemporaryAttachments();
 	}
@@ -719,6 +730,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	}
 
+	@Override
 	public synchronized void removeExpiredTemporaryAttachments() {
 		/*
 		 * for (Attachment attachment : findTemporaryAttachments()) { File
@@ -746,10 +758,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * 
 	 * return attachment; }
 	 */
+	@Override
 	public void updateHistory(History history) {
 		dao.update(history);
 	}
 
+	@Override
 	public synchronized void storeHistoryForItem(long itemId,
 			Map<String, FileUpload> fileUploads, History history) {
 		Date now = new Date();
@@ -915,10 +929,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public Item loadItem(long id) {
 		return dao.loadItem(id);
 	}
 
+	@Override
 	public Item loadItemByRefId(String refId) {
 		ItemRefId itemRefId = new ItemRefId(refId); // throws runtime exception
 													// if invalid id
@@ -930,6 +946,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return items.get(0);
 	}
 
+	@Override
 	public History loadHistory(long id) {
 		return dao.loadHistory(id);
 	}
@@ -940,6 +957,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 	
 
+	@Override
 	public List<Item> findItems(ItemSearch itemSearch) {
 		//logger.info("itemSearch space: "+itemSearch.getSpace());
 		String searchText = itemSearch.getSearchText();
@@ -986,10 +1004,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return finalItemsList;
 	}
 
+	@Override
 	public List<History> findHistoryForItem(Item item) {
 		return dao.findHistoryForItem(item);
 	}
 
+	@Override
 	public void removeItem(Item item) {
 		if (item.getRelatingItems() != null) {
 			for (ItemItem itemItem : item.getRelatingItems()) {
@@ -1004,45 +1024,55 @@ public class CalipsoServiceImpl implements CalipsoService {
 		dao.removeItem(item);
 	}
 
+	@Override
 	public List<Item> findUnassignedItemsForSpace(Space space) {
 		return dao.findUnassignedItemsForSpace(space);
 	}
 
+	@Override
 	public int loadCountUnassignedItemsForSpace(Space space) {
 		return dao.loadCountUnassignedItemsForSpace(space);
 	}
 
+	@Override
 	public void removeItemItem(ItemItem itemItem) {
 		dao.removeItemItem(itemItem);
 	}
 
+	@Override
 	public int loadCountOfRecordsHavingFieldNotNull(Space space, Field field) {
 		return dao.loadCountOfRecordsHavingFieldNotNull(space, field);
 	}
 
+	@Override
 	public int bulkUpdateFieldToNull(Space space, Field field) {
 		return dao.bulkUpdateFieldToNull(space, field);
 	}
 
+	@Override
 	public int loadCountOfRecordsHavingFieldWithValue(Space space, Field field,
 			int optionKey) {
 		return dao.loadCountOfRecordsHavingFieldWithValue(space, field,
 				optionKey);
 	}
 
+	@Override
 	public int bulkUpdateFieldToNullForValue(Space space, Field field,
 			int optionKey) {
 		return dao.bulkUpdateFieldToNullForValue(space, field, optionKey);
 	}
 
+	@Override
 	public int loadCountOfRecordsHavingStatus(Space space, int status) {
 		return dao.loadCountOfRecordsHavingStatus(space, status);
 	}
 
+	@Override
 	public int bulkUpdateStatusToOpen(Space space, int status) {
 		return dao.bulkUpdateStatusToOpen(space, status);
 	}
 
+	@Override
 	public int bulkUpdateRenameSpaceRole(Space space, String oldRoleKey,
 			String newRoleKey) {
 		return dao.bulkUpdateRenameSpaceRole(space, oldRoleKey, newRoleKey);
@@ -1053,6 +1083,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// }
 
 	// ========= Acegi UserDetailsService implementation ==========
+	@Override
 	public UserDetails loadUserByUsername(String loginName) {
 		List<User> users = null;
 		if (loginName.indexOf("@") != -1) {
@@ -1103,6 +1134,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * @param roleType
 	 *            the role type to use (e.g. RoleType.GUEST, RoleType.ANONYMOUS)
 	 */
+	@Override
 	public void initImplicitRoles(User user, List<Space> spaces,
 			RoleType roleType) {
 		if (CollectionUtils.isNotEmpty(spaces)) {
@@ -1142,10 +1174,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	}
 
+	@Override
 	public User loadUser(long id) {
 		return dao.loadUser(id);
 	}
 
+	@Override
 	public User loadUser(String loginName) {
 		List<User> users = dao.findUsersByLoginName(loginName);
 		if (users.size() == 0) {
@@ -1154,6 +1188,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return users.get(0);
 	}
 
+	@Override
 	public void storeUser(User user) {
 		// make sure email hash is up to date
 		//logger.debug("Updating email hash");
@@ -1161,6 +1196,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		dao.storeUser(user);
 	}
 
+	@Override
 	public void storeUser(User user, String password, boolean sendNotifications) {
 		if (password == null) {
 			password = generatePassword();
@@ -1172,35 +1208,43 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public void removeUser(User user) {
 		dao.removeUser(user);
 	}
 
+	@Override
 	public List<User> findAllUsers() {
 		return dao.findAllUsers();
 	}
 
+	@Override
 	public List<Organization> findAllOrganizations() {
 		return dao.findAllOrganizations();
 	}
 
+	@Override
 	public List<User> findUsersWhereIdIn(List<Long> ids) {
 		return dao.findUsersWhereIdIn(ids);
 	}
 
+	@Override
 	public List<User> findUsersMatching(String searchText, String searchOn) {
 		return dao.findUsersMatching(searchText, searchOn);
 	}
 
+	@Override
 	public int findUsersCountMatching(String searchText, String searchOn) {
 		return dao.findUsersMatching(searchText, searchOn).size();
 	}
 
+	@Override
 	public List<User> findUsersMatching(String searchText, String searchOn,
 			Space space) {
 		return dao.findUsersMatching(searchText, searchOn, space);
 	}
 
+	@Override
 	public List<User> findUsersMatching(String searchText, String searchOn,
 			int start, int count) {
 		List<User> usersMatching = dao.findUsersMatching(searchText, searchOn);
@@ -1208,14 +1252,17 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return usersMatching.subList(start, start + count);
 	}
 
+	@Override
 	public List<User> findUsersForSpace(long spaceId) {
 		return dao.findUsersForSpace(spaceId);
 	}
 
+	@Override
 	public List<User> findUsersInOrganizations(List<Organization> orgs) {
 		return dao.findUsersInOrganizations(orgs);
 	}
 
+	@Override
 	public List<UserSpaceRole> findUserRolesForSpace(long spaceId) {
 		return dao.findUserRolesForSpace(spaceId);
 	}
@@ -1225,10 +1272,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// return dao.findUsersWithRoleForSpace(spaceId, roleKey);
 	// }
 
+	@Override
 	public List<User> findUsersWithRoleForSpace(SpaceRole spaceRole) {
 		return dao.findUsersWithRoleForSpace(spaceRole);
 	}
 
+	@Override
 	public List<User> findUsersForUser(User user) {
 		Set<Space> spaces = user.getSpaces();
 		if (spaces.size() == 0) {
@@ -1241,6 +1290,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return new ArrayList<User>(userSet);
 	}
 
+	@Override
 	public List<User> findUnallocatedUsersForSpace(long spaceId) {
 		List<User> users = findAllUsers();
 		Space space = loadSpace(spaceId);
@@ -1279,18 +1329,21 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public int loadCountOfHistoryInvolvingUser(User user) {
 		return dao.loadCountOfHistoryInvolvingUser(user);
 	}
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+	@Override
 	public CountsHolder loadCountsForUser(User user) {
 		return dao.loadCountsForUser(user);
 	}
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public Counts loadCountsForUserSpace(User user, Space space) {
 		return dao.loadCountsForUserSpace(user, space);
 	}
@@ -1309,6 +1362,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// dao.storeUser(user);
 	// }
 
+	@Override
 	public void storeUserSpaceRole(User user, SpaceRole spaceRole) {
 		try {
 			user.addSpaceRole(spaceRole);
@@ -1320,6 +1374,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public void removeUserSpaceRole(UserSpaceRole userSpaceRole) {
 		User user = userSpaceRole.getUser();
 		user.removeSpaceRole(userSpaceRole.getSpaceRole());
@@ -1329,18 +1384,21 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public UserSpaceRole loadUserSpaceRole(long id) {
 		return dao.loadUserSpaceRole(id);
 	}
 
 	// --------------------------------------------------------------------------------------------
 
+	@Override
 	public int bulkUpdateDeleteUserSpaceRolesForSpace(Space space) {
 		return dao.bulkUpdateDeleteUserSpaceRolesForSpace(space);
 	}
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+	@Override
 	public Space loadSpace(long id) {
 		return dao.loadSpace(id);
 	}
@@ -1351,12 +1409,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return space;
 	}
 
+	@Override
 	public Space loadSpace(SpaceRole spaceRole) {
 		return dao.loadSpace(spaceRole);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public Space loadSpace(String prefixCode) {
 		List<Space> spaces = dao.findSpacesByPrefixCode(prefixCode);
 		if (spaces.size() == 0) {
@@ -1367,10 +1427,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void storeUnpublishedSpace(Space space) {
 		this.dao.save(space);
 	}
 	
+	@Override
 	public Space storeSpace(Space space) {
 		
 		try{
@@ -1543,6 +1605,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 
 
+	@Override
 	public void store(CustomAttribute attribute) {
 		saveOrUpdate(null, attribute);
 	}
@@ -1594,29 +1657,36 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public Set<SpaceGroup> getSpaceGroupsForUser(Serializable userId) {
 		return dao.getSpaceGroupsForUser(userId);
 	}
 
+	@Override
 	public List<Space> findAllSpaces() {
 		return dao.findAllSpaces();
 	}
+	@Override
 	public List<Space> findAllTemplateSpaces() {
 		return dao.findAllSpaces();
 	}
 
+	@Override
 	public List<Space> findSpacesWhereIdIn(List<Long> ids) {
 		return dao.findSpacesWhereIdIn(ids);
 	}
 
+	@Override
 	public List<Space> findSpacesWhereGuestAllowed() {
 		return dao.findSpacesWhereGuestAllowed();
 	}
 
+	@Override
 	public List<Space> findSpacesWhereAnonymousAllowed() {
 		return dao.findSpacesWhereAnonymousAllowed();
 	}
 
+	@Override
 	public List<Space> findUnallocatedSpacesForUser(long userId) {
 		List<Space> spaces = findAllSpaces();
 		User user = loadUser(userId);
@@ -1657,6 +1727,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return unallocated;
 	}
 
+	@Override
 	public void removeSpace(Space space) {
 
 		// Delete related User Space Roles
@@ -1684,6 +1755,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ==========================================================================
 
+	@Override
 	public Map<String, String> loadAllConfig() {
 		List<Config> list = dao.findAllConfig();
 		Map<String, String> allConfig = new HashMap<String, String>(list.size());
@@ -1695,6 +1767,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// TODO must be some nice generic way to do this
 	// TODO remove all this clutter and replace with multilayered commons config
+	@Override
 	public void storeConfig(Config config) {
 		dao.storeConfig(config);
 		if (config.isMailConfig()) {
@@ -1710,6 +1783,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public String loadConfig(String param) {
 		Config config = dao.loadConfig(param);
 		if (config == null) {
@@ -1724,6 +1798,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ========================================================
 
+	@Override
 	public void rebuildIndexes() {
 		clearIndexes();
 		List<AbstractItem> items = dao.findAllItems();
@@ -1732,11 +1807,13 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public List<AbstractItem> findAllItems() {
 		// this returns all Item and all History records for indexing
 		return dao.findAllItems();
 	}
 
+	@Override
 	public void clearIndexes() {
 		File file = new File(calipsoHome + "/indexes");
 		for (File f : file.listFiles()) {
@@ -1744,21 +1821,25 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public void index(AbstractItem item) {
 		indexer.index(item);
 	}
 
+	@Override
 	public boolean validateTextSearchQuery(String text) {
 		return indexSearcher.validateQuery(text);
 	}
 
 	// ==========================================================================
 
+	@Override
 	public void executeHourlyTask() {
 		executeNotificationsForItemsDueIn24Hours();
 	}
 
 	/* configured to be called every five minutes */
+	@Override
 	public void executePollingTask() {
 		// check for incoming email
 		executeReadMailForNewItems();
@@ -1766,35 +1847,43 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ==========================================================================
 
+	@Override
 	public String getReleaseVersion() {
 		return releaseVersion;
 	}
 
+	@Override
 	public String getReleaseTimestamp() {
 		return releaseTimestamp;
 	}
 
 	// Saved Search============================
+	@Override
 	public void storeSavedSearch(SavedSearch savedSearch) {
 		dao.storeSavedSearch(savedSearch);
 	}
 
+	@Override
 	public SavedSearch loadSavedSearch(long id) {
 		return dao.loadSavedSearch(id);
 	}
 
+	@Override
 	public void removeSavedSearch(SavedSearch savedSearch) {
 		dao.removeSavedSearch(savedSearch);
 	}
 
+	@Override
 	public List<SavedSearch> findSavedSearches(User user) {
 		return dao.findSavedSearches(user);
 	}
 
+	@Override
 	public List<SavedSearch> findVisibleSearches(User user) {
 		return dao.findVisibleSearches(user);
 	}
 
+	@Override
 	public List<SavedSearch> findSavedSearches(User user, Space space) {
 		return dao.findSavedSearches(user, space);
 	}
@@ -1807,6 +1896,8 @@ public class CalipsoServiceImpl implements CalipsoService {
 	/**
 	 * @deprecated use store(CustomAttribute) instead
 	 */
+	@Deprecated
+	@Override
 	public void storeCustomAttribute(
 			AssetTypeCustomAttribute assetTypeCustomAttribute) {
 		assetTypeCustomAttribute.setName(assetTypeCustomAttribute
@@ -1839,14 +1930,17 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public List<AssetTypeCustomAttribute> findAllCustomAttributes() {
 		return dao.findAllCustomAttributes();
 	}
 
+	@Override
 	public AssetTypeCustomAttribute loadAssetTypeCustomAttribute(Long id) {
 		return dao.loadAssetTypeCustomAttribute(id);
 	}
 	
+	@Override
 	public String getPrintTemplateTextForAsset(Long assetId){
 		String templateText = null;
 		AssetType assetType = dao.loadAssetTypeByAssetId(assetId);
@@ -1859,20 +1953,24 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return templateText;
 	}
 
+	@Override
 	public CustomAttributeLookupValue loadCustomAttributeLookupValue(
 			long id) {
 		return dao.loadCustomAttributeLookupValue(id);
 	}
 
+	@Override
 	public CustomAttributeLookupValue loadCustomAttributeLookupValue(CustomAttribute attr, String name){
 		return dao.loadCustomAttributeLookupValue(attr, name);
 	}
 
+	@Override
 	public void removeLookupValue(
 			CustomAttributeLookupValue lookupValue) {
 		dao.removeLookupValue(lookupValue);
 	}
 
+	@Override
 	public void storeLookupValue(CustomAttributeLookupValue lookupValue) {
 		lookupValue.setName(lookupValue.getNameTranslations().get(
 				this.getDefaultLocale()));
@@ -1880,6 +1978,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		dao.saveOrUpdateTranslations(lookupValue);
 	}
 
+	@Override
 	public void storeCustomAttributeLookupValues(
 			List<CustomAttributeLookupValue> lookupValues) {
 		if (lookupValues != null) {
@@ -1889,32 +1988,38 @@ public class CalipsoServiceImpl implements CalipsoService {
 		}
 	}
 
+	@Override
 	public List<AssetTypeCustomAttribute> findCustomAttributesMatching(
 			final AssetTypeCustomAttributeSearch searchCustomAttribute) {
 		return dao.findCustomAttributesMatching(searchCustomAttribute);
 	}
 
+	@Override
 	public List<AssetType> findAllAssetTypesByCustomAttribute(
 			AssetTypeCustomAttribute attribute) {
 		return dao.findAllAssetTypesByCustomAttribute(attribute);
 	}
 
+	@Override
 	public int loadCountAssetsForCustomAttribute(
 			AssetTypeCustomAttribute customAttribute) {
 		return dao.loadCountAssetsForCustomAttribute(customAttribute);
 	}
 
+	@Override
 	public int loadCountForAssetTypeAndCustomAttribute(AssetType assetType,
 			CustomAttribute customAttribute) {
 		return dao.loadCountForAssetTypeAndCustomAttribute(assetType,
 				customAttribute);
 	}
 
+	@Override
 	public int loadCountForCustomAttributeLookupValue(
 			CustomAttributeLookupValue lookupValue) {
 		return dao.loadCountForCustomAttributeLookupValue(lookupValue);
 	}
 
+	@Override
 	public void removeCustomAttribute(CustomAttribute customAttribute) {
 		dao.removeCustomAttribute(customAttribute);
 	}
@@ -1923,23 +2028,28 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// Asset types //
 	// ///////////////
 
+	@Override
 	public List<AssetType> findAssetTypesMatching(
 			AssetTypeSearch assetTypeSearch) {
 		return dao.findAssetTypesMatching(assetTypeSearch);
 	}
 
+	@Override
 	public List<AssetType> findAssetTypesWhereIdIn(List<Long> ids) {
 		return dao.findAssetTypesWhereIdIn(ids);
 	}
 
+	@Override
 	public List<AssetType> findAllAssetTypes() {
 		return dao.findAllAssetTypes();
 	}
 
+	@Override
 	public List<AssetType> findAllAssetTypesForSpace(Space space) {
 		return dao.findAllAssetTypesForSpace(space);
 	}
 
+	@Override
 	public void storeAssetType(AssetType assetType) {
 		assetType.setName(assetType.getNameTranslations().get(
 				this.getDefaultLocale()));
@@ -1947,15 +2057,18 @@ public class CalipsoServiceImpl implements CalipsoService {
 		dao.saveOrUpdateTranslations(assetType);
 	}// storeAssetType
 
+	@Override
 	public List<AssetTypeCustomAttribute> findAllAssetTypeCustomAttributesByAssetType(
 			AssetType assetType) {
 		return dao.findAllAssetTypeCustomAttributesByAssetType(assetType);
 	}
 
+	@Override
 	public AssetType loadAssetType(long id) {
 		return dao.loadAssetType(id);
 	}
 	
+	@Override
 	public ItemFieldCustomAttribute loadItemCustomAttribute(Space space, String fieldName){
 		return dao.loadItemCustomAttribute(space, fieldName);
 	}
@@ -1968,10 +2081,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 	public void removeItemCustomAttribute(Space space, String fieldName){
 		dao.deleteItemCustomAttribute(space, fieldName);
 	}
+	@Override
 	public AssetType loadAssetTypeByName(String name) {
 		return dao.loadAssetTypeByName(name);
 	}
 
+	@Override
 	public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(
 			CustomAttribute attr) {
 		//logger.info("findLookupValuesByCustomAttribute, attr: "+attr);
@@ -1985,6 +2100,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 	
 	
+	@Override
 	public List<CustomAttributeLookupValue> findAllLookupValuesByCustomAttribute(
 			CustomAttribute attr) {
 		//logger.info("findLookupValuesByCustomAttribute, attr: "+attr);
@@ -1994,16 +2110,19 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * 
 	 * Get a list of all lookup values matching the level for a given CustomAttribute. Only applies to Tree Options. May return null or an empty List
 	 */
+	@Override
 	public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(
 			CustomAttribute attr, int level) {
 		return dao.findLookupValuesByCustomAttribute(attr, level);
 	}
 
+	@Override
 	public int findLookupValuesCountByCustomAttribute(
 			CustomAttribute attr) {
 		return dao.findLookupValuesByCustomAttribute(attr).size();
 	}
 
+	@Override
 	public List<CustomAttributeLookupValue> findLookupValuesByCustomAttribute(
 			CustomAttribute attr, int start, int count) {
 		List<CustomAttributeLookupValue> l = dao
@@ -2012,6 +2131,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return l;
 	}
 
+	@Override
 	public List<CustomAttributeLookupValue> findLookupValues(Space space, String fieldName){
 		ItemFieldCustomAttribute attr = this.dao.loadItemCustomAttribute(space, fieldName);
 		List<CustomAttributeLookupValue> lookupValues = attr.getAllowedLookupValues();
@@ -2022,28 +2142,34 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// Assets //
 	// //////////
 
+	@Override
 	public void storeAsset(Asset asset) {
 		updateDates(asset, new Date());
 		dao.saveOrUpdate(asset);
 	}// storeAsset
 
+	@Override
 	public Asset loadAsset(Long id) {
 		return dao.loadAsset(id);
 	}// loadAssset
+	@Override
 	public Asset loadAssetAttributes(Asset asset){
 		dao.refresh(asset);
 		dao.preloadCustomAttributeEntityValuesForAsset(asset);
 		return asset;
 	}
+	@Override
 	public Asset loadAssetWithAttributes(Long id) {
 		return dao.loadAssetWithAttributes(id);
 	}// loadAssset
 
+	@Override
 	public List<Asset> findAssetsMatching(AssetSearch assetSearch,
 			final boolean fetchCustomAttributes) {
 		return dao.findAssetsMatching(assetSearch, fetchCustomAttributes);
 	}// findAssetsMatching
 
+	@Override
 	public int findAssetsMatchingCount(AssetSearch assetSearch,
 			final boolean fetchCustomAttributes) {
 		List<Asset> list = dao.findAssetsMatching(assetSearch,
@@ -2054,6 +2180,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return list.size();
 	}
 
+	@Override
 	public List<Asset> findAssetsMatchingSubList(AssetSearch assetSearch,
 			final boolean fetchCustomAttributes, int start, int count) {
 		List<Asset> list = dao.findAssetsMatching(assetSearch,
@@ -2064,14 +2191,17 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return list.subList(start, start + count);
 	}
 
+	@Override
 	public List<Object> findCustomAttributeValueMatching(AssetSearch assetSearch) {
 		return dao.findCustomAttributeValueMatching(assetSearch);
 	}
 
+	@Override
 	public List<Asset> findAllAssetsByItem(Item item) {
 		return dao.findAllAssetsByItem(item);
 	}
 
+	@Override
 	public List<Asset> findAllAssetsBySpace(Space space) {
 		return dao.findAllAssetsBySpace(space);
 	}
@@ -2080,28 +2210,34 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// Fields //
 	// /////////
 
+	@Override
 	public List<RoleSpaceStdField> findSpaceFieldsBySpaceRole(
 			SpaceRole spaceRole) {
 		return dao.findSpaceFieldsBySpaceRole(spaceRole);
 	}
 
+	@Override
 	public List<RoleSpaceStdField> findSpaceFieldsBySpaceandRoleType(
 			SpaceRole spaceRole) {
 		return dao.findSpaceFieldsBySpaceandRoleType(spaceRole);
 	}
 
+	@Override
 	public List<RoleSpaceStdField> findSpaceFieldsBySpace(Space space) {
 		return dao.findSpaceFieldsBySpace(space);
 	}
 
+	@Override
 	public RoleSpaceStdField loadRoleSpaceField(long id) {
 		return dao.loadRoleSpaceField(id);
 	}
 
+	@Override
 	public void storeRoleSpaceStdField(RoleSpaceStdField roleSpaceStdField) {
 		dao.storeRoleSpaceStdField(roleSpaceStdField);
 	}
 
+	@Override
 	public List<StdField> loadAllStdFields() {
 		List<StdField> list = new ArrayList<StdField>();
 
@@ -2112,6 +2248,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return list;
 	}
 
+	@Override
 	public List<StdField> findStdFieldsByType(StdFieldType fieldType) {
 		List<StdField> list = new ArrayList<StdField>();
 
@@ -2124,6 +2261,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return list;
 	}// findStdFieldsByType
 
+	@Override
 	public List<RoleSpaceStdField> findSpaceFieldsForUser(User user) {
 		List<UserSpaceRole> userSpaceRoles = null;
 		List<RoleSpaceStdField> roleSpaceStdFieldlist = new ArrayList<RoleSpaceStdField>();
@@ -2143,10 +2281,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 		return roleSpaceStdFieldlist;
 	}
 
+	@Override
 	public void removeRoleSpaceStdField(RoleSpaceStdField roleSpaceStdField) {
 		dao.removeRoleSpaceStdField(roleSpaceStdField);
 	}
 
+	@Override
 	public int bulkUpdateDeleteRoleSpaceStdFieldsForSpaceRole(
 			SpaceRole spaceRole) {
 		return dao.bulkUpdateDeleteRoleSpaceStdFieldsForSpaceRole(spaceRole);
@@ -2154,14 +2294,17 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// Organization
 	// -------------------------------------------------------------------------------
+	@Override
 	public void storeOrganization(Organization organization) {
 		dao.storeOrganization(organization);
 	}
 
+	@Override
 	public Organization loadOrganization(long id) {
 		return dao.loadOrganization(id);
 	}
 
+	@Override
 	public List<Organization> findOrganizationsMatching(
 			OrganizationSearch organizationSearch) {
 		return dao.findOrganizationsMatching(organizationSearch);
@@ -2169,40 +2312,48 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// Country
 	// ----------------------------------------------------------------------------------
+	@Override
 	public void storeCountry(Country country) {
 		dao.storeCountry(country);
 	}
 
+	@Override
 	public Country loadCountry(String id) {
 		return dao.loadCountry(id);
 	}
 
+	@Override
 	public List<Country> findAllCountries() {
 		return dao.findAllCountries();
 	}
 
 	// Validation Expression
 	// -------------------------------------------------------------------------------
+	@Override
 	public void storeValidationExpression(
 			ValidationExpression validationExpression) {
 		dao.storeValidationExpression(validationExpression);
 		dao.saveOrUpdateTranslations(validationExpression);
 	}
 
+	@Override
 	public ValidationExpression loadValidationExpression(long id) {
 		return dao.loadValidationExpression(id);
 	}
 
+	@Override
 	public List<ValidationExpression> findAllValidationExpressions() {
 		return dao.findAllValidationExpressions();
 	}
 
+	@Override
 	public List<ValidationExpression> findValidationExpressionsMatching(
 			ValidationExpressionSearch validationExpressionSearch) {
 		return dao
 				.findValidationExpressionsMatching(validationExpressionSearch);
 	}
 
+	@Override
 	public ValidationExpression findValidationExpressionByName(String name) {
 		return dao.findValidationExpressionByName(name);
 	}
@@ -2210,6 +2361,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	// Miscellaneous
 	// ------------------------------------------------------------------------------
 
+	@Override
 	public void sendPassword(String emailAddress) {
 		List<User> users = this.findUsersMatching(emailAddress, "email");
 
@@ -2241,6 +2393,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void sendPassword(User user) {
 		storeUser(user, generatePassword(), true);
 	}
@@ -2273,6 +2426,7 @@ public class CalipsoServiceImpl implements CalipsoService {
     	return allowed;
     }
 
+	@Override
 	public void executeReadMailForNewItems() {
 		Map<String, String> config = loadAllConfig();
 		String mailedTicketSignificant = config
@@ -2396,30 +2550,35 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public int getRecordsPerPage() {
 		return this.pageSize;
 	}
 
 	// Space Roles
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	@Override
 	public void storeSpaceRole(SpaceRole spaceRole) {
 		dao.storeSpaceRole(spaceRole);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public SpaceRole loadSpaceRole(long spaceRoleId) {
 		return dao.loadSpaceRole(spaceRoleId);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<SpaceRole> findSpaceRolesForSpace(Space space) {
 		return dao.findSpaceRolesForSpace(space);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void removeSpaceRole(SpaceRole spaceRole) {
 		dao.bulkUpdateDeleteRoleSpaceStdFieldsForSpaceRole(spaceRole);
 		dao.removeSpaceRole(spaceRole);
@@ -2427,12 +2586,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public int bulkUpdateDeleteSpaceRolesForSpace(Space space) {
 		return dao.bulkUpdateDeleteSpaceRolesForSpace(space);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<SpaceRole> findAvailableSpaceRolesForUser(Space space, User user) {
 		List<SpaceRole> spaceRoles = dao.findSpaceRolesForSpace(space);
 
@@ -2472,6 +2633,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<SpaceRole> findSpaceRolesForSpaceAndRoleType(Space space,
 			int roleTypeId) {
 		return dao.findSpaceRolesForSpaceAndRoleType(space, roleTypeId);
@@ -2479,6 +2641,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public SpaceRole loadAdministrator() {
 		// It must be one just one with id = 1 (the first record on table)
 		// But it can happens that some one has truncate refill the table
@@ -2493,6 +2656,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public SpaceRole loadSpaceAdministrator(Space space) {
 		List<SpaceRole> spaceAdministrators = findSpaceRolesForSpaceAndRoleType(
 				space, RoleType.SPACE_ADMINISTRATOR.getId());
@@ -2505,30 +2669,40 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public PageDictionary loadPageDictionary(int id) {
 		return dao.loadPageDictionary(id);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public PageDictionary loadPageDictionary(String className) {
 		return dao.loadPageDictionary(className);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public InforamaDocument loadInforamaDocument(int id) {
 		return dao.loadInforamaDocument(id);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
+	public void storeItemRenderingTemplate(ItemRenderingTemplate tpl) {
+		logger.info("saving ItemRenderingTemplate: " + tpl);
+		dao.saveOrUpdate(tpl);
+	}
+	@Override
 	public void storeInforamaDocument(InforamaDocument inforamaDocument) {
 		dao.storeInforamaDocument(inforamaDocument);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void removeInforamaDocument(InforamaDocument inforamaDocument) {
 		List<InforamaDocumentParameter> documentParameters = findInforamaDocumentParametersForDocument(inforamaDocument);
 		if (documentParameters != null) {
@@ -2541,12 +2715,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<InforamaDocument> findAllInforamaDocuments() {
 		return dao.findAllInforamaDocuments();
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void storeInforamaDocumentParameters(
 			InforamaDocument inforamaDocument) {
 		if (inforamaDocument.getParameters() != null) {
@@ -2559,6 +2735,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<InforamaDocument> findInforamaDocumentsForClassNameAndSpace(
 			String className, Space space) {
 		return dao.findInforamaDocumentsForClassNameAndSpace(className, space);
@@ -2566,12 +2743,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public InforamaDocumentParameter loadInforamaDocumentParameter(int id) {
 		return dao.loadInforamaDocumentParameter(id);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void storeInforamaDocumentParameter(
 			InforamaDocumentParameter inforamaDocumentParameter) {
 		dao.storeInforamaDocumentParameter(inforamaDocumentParameter);
@@ -2579,6 +2758,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<InforamaDocumentParameter> findInforamaDocumentParametersForDocument(
 			InforamaDocument inforamaDocument) {
 		return dao.findInforamaDocumentParametersForDocument(inforamaDocument);
@@ -2586,6 +2766,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void removeInforamaDocumentParameter(
 			InforamaDocumentParameter inforamaDocumentParameter) {
 		dao.removeInforamaDocumentParameter(inforamaDocumentParameter);
@@ -2593,12 +2774,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public PageInforamaDocument loadPageInforamaDocument(int id) {
 		return dao.loadPageInforamaDocument(id);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<PageInforamaDocument> findPageInforamaDocumentForClassName(
 			String className, Space space) {
 		return dao.findPageInforamaDocumentForClassName(className, space);
@@ -2606,6 +2789,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<PageDictionary> findPageDictionaryMatching(
 			PageDictionarySearch pageDictionarySearch) {
 		return dao.findPageDictionaryMatching(pageDictionarySearch);
@@ -2613,18 +2797,21 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void storePageDictionary(PageDictionary pageDictionary) {
 		dao.storePageDictionary(pageDictionary);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void removePageDictionary(PageDictionary pageDictionary) {
 		dao.removePageDictionary(pageDictionary);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<InforamaDocument> findInforamaDocumentMatching(
 			InforamaDocumentSearch inforamaDocumentSearch) {
 		return dao.findInforamaDocumentMatching(inforamaDocumentSearch);
@@ -2632,6 +2819,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<InforamaDocumentParameter> findInforamaDocumentParameterMatching(
 			InforamaDocumentParameterSearch inforamaDocumentParameterSearch) {
 		return dao
@@ -2640,6 +2828,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<PageInforamaDocument> findPageInforamaDocumentMatching(
 			PageInforamaDocumentSearch pageInforamaDocumentSearch) {
 		return dao.findPageInforamaDocumentMatching(pageInforamaDocumentSearch);
@@ -2647,6 +2836,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public void storePageInforamaDocument(
 			PageInforamaDocument pageInforamaDocument) {
 		dao.storePageInforamaDocument(pageInforamaDocument);
@@ -2654,12 +2844,14 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<InforamaDocument> findInforamaDocumentsForSpace(Space space) {
 		return dao.findInforamaDocumentsForSpace(space);
 	}
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public List<Space> findSpacesForInforamaDocument(
 			InforamaDocument inforamaDocument) {
 		return dao.findSpacesForInforamaDocument(inforamaDocument);
@@ -2667,6 +2859,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 
 	// ---------------------------------------------------------------------------------------------
 
+	@Override
 	public int loadCountSpacesForInforamaDocument(
 			InforamaDocument inforamaDocument) {
 		return dao.loadCountSpacesForInforamaDocument(inforamaDocument);
@@ -2678,6 +2871,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * 
 	 * @see gr.abiss.calipso.CalipsoService#getVisibleAssetSpacesForSpace(gr.abiss.calipso.domain.Space)
 	 */
+	@Override
 	public Collection<Space> getVisibleAssetSpacesForSpace(Space space) {
 		// TODO Auto-generated method stub
 		return dao.getVisibleAssetSpacesForSpace(space);
@@ -2690,6 +2884,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * @see gr.abiss.calipso.CalipsoService#getVisibleAssetSpacesForSpace(gr.abiss.calipso.domain.Space)
 	 */
 
+	@Override
 	public Collection<Asset> getVisibleAssetsForSpace(Space space) {
 		// TODO Auto-generated method stub
 		return dao.getVisibleAssetsForSpace(space);
@@ -2698,6 +2893,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	/**
 	 * @see gr.abiss.calipso.CalipsoService#loadI18nStringResource(gr.abiss.calipso.domain.I18nStringIdentifier)
 	 */
+	@Override
 	public I18nStringResource loadI18nStringResource(I18nStringIdentifier id) {
 		return dao.loadI18nStringResource(id);
 	}
@@ -2711,6 +2907,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	 * this method must be removed.
 	 * @deprecated
 	 */
+	@Deprecated
 	@Override
 	public List<Field> getEditableFieldList(Item item) {
 		User user = item.getLoggedBy();

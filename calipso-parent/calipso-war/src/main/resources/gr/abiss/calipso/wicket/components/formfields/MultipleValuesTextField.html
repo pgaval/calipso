@@ -40,10 +40,11 @@
 					<span wicket:id="cellValue" ></span>
 				</td>
 				<td class="left">
+					<a wicket:id="edit"  class="submit-to-edit"><wicket:message key="edit"/></a>
 					<a wicket:id="remove"><img src="resources/delete_row_from_field.gif" wicket:message="alt:delete"/></a>
 					<a wicket:id="moveup"><img src="resources/up.gif" wicket:message="alt:up"/></a>
 					<a wicket:id="movedown"><img src="resources/down.gif" wicket:message="alt:down"/></a>
-					<a wicket:id="edit"><img src="resources/edit.gif" wicket:message="alt:edit"/></a>
+					
 				</td>
 			</wicket:fragment>
 			<wicket:fragment wicket:id="editableFragment">
@@ -52,7 +53,7 @@
 					<input type="text" wicket:id="newValueField" /><br />
 					<!--span wicket:id="newValueHelp"></span><span>&nbsp;</span-->
 				</th>
-				<td wicket:id="submitControls" class="right" colspan="">
+				<td wicket:id="submitControls" class="left" colspan="">
 					<input type="submit" wicket:id="add" class="submit-to-add"  wicket:message="value:add" />
 					<input type="reset" wicket:id="reset"  wicket:message="value:reset" />
 				</td>

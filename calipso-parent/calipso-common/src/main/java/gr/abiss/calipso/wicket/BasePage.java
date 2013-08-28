@@ -37,21 +37,17 @@
 package gr.abiss.calipso.wicket;
 
 import gr.abiss.calipso.CalipsoService;
-import gr.abiss.calipso.domain.CalipsoBreadCrumbBar;
 import gr.abiss.calipso.domain.ItemSearch;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.wicket.helpMenu.HelpMenuPanel;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.log4j.Logger;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.log4j.Logger;
 
 /**
  * base class for all wicket pages, this provides a way to access the spring
@@ -60,12 +56,13 @@ import org.apache.log4j.Logger;
  */
 public abstract class BasePage extends WebPage {
 	private HeaderPanel headerPanel;
-	private InfoPanel infoPanel;
+	private final InfoPanel infoPanel;
 	private Panel helpMenuPanel;
 
 	protected static final Logger logger = Logger.getLogger(BasePage.class);
 
 	public BasePage() {
+
 		headerPanel = new HeaderPanel();
 		headerPanel.setRenderBodyOnly(true);
 		add(headerPanel);

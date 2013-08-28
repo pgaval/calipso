@@ -40,7 +40,6 @@ import gr.abiss.calipso.domain.AbstractItem;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.AssetTypeCustomAttributeSearch;
 import gr.abiss.calipso.domain.AssetTypeSearch;
 import gr.abiss.calipso.domain.Attachment;
@@ -49,8 +48,8 @@ import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.Counts;
 import gr.abiss.calipso.domain.CountsHolder;
 import gr.abiss.calipso.domain.CustomAttribute;
+import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
-import gr.abiss.calipso.domain.Field.Name;
 import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.I18nStringIdentifier;
 import gr.abiss.calipso.domain.I18nStringResource;
@@ -87,7 +86,6 @@ import gr.abiss.calipso.domain.i18n.I18nResourceTranslatable;
 import gr.abiss.calipso.dto.AssetSearch;
 import gr.abiss.calipso.wicket.regexp.ValidationExpressionSearch;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -97,12 +95,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.activation.DataSource;
-import javax.mail.internet.MimeBodyPart;
 
-import org.springframework.security.userdetails.UserDetailsService;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.springframework.context.MessageSource;
+import org.springframework.security.userdetails.UserDetailsService;
 
 /**
  * CalipsoService main business interface (Service Layer)
@@ -313,12 +309,15 @@ public interface CalipsoService extends UserDetailsService {
     public List<SpaceRole> findSpaceRolesForSpaceAndRoleType(Space space, int roleTypeId);
     public SpaceRole loadAdministrator();
     public SpaceRole loadSpaceAdministrator(Space space);
+
+	public void storeItemRenderingTemplate(ItemRenderingTemplate tpl);
     
     // Inforama Integration -----------------------------------------------------------------------
     public PageDictionary loadPageDictionary(int id);
     public PageDictionary loadPageDictionary(String className);
     public InforamaDocument loadInforamaDocument(int id);
     public void storeInforamaDocument(InforamaDocument inforamaDocument);
+
     public void storeInforamaDocumentParameters(InforamaDocument inforamaDocument);
     public List<InforamaDocument> findInforamaDocumentsForClassNameAndSpace(String className, Space space);
     public void removeInforamaDocument(InforamaDocument inforamaDocument);

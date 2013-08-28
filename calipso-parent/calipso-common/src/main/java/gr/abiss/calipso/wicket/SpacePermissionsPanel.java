@@ -39,6 +39,7 @@ package gr.abiss.calipso.wicket;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.FieldGroup;
 import gr.abiss.calipso.domain.ItemRenderingTemplate;
+import gr.abiss.calipso.domain.RenderingTemplate;
 import gr.abiss.calipso.domain.Role;
 import gr.abiss.calipso.domain.RoleSpaceStdField;
 import gr.abiss.calipso.domain.RoleType;
@@ -57,9 +58,10 @@ import gr.abiss.calipso.wicket.form.AbstractSpaceform;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,12 +73,14 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbLink;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbParticipant;
 import org.apache.wicket.extensions.breadcrumb.panel.BreadCrumbPanel;
 import org.apache.wicket.extensions.breadcrumb.panel.IBreadCrumbPanelFactory;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -93,10 +97,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.string.UrlUtils;
 
+import wicket.contrib.tinymce.settings.TinyMCESettings;
+import wicket.contrib.tinymce.settings.TinyMCESettings.Mode;
+
 import com.inmethod.grid.DataProviderAdapter;
 import com.inmethod.grid.IGridColumn;
 import com.inmethod.grid.column.AbstractColumn;
-import com.inmethod.grid.column.CheckBoxColumn;
 import com.inmethod.grid.column.PropertyColumn;
 import com.inmethod.grid.common.AbstractGrid;
 import com.inmethod.grid.datagrid.DataGrid;
@@ -109,12 +115,12 @@ public class SpacePermissionsPanel extends BasePanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private Space space;
+	private final Space space;
 	// private boolean isNewSpace;
 	private final List<RoleSpaceStdField> roleSpaceFields;
-	private Map<String, SpaceRole> spaceRoleMap = new HashMap<String, SpaceRole>();
+	private final Map<String, SpaceRole> spaceRoleMap = new HashMap<String, SpaceRole>();
 
-	private Map<String, Role> rolesMap;
+	private final Map<String, Role> rolesMap;
 
 	/**
 	 * Called when creating or editing a new Space.
@@ -126,6 +132,20 @@ public class SpacePermissionsPanel extends BasePanel {
 	public SpacePermissionsPanel(String id, IBreadCrumbModel breadCrumbModel,
 			Space space) {
 		super(id, breadCrumbModel);
+		add(new AbstractBehavior() {
+			private boolean tinyMCELoaded = false;
+
+			@Override
+			public void renderHead(Component component, IHeaderResponse response) {
+				if (!tinyMCELoaded) {
+					response.renderJavaScriptReference(TinyMCESettings
+							.javaScriptReference());
+
+					tinyMCELoaded = true;
+				}
+			}
+
+		});
 		// List<Field> fieldList = space.getMetadata().getFieldList();
 
 		this.space = space;
@@ -275,6 +295,11 @@ public class SpacePermissionsPanel extends BasePanel {
 		// cancel ==========================================================
 		getBackLinkPanel().makeCancel(
 				new BreadCrumbLink("link", getBreadCrumbModel()) {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					protected IBreadCrumbParticipant getParticipant(String id) {
 						return BreadCrumbUtils.moveToPanel(
@@ -289,7 +314,16 @@ public class SpacePermissionsPanel extends BasePanel {
 	 */
 	private class SpacePermissionsForm extends AbstractSpaceform {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		private final class EditLinkColumn extends AbstractColumn {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			private final ModalWindow editTemplateModal;
 			private final Space space;
 			private final WebMarkupContainer templatesGridContainer;
@@ -323,8 +357,15 @@ public class SpacePermissionsPanel extends BasePanel {
 
 		@SuppressWarnings({ "unchecked", "serial" })
 		public SpacePermissionsForm(String id, final Space space) {
-
 			super(id, space);
+			// load templates if missing
+			try {
+				space.getItemRenderingTemplates();
+			} catch (RuntimeException e) {
+				space.setItemRenderingTemplates(SpacePermissionsPanel.this
+						.getCalipso().getItemRenderingTemplates(space));
+			}
+
 			RequestCycle rc = RequestCycle.get();
 			final List<Role> roles = new ArrayList<Role>(space.getMetadata()
 					.getRoleList());
@@ -364,6 +405,7 @@ public class SpacePermissionsPanel extends BasePanel {
 			// "fields-group-"+field.getGroupId()
 			add(new ListView("field-group-selection", space.getMetadata()
 					.getFieldGroups()) {
+				@Override
 				protected void populateItem(ListItem listItem) {
 					FieldGroup fieldGroup = (FieldGroup) listItem
 							.getModelObject();
@@ -395,6 +437,7 @@ public class SpacePermissionsPanel extends BasePanel {
 				@Override
 				public void onSubmit() {
 					activate(new IBreadCrumbPanelFactory() {
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
 							return new SpaceStatePanel(componentId,
@@ -410,6 +453,7 @@ public class SpacePermissionsPanel extends BasePanel {
 				@Override
 				public void onSubmit() {
 					activate(new IBreadCrumbPanelFactory() {
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
 							return new SpaceRolePanel(componentId,
@@ -425,6 +469,7 @@ public class SpacePermissionsPanel extends BasePanel {
 					statesMap.keySet());
 			stateKeysNoNew.remove(State.NEW);
 			add(new ListView("stateHeads", stateKeysNoNew) {
+				@Override
 				protected void populateItem(ListItem listItem) {
 					Integer stateKey = (Integer) listItem.getModelObject();
 					listItem.add(new Label("state", statesMap.get(stateKey)));
@@ -433,8 +478,9 @@ public class SpacePermissionsPanel extends BasePanel {
 			// fields col headings
 			// ----------------------------------------------------------------
 			add(new ListView<Field>("fieldHeads", fields) {
+				@Override
 				protected void populateItem(ListItem<Field> listItem) {
-					Field f = (Field) listItem.getModelObject();
+					Field f = listItem.getModelObject();
 					listItem.add(new Label("field", localize(space, f.getName()
 							.getText())));
 					listItem.add(new AttributeModifier("name", "fields-group-"
@@ -452,6 +498,7 @@ public class SpacePermissionsPanel extends BasePanel {
 			List<Integer> stateKeys = new ArrayList(statesMap.keySet());
 
 			add(new ListView("states", stateKeys) {
+				@Override
 				protected void populateItem(ListItem listItem) {
 					final boolean firstState = listItem.getIndex() == 0;
 					final String stateClass = listItem.getIndex() % 2 == 1 ? "bdr-bottom alt"
@@ -460,21 +507,19 @@ public class SpacePermissionsPanel extends BasePanel {
 							.getModelObject();
 					listItem.add(new ListView("roles", space
 							.getSpaceRolesList/* WithoutSpaceAdmin */()) {
+						@Override
 						protected void populateItem(ListItem listItem) {
 							final SpaceRole spaceRole = (SpaceRole) listItem
 									.getModelObject();
 							// TODO: hack
 							try{
-
-								
-								logger.debug("space role already has tmpls loaded: "+spaceRole.getItemRenderingTemplates().values());
+								Collection<RenderingTemplate> tpls = spaceRole.getItemRenderingTemplates().values();
+								// logger.debug("space role already has tmpls loaded: "+tpls);
 							}
-							catch(Exception e){
-
-								logger.info("space role has no templates loaded, loading");
+							catch(Exception ex){
+								// logger.info("space role has no templates loaded, loading");
 								spaceRole.setItemRenderingTemplates(SpacePermissionsPanel.this.getCalipso().loadSpaceRoleTemplates(spaceRole.getId()));
-
-								logger.info("space role has now loaded tmpls: "+spaceRole.getItemRenderingTemplates());
+								// logger.info("space role has now loaded tmpls: "+spaceRole.getItemRenderingTemplates());
 							}
 							String roleClass = listItem.getIndex() % 2 == 1 ? " alt"
 									: "";
@@ -497,6 +542,7 @@ public class SpacePermissionsPanel extends BasePanel {
 									@Override
 									public void onSubmit() {
 										IBreadCrumbPanelFactory factory = new IBreadCrumbPanelFactory() {
+											@Override
 											public BreadCrumbPanel create(
 													String componentId,
 													IBreadCrumbModel breadCrumbModel) {
@@ -530,6 +576,7 @@ public class SpacePermissionsPanel extends BasePanel {
 								@Override
 								public void onSubmit() {
 									activate(new IBreadCrumbPanelFactory() {
+										@Override
 										public BreadCrumbPanel create(
 												String componentId,
 												IBreadCrumbModel breadCrumbModel) {
@@ -557,11 +604,13 @@ public class SpacePermissionsPanel extends BasePanel {
 													+ "]"),
 									space.getItemRenderingTemplates(),
 									new IChoiceRenderer<ItemRenderingTemplate>() {
+										@Override
 										public Object getDisplayValue(
 												ItemRenderingTemplate tmpl) {
 											return tmpl.getDescription();
 										}
 
+										@Override
 										public String getIdValue(
 												ItemRenderingTemplate tmpl,
 												int i) {
@@ -591,6 +640,7 @@ public class SpacePermissionsPanel extends BasePanel {
 
 							listItem.add(new ListView("stateHeads",
 									stateKeysNoNew) {
+								@Override
 								protected void populateItem(ListItem listItem) {
 									final Integer stateKeyCol = (Integer) listItem
 											.getModelObject();
@@ -604,6 +654,7 @@ public class SpacePermissionsPanel extends BasePanel {
 															stateKeyRow,
 															stateKeyCol);
 											activate(new IBreadCrumbPanelFactory() {
+												@Override
 												public BreadCrumbPanel create(
 														String componentId,
 														IBreadCrumbModel breadCrumbModel) {
@@ -641,6 +692,7 @@ public class SpacePermissionsPanel extends BasePanel {
 								}
 							});
 							listItem.add(new ListView("fieldHeads", fields) {
+								@Override
 								protected void populateItem(ListItem listItem) {
 									final Field field = (Field) listItem
 											.getModelObject();
@@ -670,6 +722,7 @@ public class SpacePermissionsPanel extends BasePanel {
 												}
 											}, State.MASK_KEYS,
 											new IChoiceRenderer() {
+												@Override
 												public Object getDisplayValue(
 														Object object) {
 													return localize("State."
@@ -678,6 +731,7 @@ public class SpacePermissionsPanel extends BasePanel {
 
 												}
 
+												@Override
 												public String getIdValue(
 														Object id, int index) {
 													return id.toString();
@@ -687,6 +741,7 @@ public class SpacePermissionsPanel extends BasePanel {
 									maskChoice
 											.add(new AjaxFormComponentUpdatingBehavior(
 													"onchange") {
+												@Override
 												protected void onUpdate(
 														AjaxRequestTarget target) {
 													// logger.info("model object: "+maskChoice.getModelObject());
@@ -832,6 +887,7 @@ public class SpacePermissionsPanel extends BasePanel {
 					}
 
 					activate(new IBreadCrumbPanelFactory() {
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
 							BreadCrumbUtils
@@ -848,6 +904,7 @@ public class SpacePermissionsPanel extends BasePanel {
 				public void onSubmit() {
 					activate(new IBreadCrumbPanelFactory() {
 
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
 							BreadCrumbUtils
@@ -868,6 +925,7 @@ public class SpacePermissionsPanel extends BasePanel {
 						isNewSpace = false; // after the user allocation, we
 											// edit the space
 						activate(new IBreadCrumbPanelFactory() {
+							@Override
 							public BreadCrumbPanel create(String componentId,
 									IBreadCrumbModel breadCrumbModel) {
 								// TODO Reactivate following code after test
@@ -887,6 +945,7 @@ public class SpacePermissionsPanel extends BasePanel {
 						});
 					} else {
 						activate(new IBreadCrumbPanelFactory() {
+							@Override
 							public BreadCrumbPanel create(String componentId,
 									IBreadCrumbModel breadCrumbModel) {
 								SpaceListPanel spaceListPanel = new SpaceListPanel(
@@ -916,8 +975,15 @@ public class SpacePermissionsPanel extends BasePanel {
 		private AjaxLink getEditTemplateModalLink(final Space space,
 				final WebMarkupContainer templatesGridContainer,
 				final DataGrid grid, final ModalWindow editTemplateModal) {
+			@SuppressWarnings("unchecked")
 			AjaxLink newTemplateLink = new AjaxLink("newTemplateLink",
-					new ResourceModel("edit")) {
+					new ResourceModel("new")) {
+				/**
+						 * 
+						 */
+				private static final long serialVersionUID = 1L;
+
+				@Override
 				public void onClick(AjaxRequestTarget target) {
 					// TODO: add row to grid?
 					final ItemRenderingTemplate tpl;
@@ -934,45 +1000,83 @@ public class SpacePermissionsPanel extends BasePanel {
 					editTemplateModal
 							.setContent(new EditItemRenderingTemplatePanel(
 									"content", editTemplateModal, tpl) {
+								/**
+										 * 
+										 */
+								private static final long serialVersionUID = 1L;
+
 								@Override
 								protected void persist(
 										AjaxRequestTarget target, Form form) {
+
 									if (CollectionUtils.isEmpty(space
 											.getItemRenderingTemplates())
 											|| !space
 													.getItemRenderingTemplates()
 													.contains(tpl)) {
 										space.add(tpl);
-										//logger.info("added new template to space");
 									}
+									// else{
+									getCalipso()
+											.storeItemRenderingTemplate(tpl);
 
 									// update grid
 									if (target != null) {
 										target.addComponent(templatesGridContainer);
 									}
-
 								}
 							});
 					editTemplateModal.setTitle(this.getLocalizer().getString(
 							"presentation.templates", this));
 					editTemplateModal.show(target);
-					// target.appendJavaScript("tinyMCE.execCommand('mceAddControl', false, 'templateText');");
+
+					final StringBuilder buf = new StringBuilder();
+					TinyMCESettings settings = EditItemRenderingTemplatePanel
+							.getSettings();
+					// Load plugins
+					buf.append(settings.getLoadPluginJavaScript())
+							.append(";\n");
+
+					// Initialize tinyMCE
+					buf.append("tinyMCE.init({")
+							.append(settings.toJavaScript(Mode.none,
+									Collections.EMPTY_LIST)).append(" });\n");
+					buf.append(settings.getAdditionalPluginJavaScript())
+							.append(";\n");
+
+					// Setup editor
+					buf.append("tinyMCE.execCommand('mceAddControl',true,'templateText');");
+
+					// Request focus on editor
+					buf.append(
+							"setTimeout( function() {tinyMCE.execCommand('mceFocus',true,'templateText');}, 500 );");
+
+					target.appendJavaScript(buf.toString());
+					// target.appendJavaScript("setTimeout(function () {tinyMCE.execCommand('mceAddControl', true, 'templateText');), 1000);");
 				}
 			};
 			return newTemplateLink;
 		}
 
+		@SuppressWarnings({ "unchecked", "unchecked", "unchecked", "unchecked" })
 		private AjaxLink getEditTemplateModalLink(
 				final ItemRenderingTemplate tpl, final Space space,
 				final WebMarkupContainer templatesGridContainer,
 				final AbstractGrid grid, final ModalWindow editTemplateModal) {
+			@SuppressWarnings({ "unchecked", "deprecation", "unchecked" })
 			AjaxLink newTemplateLink = new AjaxLink("link", new ResourceModel(
 					"edit")) {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				@SuppressWarnings({ "unchecked" })
 				public void onClick(AjaxRequestTarget target) {
 
 					editTemplateModal
 							.setContent(new EditItemRenderingTemplatePanel(
 									"content", editTemplateModal, tpl) {
+								private static final long serialVersionUID = 1L;
+
 								@Override
 								protected void persist(
 										AjaxRequestTarget target, Form form) {
@@ -982,20 +1086,43 @@ public class SpacePermissionsPanel extends BasePanel {
 													.getItemRenderingTemplates()
 													.contains(tpl)) {
 										space.add(tpl);
-										//logger.info("added new template to space");
 									}
+									getCalipso().storeItemRenderingTemplate(tpl);
 
 									// update grid
 									if (target != null) {
 										target.addComponent(templatesGridContainer);
 									}
 
+
 								}
 							});
 					editTemplateModal.setTitle(this.getLocalizer().getString(
 							"presentation.templates", this));
 					editTemplateModal.show(target);
-					// target.appendJavaScript("tinyMCE.execCommand('mceAddControl', false, 'templateText');");
+
+					final StringBuilder buf = new StringBuilder();
+					TinyMCESettings settings = EditItemRenderingTemplatePanel
+							.getSettings();
+					// Load plugins
+					buf.append(settings.getLoadPluginJavaScript())
+							.append(";\n");
+
+					// Initialize tinyMCE
+					buf.append("tinyMCE.init({")
+							.append(settings.toJavaScript(Mode.none,
+									Collections.EMPTY_LIST)).append(" });\n");
+					buf.append(settings.getAdditionalPluginJavaScript())
+							.append(";\n");
+
+					// Setup editor
+					buf.append("tinyMCE.execCommand('mceAddControl',true,'templateText');");
+
+					// Request focus on editor
+					buf.append("setTimeout( function() {tinyMCE.execCommand('mceFocus',true,'templateText');}, 500 );");
+
+					target.appendJavaScript(buf.toString());
+					// target.appendJavaScript("setTimeout(function () {tinyMCE.execCommand('mceAddControl', true, 'templateText');), 1000);");
 				}
 			};
 			return newTemplateLink;
@@ -1060,4 +1187,5 @@ public class SpacePermissionsPanel extends BasePanel {
 			return space;
 		}
 	}
+
 }
