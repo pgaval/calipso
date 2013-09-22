@@ -411,14 +411,14 @@ public class MultipleValuesTextField extends FormComponentPanel {
 		List<String> escapedLines = MultipleValuesTextField.getValueRows(HtmlUtils.htmlEscape(input));
 		final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 		if(CollectionUtils.isNotEmpty(escapedLines)){
-			html.append("<table cellspacing=\"1\" class=\"custom-attribute-tabular\">");
+			html.append("<table cellspacing=\"1\" cellpadding=\"0\" class=\"custom-attribute-tabular\">");
 			if(fieldConfig != null && localizer != null && callerComponent != null){
 				 List<FieldConfig> configs = fieldConfig.getSubFieldConfigs();
 				if(CollectionUtils.isNotEmpty(configs)){
 					html.append("<thead><tr>");
-						int styleWidth = 100/configs.size();
+					int styleMinWidth = ((100 / configs.size()) / 3) * 2;
 						for(FieldConfig config :configs){
-							html.append("<th style=\"width:"+styleWidth+"%\">");
+							html.append("<th style=\"min-width:" + styleMinWidth + "%\">");
 							html.append(localizer.getString(config.getLabelKey(), callerComponent));
 							html.append("</th>");
 						}
@@ -438,7 +438,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 						FieldConfig subconfig = fieldConfig != null && CollectionUtils.isNotEmpty(fieldConfig.getSubFieldConfigs()) 
 								? fieldConfig.getSubFieldConfigs().get(cellIndex) 
 								: FieldConfig.FALLBACK_SUBCONFIG;
-						html.append("<td style=\"width:"+styleWidth+"%\"").append(subconfig.isNumberType()?" class=\"right\">":">");
+						html.append("<td ").append(subconfig.isNumberType()?" class=\"right\">":">");
 						html.append(helper.parseFormat(subconfig, subValue, callerComponent != null ? callerComponent.getSession().getLocale():Locale.ENGLISH));
 						html.append("</td>");
 						helper.updateSummary(subconfig, subValue);

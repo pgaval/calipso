@@ -20,23 +20,12 @@
 package gr.abiss.calipso.util;
 
 import gr.abiss.calipso.CalipsoService;
-import gr.abiss.calipso.domain.AbstractItem;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.ColumnHeading;
 import gr.abiss.calipso.domain.Country;
-import gr.abiss.calipso.domain.Effort;
-import gr.abiss.calipso.domain.Field;
-import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.Item;
-import gr.abiss.calipso.domain.ItemSearch;
 import gr.abiss.calipso.domain.Organization;
 import gr.abiss.calipso.domain.User;
-import gr.abiss.calipso.domain.ColumnHeading.Name;
-import gr.abiss.calipso.wicket.asset.ItemAssetTypesPanel;
-import gr.abiss.calipso.wicket.components.viewLinks.AssetViewLink;
-import gr.abiss.calipso.wicket.components.viewLinks.OrganizationViewLink;
-import gr.abiss.calipso.wicket.components.viewLinks.UserViewLink;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,55 +34,25 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.wicket.Component;
 import org.apache.wicket.Localizer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.velocity.markup.html.VelocityPanel;
-import org.springframework.web.util.HtmlUtils;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xml.sax.InputSource;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
-
-import static gr.abiss.calipso.domain.ColumnHeading.Name.ASSET_TYPE;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.ASSIGNED_TO;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.DETAIL;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.DUE_TO;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.ID;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.LOGGED_BY;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.PLANNED_EFFORT;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.REPORTED_BY;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.SPACE;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.STATUS;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.SUMMARY;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.TIME_FROM_CREATION_TO_CLOSE;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.TIME_FROM_CREATION_TO_FIRST_REPLY;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.TIME_STAMP;
-import static gr.abiss.calipso.domain.ColumnHeading.Name.TOTAL_RESPONSE_TIME;
 
 /**
  * Excel Sheet generation helper
@@ -178,7 +137,7 @@ public class PdfUtils {
 		return os.toByteArray();
 	}
 
-	public static byte[] getPdf(CalipsoService calipso, Item asset, String template, Component callerComponent ){
+	public static byte[] getPdf(CalipsoService calipso, Item item, String template, Component callerComponent ){
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		String html = null;
 		try {
@@ -188,19 +147,19 @@ public class PdfUtils {
 				Reader templateReader = new StringReader(template);
 				// create a Velocity context object and add the asset
 				final VelocityContext context = new VelocityContext();
-				context.put("item", asset);
+				context.put("item", item);
 				context.put("calipso", calipso);
 				// create a writer for capturing the Velocity output
 				StringWriter writer = new StringWriter();
 				// execute the velocity script and capture the output in writer
-				Velocity.evaluate(context, writer, asset.getRefId(), templateReader);
+				Velocity.evaluate(context, writer, item.getRefId(), templateReader);
 				// get the output as a string
 				html = writer.getBuffer().toString();
 			}
 			else{
 				// no template exists, just output manual HTML to feed xhtmlrenderer
 				StringBuffer htmlBuffer = getDefaultHeader();
-				htmlBuffer.append("<h1>").append(localizer.getString(asset.getSpace().getNameTranslationResourceKey(), callerComponent)).append(": ").append(asset.getRefId()).append("</h1>");
+				htmlBuffer.append("<h1>").append(localizer.getString(item.getSpace().getNameTranslationResourceKey(), callerComponent)).append(": ").append(item.getRefId()).append("</h1>");
 //				htmlBuffer.append("<table cellspacing='0'>");
 //				htmlBuffer.append("<tr><th>")
 //					.append(localizer.getString("asset.form.inventoryCode", callerComponent))
@@ -245,7 +204,7 @@ public class PdfUtils {
 			// convert HTML string to PDF and store it in the buffer output stream 
 	        writePdf(calipso, os, html);
 		} catch (Exception e) {
-			logger.error("Failed to creare PDF for asset, html: \n"+html, e);
+			logger.error("Failed to creare PDF for item, html: \n"+html, e);
 		}
 		return os.toByteArray();
 	}
@@ -269,13 +228,14 @@ public class PdfUtils {
 				"#page:before {content: counter(page);}" +
 				"#pagecount:before {content: counter(pages);} " +
 				"#footer{position: running(footer);}" +
+				"#firstPageFooter{position: running(firstPageFooter);}" +
 		        "#header {\n" +
 		        "	display: block; text-align: center;\n" + 
 		        "	position: running(header);}\n" +
 				"body { font-family: \"Arial Unicode MS\";margin:10px;padding:10px; }th{width:50%;background:#EEEEEE;}td, th{border:1px solid #EEEEEE;padding-left:4px;padding-right:4px;vertical-align:top;}table{border-collapse:collapse;}</style></head><body>" +
 				"<div id='header'>Header</div>")
 			.append("<div id='footer' style=''><div class='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>")
-			.append("<div id='firstPageFooter' style='position: running(firstPageFooter);'><div class='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>");
+			.append("<div id='firstPageFooter' style=''><div class='footerContent'>Page <span id='page'/> of <span id='pagecount'/></div></div>");
 //		"<html><head><style>\n" +
 //        "div.footer {\n" +
 //        "display: block; text-align: center;\n" + 

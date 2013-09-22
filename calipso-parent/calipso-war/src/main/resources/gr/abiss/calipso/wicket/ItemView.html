@@ -31,7 +31,7 @@
 			<span class="clear"></span>
 		</div>
 		<div class="section-body">
-		    <table class="overview" cellspacing="0">
+		    <table class="overview overview-summary" cellspacing="0">
 		    	<!-- ID and related Items -->
 		        <tr wicket:id="summaryContainer">
 		            <th class="label-right"><wicket:message key="item_view.summary"/></th>
@@ -86,7 +86,7 @@
 				</tr>
 			</table>
 			<table class="overview" wicket:id="fieldGroups">
-				<caption wicket:id="fieldGroupLabel"></caption>
+				<thead><tr><th colspan="2"><span wicket:id="fieldGroupLabel"></span></th></tr></thead>
 				<tr wicket:id="fields">
 					<th class="label-right">
 						<span class="labelContainerBlock" wicket:id="fieldLabel">label</span>

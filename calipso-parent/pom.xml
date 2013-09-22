@@ -108,11 +108,26 @@
 			<artifactId>bctsp-jdk16</artifactId>
 			<version>1.46</version>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>org.xhtmlrenderer</groupId>
 			<artifactId>core-renderer</artifactId>
 			<version>R8</version>
-		</dependency>
+		</dependency-->
+		<dependency>
+	      <groupId>com.lowagie</groupId>
+	      <artifactId>itext</artifactId>
+	      <version>2.1.7</version>
+	    </dependency>
+		<dependency>
+	      <groupId>org.xhtmlrenderer</groupId>
+	      <artifactId>flying-saucer-core</artifactId>
+	      <version>9.0.3</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.xhtmlrenderer</groupId>
+	      <artifactId>flying-saucer-pdf</artifactId>
+	      <version>9.0.3</version>
+	    </dependency>
 		<dependency>
 			<groupId>com.ociweb.xml</groupId>
 			<artifactId>wax</artifactId>
