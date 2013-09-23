@@ -93,6 +93,7 @@ import org.apache.wicket.extensions.breadcrumb.panel.BreadCrumbPanel;
 import org.apache.wicket.extensions.breadcrumb.panel.IBreadCrumbPanelFactory;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -211,20 +212,21 @@ public class ItemView extends BasePanel {
     		listItem.add(new Label("fieldValue", date != null ? dateFormat.format(date) : ""));
     	}
     	else{
-    		Label label;
+    		
     		if(field.isMultivalue()){
     			logger.info("addFieldValueDisplay, fieldConfig: "+fieldConfig);
-				label = new Label("fieldValue",
+				Label label = new Label("fieldValue",
 						StringEscapeUtils.unescapeHtml(MultipleValuesTextField
 								.toHtmlSafeTable(((String) value), fieldConfig,
 										this.getLocalizer(), this)));
     			label.setEscapeModelStrings(false);
     			label.add(new AttributeAppender("class", new Model("content"), " "));
+        		listItem.add(label);
     		}
     		else{
-    			label = new Label("fieldValue", (String)value);
+    			MultiLineLabel label = new MultiLineLabel("fieldValue", (String) value);
+	    		listItem.add(label);
     		}
-    		listItem.add(label);
     	}
 	}
     private void addComponents(ItemRenderingTemplate tmpl, final Item item) {
