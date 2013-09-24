@@ -55,6 +55,7 @@
 				<prop key="executeHourlyTask">PROPAGATION_REQUIRED</prop>
 				<prop key="executePollingTask">PROPAGATION_REQUIRED</prop>
 				<prop key="runStatePlugins">PROPAGATION_REQUIRED</prop>
+				<prop key="runStartupPlugins">PROPAGATION_REQUIRED</prop>
 				<prop key="loadAssetAttributes">PROPAGATION_REQUIRED</prop>
                 <prop key="*">PROPAGATION_SUPPORTS,readOnly</prop>
             </props>

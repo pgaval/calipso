@@ -327,7 +327,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 		}
 		return results;	
 	}
-    
+
     @Override
 	public List<AbstractItem> findAllItems() {
         // return getHibernateTemplate().loadAll(AbstractItem.class);
@@ -340,6 +340,12 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
             }
         });        
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Item> findItems() {
+		return getHibernateTemplate().loadAll(Item.class);
+	}
 
     /**
      * Returns an iterator for items due within 24 hours.
@@ -441,14 +447,14 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	else{*/
     		List<ItemRenderingTemplate> templates = space.getItemRenderingTemplates();
-    		//space.setItemRenderingTemplates(null);
+		space.setItemRenderingTemplates(null);
         	getHibernateTemplate().merge(space);
-		// if(CollectionUtils.isNotEmpty(templates)){
-		// for(ItemRenderingTemplate template : templates){
-		// template.setSpace(space);
-		// this.getHibernateTemplate().merge(template);
-		// }
-		// }
+		if (CollectionUtils.isNotEmpty(templates)) {
+			for (ItemRenderingTemplate template : templates) {
+				template.setSpace(space);
+				this.getHibernateTemplate().merge(template);
+			}
+		}
         		
     	/*}*/
         //logger.info("Saved space, updating metadataCache for space: "+space.getPrefixCode());
@@ -672,6 +678,11 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	public void removeUser(User user) {
         getHibernateTemplate().delete(user);
     }
+
+	@Override
+	public void remove(Collection<Serializable> entities) {
+		getHibernateTemplate().deleteAll(entities);
+	}
 
     @Override
 	public List<User> findAllUsers() {
@@ -1619,7 +1630,7 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	}//findCustomAttributeValueMatching
 	
 	//---------------------------------------------------------------------------------------------
-	
+
 	/**
 	 * Get a list of assets for the given item	
 	 * @author marcello
@@ -1629,6 +1640,19 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
 	public List<Asset> findAllAssetsByItem(Item item){
 		return getHibernateTemplate().find("select asset from Asset asset, Item item where asset in elements(item.assets) and item.id = ?", item.getId());
 	}//findAssetsByItem
+
+	/**
+	 * Get a list of assets for the given item
+	 * 
+	 * @author marcello
+	 * @param item
+	 *            the given item
+	 * */
+	@Override
+	public List<Asset> findAllAssetsWithNoItem() {
+		return getHibernateTemplate().find(
+				"select asset from Asset asset where asset.items is empty");
+	}// findAssetsByItem
 
 	//---------------------------------------------------------------------------------------------
 	

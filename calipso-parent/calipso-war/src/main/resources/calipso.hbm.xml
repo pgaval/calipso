@@ -783,11 +783,17 @@
 			<column name="as_atid" />
 		</many-to-one>
 		
+		<set name="items" table="item_assets" inverse="true" lazy="true">
+    		<key column="ia_asid" not-null="true"/>
+			<many-to-many column="ia_itemid" class="Item" />
+		</set>
 		<map name="customAttributes" table="asset_custom_attributes_values" cascade="all-delete-orphan" inverse="false" lazy="false" sort="natural">
 			<key column="acav_asid" not-null="true" />
 			<index-many-to-many column="acav_caid" class="AssetTypeCustomAttribute"/>
 			<element type="string" column="acav_value"/>
 		</map>
+		
+		
 	</class>
 
 <!-- AssetType ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

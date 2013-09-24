@@ -94,6 +94,7 @@ import gr.abiss.calipso.lucene.IndexSearcher;
 import gr.abiss.calipso.lucene.Indexer;
 import gr.abiss.calipso.mail.MailReader;
 import gr.abiss.calipso.mail.MailSender;
+import gr.abiss.calipso.plugins.startup.StartupPlugin;
 import gr.abiss.calipso.plugins.state.AbstractStatePlugin;
 import gr.abiss.calipso.plugins.state.CopyItemInfoToAssetPlugin;
 import gr.abiss.calipso.util.AttachmentUtils;
@@ -344,6 +345,31 @@ public class CalipsoServiceImpl implements CalipsoService {
 		initDashBoardPanelConstructor(config.get("classes.dashboard"));
 		initSessionTimeout(config.get("session.timeout"));
 		initPageSize(config.get("calipso.pageSize"));
+		// runStartupPlugins();
+		
+		
+	}
+
+	@Override
+	public void runStartupPlugins() {
+		String runStartupPlugins = config.get("calipso.startupPlugins");
+		if (StringUtils.isNotBlank(runStartupPlugins)) {
+			String[] plugins = runStartupPlugins.split(",");
+			for (int i = 0; i < plugins.length; i++) {
+				String pluginClassName = plugins[i];
+				logger.info("Running startup plugin: "+pluginClassName);
+				try{
+						Class clazz = Class.forName(pluginClassName);
+						StartupPlugin plugin = (StartupPlugin) clazz
+								.newInstance();
+						plugin.run(this);
+				}
+				catch(Exception e){
+					logger.error("Error running startup plugin", e);
+				}
+			}
+			this.storeConfig(new Config("calipso.startupPlugins", null));
+		}
 	}
 
 	@Override
@@ -666,8 +692,10 @@ public class CalipsoServiceImpl implements CalipsoService {
 			item.add(history);
 		}
 		dao.storeItem(item); // merge edits + history
+		logger.info("updated item, assets: " + (item.getAssets() != null?item.getAssets().size():0));
 		// TODO index?
-		if (item.isSendNotifications()) {
+		if (item.isSendNotifications()
+				&& !(updateHistory == false && item.getStatus().intValue() > 0)) {
 			mailSender.send(item);
 		}
 	}
@@ -1022,6 +1050,11 @@ public class CalipsoServiceImpl implements CalipsoService {
 			}
 		}
 		dao.removeItem(item);
+	}
+
+	@Override
+	public void remove(Collection<Serializable> entities) {
+		dao.remove(entities);
 	}
 
 	@Override
@@ -1814,6 +1847,12 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 
 	@Override
+	public List<Item> findItems() {
+		// this returns all Item and all History records for indexing
+		return dao.findItems();
+	}
+
+	@Override
 	public void clearIndexes() {
 		File file = new File(calipsoHome + "/indexes");
 		for (File f : file.listFiles()) {
@@ -2199,6 +2238,11 @@ public class CalipsoServiceImpl implements CalipsoService {
 	@Override
 	public List<Asset> findAllAssetsByItem(Item item) {
 		return dao.findAllAssetsByItem(item);
+	}
+
+	@Override
+	public List<Asset> findAllAssetsWithNoItem() {
+		return dao.findAllAssetsWithNoItem();
 	}
 
 	@Override

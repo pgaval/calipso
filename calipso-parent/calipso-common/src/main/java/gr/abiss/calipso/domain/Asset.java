@@ -20,9 +20,10 @@
 package gr.abiss.calipso.domain;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -48,7 +49,7 @@ public class Asset implements Serializable {
 	private Space space;
 	private User createdBy;
 	private SortedMap<AssetTypeCustomAttribute, String> customAttributes = new TreeMap<AssetTypeCustomAttribute, String>();
-
+	private Set<Item> items = new HashSet<Item>();
 	public Asset() {
 		
 	}
@@ -211,6 +212,13 @@ public class Asset implements Serializable {
 		this.validationExpression = validationExpression;
 	}
 
+	public Set<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<Item> items) {
+		this.items = items;
+	}
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)

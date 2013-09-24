@@ -23,24 +23,25 @@ import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Attachment;
 import gr.abiss.calipso.domain.Country;
+import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.Item;
 import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
 import gr.abiss.calipso.domain.Organization;
 import gr.abiss.calipso.domain.User;
-import gr.abiss.calipso.plugins.state.AbstractStatePlugin;
 import gr.abiss.calipso.util.AttachmentUtils;
 import gr.abiss.calipso.util.DateUtils;
 import gr.abiss.calipso.util.ItemUtils;
 import gr.abiss.calipso.util.XmlUtils;
 
-
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -91,22 +92,51 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 		this.assetType = asset.getAssetType();
 	}
 
+	@Override
 	public Serializable executePostStateChange(CalipsoService calipsoService, History history){
+
+		// get the item the history belongs to
+		Item item = history.getParent();
+		logger.info("Creating iteminfo asset for item "
+				+ item.getUniqueRefId());
+		List<Asset> itemAssets = calipsoService.findAllAssetsByItem(item);
+		if(CollectionUtils.isNotEmpty(itemAssets)){
+			List<Asset> redundantAssets = new LinkedList<Asset>();
+			for(Asset asset : itemAssets){
+//				if(asset.getAssetType().getId() == 1 && this.asset == null){
+//					this.assetType = asset.getAssetType();
+//					this.asset = asset;
+//				}
+//				else 
+				if (asset.getAssetType().getId() == 1 /* && this.asset != null */) {
+					// mark redundant asset for removal
+					redundantAssets.add(asset);
+				}
+			}
+			// remove redundant assets
+			item.getAssets().removeAll(redundantAssets);
+
+			calipsoService.updateItem(item, history.getLoggedBy(), false);	
+			Collection<Serializable> tRemove = new HashSet<Serializable>();
+			tRemove.addAll(redundantAssets);
+			calipsoService.remove(tRemove);
+		}
+		
 		// if new
 		if(asset == null){
 			asset = new Asset();
 			asset.setAssetType(assetType);
 			asset.setCreatedBy(history.getLoggedBy());
 			// date added in the inventory
-			asset.setSupportStartDate(new Date());
+			this.asset.setSupportStartDate(new Date());
+			this.asset.setDateCreated(this.asset.getSupportStartDate());
+			this.asset.setDateUpdated(this.asset.getDateCreated());
 		}
-		
-		// get the item the history belongs to
-		Item item = history.getParent();
-		// copy information from item
-		initFromHistoryItem(calipsoService, item, asset, assetType);
+
 		// add to asset and history
 		item.addAsset(asset);
+		// copy information from item
+		initFromHistoryItem(calipsoService, item, asset, assetType);
 		// save the asset 
 		calipsoService.storeAsset(asset);
 		// update html and plain text comment
@@ -114,6 +144,9 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 		history.setHtmlComment(history.getHtmlComment()+htmlSuffix);
 		history.setComment(history.getComment()+XmlUtils.stripTags(htmlSuffix));
 		calipsoService.updateItem(item, history.getLoggedBy(), false);
+
+		logger.info("Created item info asset " + asset.getInventoryCode()
+				+ " for item " + item.getUniqueRefId());
 		//calipsoService.updateHistory(history);
 		return asset;
 	}
@@ -224,7 +257,7 @@ public class CopyItemInfoToAssetPlugin extends AbstractStatePlugin{
 				}
 				// Decimal
 				else if(field.getName().isDecimalNumber()){
-					asset.addOrReplaceCustomAttribute(assetTypeAttr, ((Double) item.getValue(field.getName()))+"");
+					asset.addOrReplaceCustomAttribute(assetTypeAttr, (item.getValue(field.getName()))+"");
 				}
 				// String
 				else if(field.getName().isFreeText()){

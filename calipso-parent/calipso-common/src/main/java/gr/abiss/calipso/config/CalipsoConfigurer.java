@@ -243,6 +243,7 @@ public class CalipsoConfigurer extends PropertyPlaceholderConfigurer implements 
         FileSystemResource fsr = new FileSystemResource(propsFile);
         setLocation(fsr);
         Log.info("Calipso configured, calling postProcessBeanFactory with:" + beanFactory);
+
     }
 
 	private void createIfNotExisting(File attachmentsFile) {

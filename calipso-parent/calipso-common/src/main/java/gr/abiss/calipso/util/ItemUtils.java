@@ -40,9 +40,9 @@ package gr.abiss.calipso.util;
 import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Attachment;
 import gr.abiss.calipso.domain.Country;
+import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.Item;
@@ -54,7 +54,6 @@ import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.State;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.exception.CalipsoSecurityException;
-import gr.abiss.calipso.wicket.BasePanel;
 import gr.abiss.calipso.wicket.ComponentUtils;
 
 import java.io.BufferedReader;
@@ -66,8 +65,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,7 +76,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.apache.wicket.Component;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.dom4j.Document;
@@ -706,7 +704,7 @@ public final class ItemUtils {
 					itemFieldSetter.invoke(item, (Asset) null);
 				}
 				else{
-					item.addAsset(calipsoService.loadAsset(new Long(value)));
+					// item.addAsset(calipsoService.loadAsset(new Long(value)));
 				}
 			}
 			else{

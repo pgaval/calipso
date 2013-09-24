@@ -40,7 +40,6 @@ import gr.abiss.calipso.domain.AbstractItem;
 import gr.abiss.calipso.domain.Asset;
 import gr.abiss.calipso.domain.AssetType;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.AssetTypeCustomAttributeSearch;
 import gr.abiss.calipso.domain.AssetTypeSearch;
 import gr.abiss.calipso.domain.Attachment;
@@ -49,6 +48,7 @@ import gr.abiss.calipso.domain.Country;
 import gr.abiss.calipso.domain.Counts;
 import gr.abiss.calipso.domain.CountsHolder;
 import gr.abiss.calipso.domain.CustomAttribute;
+import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.History;
 import gr.abiss.calipso.domain.I18nStringIdentifier;
@@ -86,10 +86,9 @@ import gr.abiss.calipso.wicket.regexp.ValidationExpressionSearch;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import java.util.List;
 
 /**
  * CalipsoService DAO Interface
@@ -364,4 +363,10 @@ public interface CalipsoDao {
 	 * @param fieldName
 	 */
 	void deleteItemCustomAttribute(Space space, String fieldName);
+
+	List<Item> findItems();
+
+	List<Asset> findAllAssetsWithNoItem();
+
+	void remove(Collection<Serializable> entities);
 }

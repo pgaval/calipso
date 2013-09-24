@@ -47,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
@@ -100,7 +98,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
         return getSpace().getPrefixCode() + "-" + sequenceNum;
     }    
     
-    public String getUniqueRefId(){
+    @Override
+	public String getUniqueRefId(){
     	return getSpace().getPrefixCode() + "-" + getId() + "-" + sequenceNum;
     }
     
@@ -134,7 +133,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
     /**
 	 * @see gr.abiss.calipso.domain.IAttachmentOwner#addAttachment(gr.abiss.calipso.domain.Attachment)
 	 */
-    public boolean addAttachment(Attachment attachment){
+    @Override
+	public boolean addAttachment(Attachment attachment){
     	if(this.attachments == null){
     		this.attachments = new HashSet<Attachment>();
     	}
@@ -145,7 +145,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
     /**
 	 * @see gr.abiss.calipso.domain.IAttachmentOwner#addAttachments(java.util.Collection)
 	 */
-    public boolean addAttachments(Collection<Attachment> attachments){
+    @Override
+	public boolean addAttachments(Collection<Attachment> attachments){
     	boolean ok = true;
     	if(attachments != null){
     		for(Attachment attachment : attachments){
@@ -158,7 +159,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
     /**
 	 * @see gr.abiss.calipso.domain.IAttachmentOwner#removeAttachments(java.util.Collection)
 	 */
-    public void removeAttachments(Collection<Attachment> attachments){
+    @Override
+	public void removeAttachments(Collection<Attachment> attachments){
     	if(attachments != null && attachments.size() > 0){
 			for(Attachment attachmentToRemove: attachments){
 				this.removeAttachment(attachmentToRemove);
@@ -168,12 +170,14 @@ public class Item extends AbstractItem implements IAttachmentOwner {
     /**
 	 * @see gr.abiss.calipso.domain.IAttachmentOwner#removeAttachment(gr.abiss.calipso.domain.Attachment)
 	 */
-    public void removeAttachment(Attachment attachment){
+    @Override
+	public void removeAttachment(Attachment attachment){
     	attachment.setItem(null);
     	this.attachments.remove(attachment);
     }
     
-    public void removeAttachmentsByFileName(String fileName){
+    @Override
+	public void removeAttachmentsByFileName(String fileName){
     	if(fileName != null && this.attachments != null){
     		Set<Attachment> attachmentsToRemove = new HashSet<Attachment>();
     		for(Attachment attachment : this.attachments){
@@ -199,7 +203,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
     /**
      * Lucene DocumentCreator implementation
      */
-    public Document createDocument() {
+    @Override
+	public Document createDocument() {
         Document d = new Document();        
         d.add(new org.apache.lucene.document.Field("id", getId() + "", Store.YES, Index.NO));            
         d.add(new org.apache.lucene.document.Field("type", "space", Store.YES, Index.NO));        
@@ -271,7 +276,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
         this.children = children;
     }
 
-    public Set<Attachment> getAttachments() {
+    @Override
+	public Set<Attachment> getAttachments() {
         return attachments;
     }
 
@@ -301,7 +307,8 @@ public class Item extends AbstractItem implements IAttachmentOwner {
 		this.sentDueToNotifications = sentNotifications;
 	}
     
-    public String getDueToUserFriendly(Date now) {
+    @Override
+	public String getDueToUserFriendly(Date now) {
 		return new StringBuffer()
 			.append(HumanTime.approximately(now, this.stateDueTo))
 			.append(" / ")
@@ -348,6 +355,7 @@ public class Item extends AbstractItem implements IAttachmentOwner {
 	/**
 	 * @return the assets
 	 */
+	@Override
 	public Set<Asset> getAssets() {
 		return this.assets;
 	}
@@ -355,6 +363,7 @@ public class Item extends AbstractItem implements IAttachmentOwner {
 	/**
 	 * @param assets the assets to set
 	 */
+	@Override
 	public void setAssets(Set<Asset> assets) {
 		this.assets = assets;
 	}
@@ -393,6 +402,7 @@ public class Item extends AbstractItem implements IAttachmentOwner {
 	// Statistics //
 	////////////////
 	
+	@Override
 	public Double getTotalResponseTime() {
 		if (this.history!=null){
 			this.setTotalResponseTime(ItemUtils.calcTotalResponseTime(this));
@@ -402,6 +412,7 @@ public class Item extends AbstractItem implements IAttachmentOwner {
 	}
 
 
+	@Override
 	public Long getTimeFromCreationToFirstReply() {
 		if (this.history!=null){
 			this.setTimeFromCreationToFirstReply(ItemUtils.calcTimeFromCreationToFirstReply(this));
@@ -409,6 +420,7 @@ public class Item extends AbstractItem implements IAttachmentOwner {
 		return timeFromCreationToFirstReply;
 	}
 	
+	@Override
 	public Long getTimeFromCreationToClose() {
 		if (this.history!=null){
 			this.setTimeFromCreationToClose(ItemUtils.calcTimeFromCreationToClose(this));

@@ -99,6 +99,8 @@ public class CalipsoApplication extends WebApplication {
 	private CalipsoCasProxyTicketValidator calipsoCasProxyTicketValidator;
 	private CalipsoPropertiesEditor calipsoPropertiesEditor;
 
+	private final boolean runStartupPlugins = true;
+
 	public CalipsoService getCalipso() {
 		return calipsoService;
 	}

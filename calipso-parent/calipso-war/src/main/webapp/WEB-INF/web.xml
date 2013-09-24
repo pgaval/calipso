@@ -115,7 +115,11 @@
         <servlet-name>calipso-api</servlet-name>
         <url-pattern>/flow/*</url-pattern>
     </servlet-mapping>
-    
+    <servlet-mapping>
+        <servlet-name>calipso-startup-plugins</servlet-name>
+        <url-pattern>/calipso-startup-plugins/*</url-pattern>
+    </servlet-mapping>
+   
     <!--
     <resource-ref>
         <res-ref-name>jdbc/CalipsoDS</res-ref-name>

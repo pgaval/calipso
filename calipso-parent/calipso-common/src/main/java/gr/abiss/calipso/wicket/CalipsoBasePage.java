@@ -36,8 +36,6 @@
 
 package gr.abiss.calipso.wicket;
 
-import gr.abiss.calipso.wicket.helpMenu.HelpMenuPanel;
-
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 
@@ -47,7 +45,7 @@ import org.apache.wicket.markup.html.basic.Label;
  * BasePage class is derived from this class
  */
 public abstract class CalipsoBasePage extends WebPage {
-    public CalipsoBasePage() {
+	public CalipsoBasePage() {
 		HeaderPanel headerPanel = new HeaderPanel(true);
     	headerPanel.setRenderBodyOnly(true);   	
         add(headerPanel);

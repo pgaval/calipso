@@ -403,6 +403,14 @@ public interface CalipsoService extends UserDetailsService {
 	Map<String, RenderingTemplate> loadSpaceRoleTemplates(Long id);
 	List<CustomAttributeLookupValue> findActiveLookupValuesByCustomAttribute(
 			CustomAttribute attr);
+
+	List<Item> findItems();
+
+	void runStartupPlugins();
+
+	List<Asset> findAllAssetsWithNoItem();
+
+	void remove(Collection<Serializable> entities);
 	
 
 }
