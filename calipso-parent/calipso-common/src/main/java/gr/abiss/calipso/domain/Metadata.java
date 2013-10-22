@@ -36,13 +36,33 @@
 
 package gr.abiss.calipso.domain;
 
-import static gr.abiss.calipso.Constants.*;
-
+import static gr.abiss.calipso.Constants.ASSET_TYPE_ID;
+import static gr.abiss.calipso.Constants.DATEFORMAT;
+import static gr.abiss.calipso.Constants.DATEFORMATS;
+import static gr.abiss.calipso.Constants.DATEFORMATS_XPATH;
+import static gr.abiss.calipso.Constants.EXISTING_ASSET_TYPE_ID;
+import static gr.abiss.calipso.Constants.EXISTING_ASSET_TYPE_MULTIPLE;
+import static gr.abiss.calipso.Constants.EXPRESSION;
+import static gr.abiss.calipso.Constants.FIELD;
+import static gr.abiss.calipso.Constants.FIELDS;
+import static gr.abiss.calipso.Constants.FIELD_GROUP_XPATH;
+import static gr.abiss.calipso.Constants.FIELD_ORDER;
+import static gr.abiss.calipso.Constants.FIELD_ORDER_XPATH;
+import static gr.abiss.calipso.Constants.FIELD_XPATH;
+import static gr.abiss.calipso.Constants.LABEL;
+import static gr.abiss.calipso.Constants.MAX_DURATION;
+import static gr.abiss.calipso.Constants.METADATA;
+import static gr.abiss.calipso.Constants.NAME;
+import static gr.abiss.calipso.Constants.PLUGIN;
+import static gr.abiss.calipso.Constants.ROLES;
+import static gr.abiss.calipso.Constants.ROLE_XPATH;
+import static gr.abiss.calipso.Constants.STATE;
+import static gr.abiss.calipso.Constants.STATES;
+import static gr.abiss.calipso.Constants.STATE_XPATH;
+import static gr.abiss.calipso.Constants.STATUS;
 import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.Field.Name;
 import gr.abiss.calipso.util.XmlUtils;
-import gr.abiss.calipso.wicket.AbstractItemFormPanel;
-import gr.abiss.calipso.wicket.BasePanel;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -50,7 +70,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -61,17 +80,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.Element;
 
 /**
  * XML metadata is one of the interesting design decisions of JTrac. Metadata is
@@ -108,7 +126,11 @@ import org.apache.log4j.Logger;
  */
 public class Metadata implements Serializable {
 
-	private static final Logger logger = Logger.getLogger(Metadata.class);
+	public static final String YYYY_MM_DD = "yyyy/MM/dd";
+	public static final String YYYY_MM_DD_HH_MM = "yyyy/MM/dd HH:mm";
+	public static final String YYYY_MM_DD_HH_MM_SS = "yyyy/MM/dd HH:mm:ss";
+
+	public static final Logger logger = Logger.getLogger(Metadata.class);
 	
 	// date formats
 	public static final String DATE_FORMAT_LONG = "dateFormatLong";
@@ -193,10 +215,10 @@ public class Metadata implements Serializable {
 		existingAssetTypeMultipleMap = new TreeMap<Integer, Boolean>();
 		
 		// date formats
-		this.dateFormats.put(DATETIME_FORMAT_LONG, "yyyy/MM/dd HH:mm:ss");
-		this.dateFormats.put(DATETIME_FORMAT_SHORT, "yyyy/MM/dd HH:mm");
-		this.dateFormats.put(DATE_FORMAT_LONG, "yyyy/MM/dd");
-		this.dateFormats.put(DATE_FORMAT_SHORT, "yyyy/MM/dd");
+		this.dateFormats.put(DATETIME_FORMAT_LONG, YYYY_MM_DD_HH_MM_SS);
+		this.dateFormats.put(DATETIME_FORMAT_SHORT, YYYY_MM_DD_HH_MM);
+		this.dateFormats.put(DATE_FORMAT_LONG, YYYY_MM_DD);
+		this.dateFormats.put(DATE_FORMAT_SHORT, YYYY_MM_DD);
 	}
 	
 	public void loadOptions(CalipsoService calipso, Space space){

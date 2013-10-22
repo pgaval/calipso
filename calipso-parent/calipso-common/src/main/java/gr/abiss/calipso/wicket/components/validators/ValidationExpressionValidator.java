@@ -24,8 +24,11 @@ import gr.abiss.calipso.domain.ValidationExpression;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.util.parse.metapattern.MetaPattern;
 import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.validator.PatternValidator;
 
 /**
@@ -95,9 +98,34 @@ public class ValidationExpressionValidator extends PatternValidator {
 	}
 	
 	@Override
-	protected void onValidate(IValidatable<String> validatable) {
+	protected void onValidate(final IValidatable<String> validatable) {
 		if(!this.skipValidation){
-			super.onValidate(validatable);
+			super.onValidate(new IValidatable<String>() {
+
+				@Override
+				public String getValue() {
+					// TODO Auto-generated method stub
+					return validatable.getValue().replaceAll("\\s", "");
+				}
+
+				@Override
+				public void error(IValidationError error) {
+					validatable.error(error);
+				}
+
+				@Override
+				public boolean isValid() {
+					// TODO Auto-generated method stub
+					return validatable.isValid();
+				}
+
+				@Override
+				public IModel<String> getModel() {
+					// TODO Auto-generated method stub
+					return new Model<String>(this.getValue());
+				}
+
+			});
 		}
 	}
 

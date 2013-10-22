@@ -446,15 +446,9 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
         	space = (Space) getHibernateTemplate().merge(space);
     	}
     	else{*/
-    		List<ItemRenderingTemplate> templates = space.getItemRenderingTemplates();
-		space.setItemRenderingTemplates(null);
-        	getHibernateTemplate().merge(space);
-		if (CollectionUtils.isNotEmpty(templates)) {
-			for (ItemRenderingTemplate template : templates) {
-				template.setSpace(space);
-				this.getHibernateTemplate().merge(template);
-			}
-		}
+
+		getHibernateTemplate().merge(space);
+
         		
     	/*}*/
         //logger.info("Saved space, updating metadataCache for space: "+space.getPrefixCode());
@@ -1025,6 +1019,46 @@ public class HibernateDao extends HibernateDaoSupport implements CalipsoDao {
     	}
     	return records;
     }
+
+	@Override
+	public void bulkUpdateDeleteRolesAndTemplatesForSpace(Space space) {
+
+		List<SpaceRole> spaceRolesList = this.findSpaceRolesForSpace(space);
+		if (spaceRolesList != null) {
+			for (SpaceRole spaceRole : spaceRolesList) {
+				Set<UserSpaceRole> userSpaceRoles = spaceRole
+						.getUserSpaceRoles();
+				if (CollectionUtils.isNotEmpty(userSpaceRoles)) {
+					getHibernateTemplate().deleteAll(userSpaceRoles);
+				}
+
+				getHibernateTemplate().delete(spaceRole);
+			}
+		}
+		List<ItemRenderingTemplate> itemRenderingTemplates = space
+				.getItemRenderingTemplates();
+		if (CollectionUtils.isNotEmpty(itemRenderingTemplates)) {
+			space.setItemRenderingTemplates(new LinkedList<ItemRenderingTemplate>());
+			getHibernateTemplate().deleteAll(itemRenderingTemplates);
+		}
+
+		// bulkUpdateDeleteUserSpaceRolesForSpace(space);
+		// List<SpaceRole> spaceRolesList = this.findSpaceRolesForSpace(space);
+		// if (spaceRolesList != null) {
+		// for (SpaceRole spaceRole : spaceRolesList) {
+		// spaceRole.setItemRenderingTemplates(null);
+		// getHibernateTemplate().update(spaceRole);
+		// getHibernateTemplate().delete(spaceRole);
+		//
+		// }
+		// }
+		// getHibernateTemplate().bulkUpdate(
+		// "delete from ItemRenderingTemplate tpl where tpl.space.id = ?",
+		// space.getId());
+		// space.setSpaceRoles(null);
+		// space.setItemRenderingTemplates(new
+		// LinkedList<ItemRenderingTemplate>());
+	}
 
     @Override
 	public int bulkUpdateDeleteItemsForSpace(Space space) {

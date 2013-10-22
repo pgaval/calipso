@@ -369,4 +369,6 @@ public interface CalipsoDao {
 	List<Asset> findAllAssetsWithNoItem();
 
 	void remove(Collection<Serializable> entities);
+
+	void bulkUpdateDeleteRolesAndTemplatesForSpace(Space space);
 }

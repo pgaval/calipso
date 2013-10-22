@@ -411,6 +411,10 @@ public interface CalipsoService extends UserDetailsService {
 	List<Asset> findAllAssetsWithNoItem();
 
 	void remove(Collection<Serializable> entities);
+
+	void bulkUpdateDeleteRolesAndTemplatesForSpace(Space space);
+
+	User findUserByEmail(String email);
 	
 
 }

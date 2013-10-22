@@ -25,12 +25,11 @@ import gr.abiss.calipso.domain.OrganizationSearch;
 import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.User;
 import gr.abiss.calipso.wicket.BasePanel;
+import gr.abiss.calipso.wicket.CalipsoFeedbackMessageFilter;
 import gr.abiss.calipso.wicket.ErrorHighlighter;
 import gr.abiss.calipso.wicket.IconFormPanel;
-import gr.abiss.calipso.wicket.CalipsoFeedbackMessageFilter;
 import gr.abiss.calipso.wicket.LoginPage;
 import gr.abiss.calipso.wicket.MandatoryPanel;
-import gr.abiss.calipso.wicket.UserListPanel;
 import gr.abiss.calipso.wicket.components.validators.DomainMatchingEmailAddressValidator;
 import gr.abiss.calipso.wicket.components.validators.PhoneNumberValidator;
 import gr.abiss.calipso.wicket.components.validators.ValidationUtils;
@@ -41,13 +40,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.log4j.Logger;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
-import org.apache.wicket.extensions.breadcrumb.panel.BreadCrumbPanel;
-import org.apache.wicket.markup.html.IHeaderContributor;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-//import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -65,7 +62,7 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.UrlValidator;
-import org.apache.log4j.Logger;
+//import org.apache.wicket.markup.html.form.CheckBox;
 
 /**
  *
@@ -73,7 +70,8 @@ import org.apache.log4j.Logger;
 public class RegisterAnonymousUserFormPanel extends BasePanel {
 	protected static final Logger logger = Logger.getLogger(RegisterAnonymousUserFormPanel.class);
     
-    public String getTitle(){
+    @Override
+	public String getTitle(){
         return localize("user_form.userDetails");
     }
     
@@ -216,7 +214,8 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
             
             // validation no strange characters
             loginName.add(new AbstractValidator() {
-                protected void onValidate(IValidatable v) {
+                @Override
+				protected void onValidate(IValidatable v) {
                     String s = (String) v.getValue();                   
                     if(!ValidationUtils.isValidLoginName(s)) {
                         error(v);
@@ -230,7 +229,8 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
             
             // validation: does user already exist with same loginName?
             loginName.add(new AbstractValidator() {
-                protected void onValidate(IValidatable v) {
+                @Override
+				protected void onValidate(IValidatable v) {
                     String s = (String) v.getValue();
                     User temp = getCalipso().loadUser(s);
                     if(temp != null && temp.getId() != user.getId()) {
@@ -274,6 +274,21 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
         	regUserMail.setRequired(true).add(new ErrorHighlighter());
         	// add email to validate if is email
         	regUserMail.add(EmailAddressValidator.getInstance());
+			regUserMail.add(new AbstractValidator() {
+				@Override
+				protected void onValidate(IValidatable v) {
+					String s = (String) v.getValue();
+					User temp = getCalipso().findUserByEmail(s);
+					if (temp != null) {
+						error(v);
+					}
+				}
+
+				@Override
+				protected String resourceKey() {
+					return "user_form.email.error.exists";
+				}
+			});
         	add(regUserMail);
         	//form label
         	regUserMail.setLabel(new ResourceModel("user_form.email"));
@@ -369,7 +384,8 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
         		
         		
         		organizationChoice = new DropDownChoice("user.organization", organizationList, new IChoiceRenderer(){
-        			public Object getDisplayValue(Object object) {
+        			@Override
+					public Object getDisplayValue(Object object) {
         				if(((Organization)object).getId()==0){
         					
         					return localize(("organization.other"));
@@ -377,7 +393,8 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
         				return ((Organization)object).getName();
         			}
 
-        			public String getIdValue(Object object, int index) {
+        			@Override
+					public String getIdValue(Object object, int index) {
         				return String.valueOf(((Organization)object).getId());
         			}
         		}){
@@ -410,7 +427,7 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
         					// Model
         					logger.info("Is new organization");
        						showPasswordFields = false;
-        					CompoundPropertyModel orgModel = new CompoundPropertyModel((Organization)newSelection);
+        					CompoundPropertyModel orgModel = new CompoundPropertyModel(newSelection);
     						// Create organization fragment and organization Container
         					Fragment organizationFragment = new Fragment("organizationContainer","organizationFragment", RegisterAnonymousUserFormPanel.this);
         					organizationFragment.setRenderBodyOnly(true);
@@ -460,10 +477,12 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
             final Map<String, String> locales = getCalipso().getLocales();
             List<String> localeKeys = new ArrayList<String>(locales.keySet());
             DropDownChoice localeChoice = new DropDownChoice("user.locale", localeKeys, new IChoiceRenderer() {
-                public Object getDisplayValue(Object o) {
+                @Override
+				public Object getDisplayValue(Object o) {
                     return locales.get(o);
                 }
-                public String getIdValue(Object o, int i) {
+                @Override
+				public String getIdValue(Object o, int i) {
                     return o.toString();
                 }                
             });
@@ -492,12 +511,14 @@ public class RegisterAnonymousUserFormPanel extends BasePanel {
             hide.add(confirmPasswordField);
             // validation, do the passwords match
             add(new AbstractFormValidator() {
-                public FormComponent[] getDependentFormComponents() {
+                @Override
+				public FormComponent[] getDependentFormComponents() {
                     return new FormComponent[] {passwordField, confirmPasswordField};
                 }
-                public void validate(Form form) {
-                    String a = (String) passwordField.getConvertedInput();
-                    String b = (String) confirmPasswordField.getConvertedInput();
+                @Override
+				public void validate(Form form) {
+                    String a = passwordField.getConvertedInput();
+                    String b = confirmPasswordField.getConvertedInput();
                     if((a != null && !a.equals(b)) || (b!= null && !b.equals(a))) {
                         confirmPasswordField.error(localize("user_form.passwordConfirm.error"));
                     }                    

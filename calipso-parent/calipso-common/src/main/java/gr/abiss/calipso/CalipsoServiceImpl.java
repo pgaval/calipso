@@ -921,34 +921,41 @@ public class CalipsoServiceImpl implements CalipsoService {
 				String[] pluginNames = pluginClassNames.split(" ");
 				for(int i=0; i < pluginNames.length;i++){
 					String pluginClassName = pluginNames[i];
-					logger.debug("Loading plugin class: "+pluginClassName);
-					// "clazz" is the class name to load
-					Class clazz = null;
-					try {
-						clazz = Class.forName(pluginClassName);
-						AbstractStatePlugin plugin = (AbstractStatePlugin) clazz
-								.newInstance();
-						if(state.equals(AbstractStatePlugin.PRE_STATE_CHANGE)){
-							plugin.executePreStateChange(this, item);	
+					if (StringUtils.isNotBlank(pluginClassName)) {
+
+						logger.debug("Loading plugin class: " + pluginClassName);
+						// "clazz" is the class name to load
+						Class clazz = null;
+						try {
+							clazz = Class.forName(pluginClassName);
+							AbstractStatePlugin plugin = (AbstractStatePlugin) clazz
+									.newInstance();
+							if (state
+									.equals(AbstractStatePlugin.PRE_STATE_CHANGE)) {
+								plugin.executePreStateChange(this, item);
+							} else if (state
+									.equals(AbstractStatePlugin.PRE_HISTORY_SAVE)) {
+								plugin.executePreHistoryChange(this, history);
+							} else if (state
+									.equals(AbstractStatePlugin.POST_STATE_CHANGE)) {
+								plugin.executePostStateChange(this, history);
+							}
+
+						} catch (ClassNotFoundException e) {
+							logger.error("Cannot load State Plugin class: "
+									+ pluginClassName, e);
+							e.printStackTrace();
+						} catch (InstantiationException ie) {
+							logger.error(
+									"Cannot instantiate State Plugin class: "
+											+ pluginClassName, ie);
+							ie.printStackTrace();
+						} catch (IllegalAccessException iae) {
+							logger.error("Cannot load State Plugin class: "
+									+ pluginClassName, iae);
+							iae.printStackTrace();
 						}
-						else if(state.equals(AbstractStatePlugin.PRE_HISTORY_SAVE)){
-							plugin.executePreHistoryChange(this, history);
-						}
-						else if(state.equals(AbstractStatePlugin.POST_STATE_CHANGE)){
-							plugin.executePostStateChange(this, history);	
-						}
-						
-					} catch (ClassNotFoundException e) {
-						logger.error("Cannot load State Plugin class: " + pluginClassName, e);
-						e.printStackTrace();
-					} catch (InstantiationException ie) {
-						logger.error("Cannot instantiate State Plugin class: " + pluginClassName,
-								ie);
-						ie.printStackTrace();
-					} catch (IllegalAccessException iae) {
-						logger.error("Cannot load State Plugin class: " + pluginClassName,
-								iae);
-						iae.printStackTrace();
+
 					}
 				}
 				
@@ -1215,6 +1222,15 @@ public class CalipsoServiceImpl implements CalipsoService {
 	@Override
 	public User loadUser(String loginName) {
 		List<User> users = dao.findUsersByLoginName(loginName);
+		if (users.size() == 0) {
+			return null;
+		}
+		return users.get(0);
+	}
+
+	@Override
+	public User findUserByEmail(String email) {
+		List<User> users = dao.findUsersByEmail(email);
 		if (users.size() == 0) {
 			return null;
 		}
@@ -1701,7 +1717,7 @@ public class CalipsoServiceImpl implements CalipsoService {
 	}
 	@Override
 	public List<Space> findAllTemplateSpaces() {
-		return dao.findAllSpaces();
+		return dao.findAllTemplateSpaces();
 	}
 
 	@Override
@@ -2993,5 +3009,10 @@ public class CalipsoServiceImpl implements CalipsoService {
 	@Override
 	public Set<User> loadSpaceGroupAdmins(Long id) {
 		return ((SpaceGroup)dao.get(SpaceGroup.class, id)).getAdmins();
+	}
+
+	@Override
+	public void bulkUpdateDeleteRolesAndTemplatesForSpace(Space space) {
+		this.dao.bulkUpdateDeleteRolesAndTemplatesForSpace(space);
 	}
 }

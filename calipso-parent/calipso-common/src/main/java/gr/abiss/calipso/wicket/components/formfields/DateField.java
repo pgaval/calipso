@@ -19,9 +19,6 @@
 
 package gr.abiss.calipso.wicket.components.formfields;
 
-import gr.abiss.calipso.domain.Metadata;
-
-import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.log4j.Logger;

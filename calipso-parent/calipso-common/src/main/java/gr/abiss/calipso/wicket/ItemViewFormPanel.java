@@ -310,12 +310,11 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			// status ==========================================================
 			final Map<Integer, String> statesMap = item
 					.getPermittedTransitions(user);
-			List<Integer> states = new ArrayList(statesMap.keySet());
 			
 			// The states list is ordered from low to high,   
 			// we can use it to check for the "naturally " 
 			// previous and next state to add buttons as appropriate 
-			this.submitUtils = new SubmitUtilDao(states, item.getStatus().intValue());
+			this.submitUtils = new SubmitUtilDao(statesMap, item.getStatus().intValue());
 
 			Button cancelButton = new Button("cancelButton", new StringResourceModel(CollectionUtils.isNotEmpty(submitUtils.getStates())?"cancel":"back", this, null)){
 				@Override
@@ -327,7 +326,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			cancelButton.setDefaultFormProcessing(false);
 			add(cancelButton);
 			
-			Button previousButton = new Button("previousButton"){
+			Button previousButton = new Button("previousButton", new StringResourceModel(submitUtils.getPreviousStateMessage(), this, null)){
 				@Override
 				public void onSubmit() {
 					statusChoice.setModelObject(submitUtils.getPreviousState());
@@ -335,9 +334,11 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				}
 				
 			};
+			previousButton.add(new AttributeModifier("title", new Model(statesMap.get(submitUtils.getPreviousState()))));
+
 			add(previousButton.setVisible(submitUtils.getPreviousState() != null));
 
-			Button nextButton = new Button("nextButton", new StringResourceModel(submitUtils.isClosedAllowedOnly()?"submit":"next", this, null)){
+			Button nextButton = new Button("nextButton", new StringResourceModel(submitUtils.getNextStateMessage(), this, null)){
 				@Override
 				public void onSubmit() {
 					statusChoice.setModelObject(submitUtils.getNextState());
@@ -345,6 +346,8 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				}
 				
 			};
+
+			nextButton.add(new AttributeModifier("title", new Model(statesMap.get(submitUtils.getNextState()))));
 			if(submitUtils.isClosedAllowedOnly()){
 				nextButton.add(new AttributeModifier("class", new Model("submit-to-close")));
 			}
@@ -354,11 +357,9 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			Button submitButton = new Button("submitButton");
 			add(submitButton.setVisible(/* statusChoiceVisible */!submitUtils
 					.isClosedAllowedOnly()));
-
-			logger.info("states for dropdown: "+states);
-			logger.info("states for dropdown: "+statesMap);
 			
-			statusChoice = new IndicatingDropDownChoice("status", states,
+			statusChoice = new IndicatingDropDownChoice("status",
+					new ArrayList(statesMap.keySet()),
 					new IChoiceRenderer<Integer>() {
 
 						@Override
@@ -717,14 +718,37 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 	}
 	
 	private class SubmitUtilDao implements Serializable{
+
 		private Integer previousState = null;
 		private Integer currentState = null;
 		private Integer nextState = null;
+
+		private String previousStateMessage = "previous";
+
+		public String getPreviousStateMessage() {
+			return previousStateMessage;
+		}
+
+		public void setPreviousStateMessage(String previousStateMessage) {
+			this.previousStateMessage = previousStateMessage;
+		}
+
+		public String getNextStateMessage() {
+			return nextStateMessage;
+		}
+
+		public void setNextStateMessage(String nextStateMessage) {
+			this.nextStateMessage = nextStateMessage;
+		}
+
+		private String nextStateMessage = "next";
 		private Boolean stateChangeAllowed = false;
 		private Integer singleStateChangeAllowed = null;
 		private List<Integer> states = null;
 		
-		public SubmitUtilDao(List<Integer> states, int currentState){
+		public SubmitUtilDao(Map<Integer, String> statesMap, int currentState){
+			List<Integer> states = new ArrayList(statesMap.keySet());
+
 			this.currentState = currentState;
 			this.states = states;
 			if(CollectionUtils.isNotEmpty(states)){
@@ -732,14 +756,26 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				Integer state = null;
 				while(statesIter.hasNext()){
 					state = statesIter.next();
+					String stateName = statesMap.get(state);
+					logger.warn("SubmitUtilDao state: " + state + "-" + stateName);
 					// is a previous state accessible?
 					if(state.intValue() < currentState && state.intValue() > State.NEW){
 						previousState = state;
+						if ("Withdrawn".equalsIgnoreCase(stateName.trim())) {
+							previousStateMessage = "withdraw";
+						}
 					}
 
 					// is a next state available?
 					if(state.intValue() > currentState){
 						nextState = state;
+						if (nextState.intValue() == 99) {
+							nextStateMessage = "submit";
+						}
+
+						if ("Withdrawn".equalsIgnoreCase(stateName.trim())) {
+							nextStateMessage = "withdraw";
+						}
 						break;
 					}
 				}
@@ -748,7 +784,12 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 						|| (states.size() == 1 && states.get(0).intValue() != currentState);
 				this.singleStateChangeAllowed = states.size() == 1 ? states.get(0) : null;
 				
-				//logger.info("SubmitUtilDao initialized with previous: "+previousState+", next: "+nextState+", stateChangeAllowed: "+stateChangeAllowed+", lastStateBeforeClose: "+lastStateBeforeClose);
+				logger.info("SubmitUtilDao initialized with previous: "
+						+ previousState + ", next: " + nextState
+						+ ", stateChangeAllowed: " + stateChangeAllowed
+						+ ", lastStateBeforeClose: " + singleStateChangeAllowed
+						+ ", previousStateMessage" + previousStateMessage
+						+ ", nextStateMessage: " + nextStateMessage);
 			}
 		}
 

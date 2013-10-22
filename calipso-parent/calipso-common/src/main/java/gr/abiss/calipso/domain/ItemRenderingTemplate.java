@@ -20,7 +20,6 @@
 package gr.abiss.calipso.domain;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
@@ -106,14 +105,16 @@ public class ItemRenderingTemplate extends RenderingTemplate {
 		this.description = description;
 	}
 	
+	@Override
 	public String toString(){
 	 return new ToStringBuilder(this)
 	  	.appendSuper(super.toString())
 	     .append("description", this.getDescription())
-	     .append("templateText (abbreviated)", StringUtils.abbreviate(this.getTemplateText(), 100))/*
 	     .append("priority", this.getPriority())
 	     .append("hideOverview", this.getHideOverview())
-	     .append("hideHistory", this.getHideHistory())*/
+				.append("hideHistory", this.getHideHistory())
+				.append("templateText (abbreviated)",
+						StringUtils.abbreviate(this.getTemplateText(), 20))
 	     .toString();
 	}
 	@Override

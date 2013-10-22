@@ -912,7 +912,7 @@
 				<!--property name="hideStateSelection" type="boolean" column="HIDE_STATE_SELECTION" not-null="true" /-->
 			<!--component name="name" class="ItemRenderingTemplateName" unique="true"-->
 				<property name="description" type="string" column="description" not-null="true" unique="true" />
-				<many-to-one name="space" column="space_id" class="Space" not-null="true"  />
+				<many-to-one name="space" column="space_id" class="Space" not-null="false"  />
 			<!--/component-->
 		</joined-subclass>
 	</class>

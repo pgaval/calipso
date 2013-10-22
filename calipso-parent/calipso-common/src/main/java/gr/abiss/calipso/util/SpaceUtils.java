@@ -19,23 +19,9 @@
 
 package gr.abiss.calipso.util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.log4j.Logger;
-import org.jfree.util.Log;
-
 import gr.abiss.calipso.CalipsoService;
 import gr.abiss.calipso.domain.AssetTypeCustomAttribute;
 import gr.abiss.calipso.domain.CustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
 import gr.abiss.calipso.domain.Field;
 import gr.abiss.calipso.domain.I18nStringResource;
 import gr.abiss.calipso.domain.ItemFieldCustomAttribute;
@@ -48,11 +34,25 @@ import gr.abiss.calipso.domain.Space;
 import gr.abiss.calipso.domain.SpaceRole;
 import gr.abiss.calipso.wicket.customattrs.CustomAttributeUtils;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.log4j.Logger;
+
 public class SpaceUtils {
 	
 	private static final Logger logger = Logger.getLogger(SpaceUtils.class);
 
 	public static void copySpace(CalipsoService calipso, Space spaceFrom, Space space){
+		// clear any old roles/tmpls
+		calipso.bulkUpdateDeleteRolesAndTemplatesForSpace(space);
+
 		// start with metadata
 		String xml = spaceFrom.getMetadata().getXmlString();
 		// roles
@@ -107,7 +107,7 @@ public class SpaceUtils {
 			}
 			// Map<Name, Field> fieldsToTranslate = space.getMetadata().getFields();
 		}
-		
+
 		// copy templates
 		List<ItemRenderingTemplate> templatesFrom = calipso.getItemRenderingTemplates(spaceFrom);
 		logger.info("Adding templates to new space");
@@ -123,6 +123,7 @@ public class SpaceUtils {
 				// change the unsaved template name 
 				templateNameSuffix = templateNameSuffix+1;
 				templateTo.setDescription(space.getPrefixCode()+"-template-"+templateNameSuffix);
+				calipso.storeItemRenderingTemplate(templateTo);
 			}
 			logger.info("Added templates to new space: "+space.getItemRenderingTemplates());
 			// iterate roles from the original space to add the item rendering templates

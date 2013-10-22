@@ -63,12 +63,11 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.breadcrumb.IBreadCrumbModel;
 import org.apache.wicket.extensions.breadcrumb.panel.BreadCrumbPanel;
 import org.apache.wicket.extensions.breadcrumb.panel.IBreadCrumbPanelFactory;
-import org.apache.wicket.extensions.yui.calendar.DateField;
+import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -91,8 +90,9 @@ public class SpaceFormPanel extends BasePanel {
 	private static final long serialVersionUID = 1L;
 	protected static final Logger logger = Logger.getLogger(SpaceFormPanel.class);
 	private String spaceName = null;
-	private boolean isEdit;
+	private final boolean isEdit;
 
+	@Override
 	public String getTitle() {
 		if (isEdit)
 			return localize("space_form.titleEdit", spaceName);
@@ -154,11 +154,13 @@ public class SpaceFormPanel extends BasePanel {
 					final String line2 = localize("space_delete.line2");
 
 					activate(new IBreadCrumbPanelFactory() {
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								final IBreadCrumbModel breadCrumbModel) {
 							ConfirmPanel confirm = new ConfirmPanel(
 									componentId, breadCrumbModel, heading,
 									warning, new String[] { line1, line2 }) {
+								@Override
 								public void onConfirm() {
 									// TODO: Should remove spaceGroup reference?
 									getCalipso().removeSpace(space);
@@ -171,6 +173,7 @@ public class SpaceFormPanel extends BasePanel {
 											.removePreviousBreadCrumbPanel(breadCrumbModel);
 
 									activate(new IBreadCrumbPanelFactory() {
+										@Override
 										public BreadCrumbPanel create(
 												String componentId,
 												IBreadCrumbModel breadCrumbModel) {
@@ -242,8 +245,9 @@ public class SpaceFormPanel extends BasePanel {
 			}
 			add(new ListView<Language>("nameTranslations", space.getSupportedLanguages()){
 
+				@Override
 				protected void populateItem(ListItem<Language> listItem) {
-					Language language = (Language) listItem.getModelObject();
+					Language language = listItem.getModelObject();
 					TextField description = new TextField("name");
 					// name translations are required.
 					description.setRequired(true);
@@ -262,6 +266,7 @@ public class SpaceFormPanel extends BasePanel {
 			prefixCode.add(new ErrorHighlighter());
 			// validation: greater than 3 chars?
 			prefixCode.add(new AbstractValidator() {
+				@Override
 				protected void onValidate(IValidatable v) {
 					String s = (String) v.getValue();
 					if (s.length() < 3) {
@@ -275,6 +280,7 @@ public class SpaceFormPanel extends BasePanel {
 				}
 			});
 			prefixCode.add(new AbstractValidator() {
+				@Override
 				protected void onValidate(IValidatable v) {
 					String s = (String) v.getValue();
 					if (s.length() > 10) {
@@ -289,6 +295,7 @@ public class SpaceFormPanel extends BasePanel {
 			});
 			// validation: format ok?
 			prefixCode.add(new AbstractValidator() {
+				@Override
 				protected void onValidate(IValidatable v) {
 					String s = (String) v.getValue();
 					if (!ValidationUtils.isAllUpperCase(s)) {
@@ -303,6 +310,7 @@ public class SpaceFormPanel extends BasePanel {
 			});
 			// validation: does space already exist with same prefixCode ?
 			prefixCode.add(new AbstractValidator() {
+				@Override
 				protected void onValidate(IValidatable v) {
 					String s = (String) v.getValue();
 					Space temp = getCalipso().loadSpace(s);
@@ -351,7 +359,17 @@ public class SpaceFormPanel extends BasePanel {
 			add(new SimpleFormComponentLabel("defaultDurationLabel", defaultDuration));
 			
 			// space closing date
-			DateField closingDate = new DateField("space.closingDate");
+			DateTimeField closingDate = new DateTimeField("space.closingDate");
+
+					//DateField.newDateTextField("space.closingDate", new PropertyModel(SpaceForm.this,"space.closingDate"));
+//					new DateField("space.closingDate") {
+//
+//				@Override
+//				protected String getDateFormat() {
+//					return Metadata.YYYY_MM_DD_HH_MM;
+//				}
+//
+//			};
 			add(closingDate);
 			// space closing date label
 			closingDate.setLabel(new ResourceModel("closingDate"));
@@ -362,10 +380,12 @@ public class SpaceFormPanel extends BasePanel {
 			DropDownChoice itemVisibilityChoice = 
 				new DropDownChoice("space.itemVisibility", new PropertyModel(SpaceForm.this,"space.itemVisibility"), Space.ITEM_VISIBILITY_MODES_LIST, new IChoiceRenderer(){
 
+					@Override
 					public Object getDisplayValue(Object object) {
 						return localize("space_form.itemVisibility."+object.toString());
 					}
 
+					@Override
 					public String getIdValue(Object object, int index) {
 						return index+"";
 					}
@@ -382,10 +402,12 @@ public class SpaceFormPanel extends BasePanel {
 			DropDownChoice assetVisibilityChoice = 
 				new DropDownChoice("space.assetVisibility", new PropertyModel(SpaceForm.this,"space.assetVisibility"), Space.ASSET_VISIBILITY_MODES_LIST, new IChoiceRenderer(){
 
+					@Override
 					public Object getDisplayValue(Object object) {
 						return localize("space_form.assetVisibility."+object.toString());
 					}
 
+					@Override
 					public String getIdValue(Object object, int index) {
 						return index+"";
 					}
@@ -424,6 +446,7 @@ public class SpaceFormPanel extends BasePanel {
 						
 						private static final long serialVersionUID = 1L;
 
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
 							BreadCrumbUtils.removePreviousBreadCrumbPanel(breadCrumbModel);
@@ -438,7 +461,8 @@ public class SpaceFormPanel extends BasePanel {
                 public void onSubmit() {
 					final Space mergedSpace = persistChanges();
 					activate(new IBreadCrumbPanelFactory() {
-        				public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
+        				@Override
+						public BreadCrumbPanel create(String id, IBreadCrumbModel breadCrumbModel) {
         					BreadCrumbUtils.removePreviousBreadCrumbPanel(breadCrumbModel);
         					return new SpaceFormPanel(id, breadCrumbModel, mergedSpace);
         				}
@@ -468,6 +492,7 @@ public class SpaceFormPanel extends BasePanel {
 						space.getSpaceGroup().getAdmins().add(getPrincipal());
 					}
 					activate(new IBreadCrumbPanelFactory() {
+						@Override
 						public BreadCrumbPanel create(String componentId,
 								IBreadCrumbModel breadCrumbModel) {
 							return new SpaceFieldListPanel(componentId, breadCrumbModel, space, null);
@@ -496,12 +521,14 @@ public class SpaceFormPanel extends BasePanel {
 				}
 			
 				DropDownChoice choice = new DropDownChoice("copyFrom",	spaces, new IChoiceRenderer() { 
+					@Override
 					public Object getDisplayValue(Object o) { 
 						Space space = (Space) o;
 						return new StringBuffer(space.getSpaceGroup() != null ? space.getSpaceGroup().getName():"")
 							.append(": ")
 							.append(localize(space.getNameTranslationResourceKey())); 
 					}
+					@Override
 					public String getIdValue(Object o, int i) { 
 						return ((Space) o).getId()+"";
 					} 
@@ -518,6 +545,7 @@ public class SpaceFormPanel extends BasePanel {
 			// add other to the list, REFACTOR
 			IChoiceRenderer spaceGroupRenderer = new IChoiceRenderer() {
 
+				@Override
 				public Object getDisplayValue(Object object) {
 
 					SpaceGroup sg = (SpaceGroup) object;
@@ -527,6 +555,7 @@ public class SpaceFormPanel extends BasePanel {
 					return sg.getName();
 				}
 
+				@Override
 				public String getIdValue(Object object, int index) {
 					return String.valueOf(index);
 				}
@@ -552,7 +581,8 @@ public class SpaceFormPanel extends BasePanel {
 				}
 			};*/
 			spaceGroupChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-	            protected void onUpdate(AjaxRequestTarget target) {
+	            @Override
+				protected void onUpdate(AjaxRequestTarget target) {
 	            	//SpaceGroup tmpSpaceGroup = (SpaceGroup) newSelection;
 					//setModelObject(newSelection);
 	            	SpaceGroup sg = (SpaceGroup) spaceGroupChoice.getModelObject();
@@ -628,6 +658,7 @@ public class SpaceFormPanel extends BasePanel {
 		 
 		private Space persistChanges() {
 			Space space = this.getSpace();
+
 			space = getCalipso().storeSpace(space);
 			// current user may be allocated to this space, and e.g.
 			// name could have changed
