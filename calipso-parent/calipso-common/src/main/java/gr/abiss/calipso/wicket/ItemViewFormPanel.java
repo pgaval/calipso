@@ -65,6 +65,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.AttributeModifier;
@@ -177,6 +178,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			this(id, item, null);
 		}
 
+		@SuppressWarnings("serial")
 		public ItemViewForm(String id, final Item item, History previewHistory) {
 			super(id);
 			setMultiPart(true);
@@ -316,17 +318,19 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			// previous and next state to add buttons as appropriate 
 			this.submitUtils = new SubmitUtilDao(statesMap, item.getStatus().intValue());
 
-			Button cancelButton = new Button("cancelButton", new StringResourceModel(CollectionUtils.isNotEmpty(submitUtils.getStates())?"cancel":"back", this, null)){
+			Button cancelButton = new Button("cancelButton"){
 				@Override
 				public void onSubmit() {
 					throw new RestartResponseException(DashboardPage.class, new PageParameters()); 
 				}
 			};
+
+			cancelButton.add(new AttributeModifier("value", new StringResourceModel(CollectionUtils.isNotEmpty(submitUtils.getStates())?"cancel":"back", ItemViewFormPanel.this, null)));
 			// no reason to validate or process the submit
 			cancelButton.setDefaultFormProcessing(false);
-			add(cancelButton);
+			add(cancelButton.setVisible(this.submitUtils.isClosed()));
 			
-			Button previousButton = new Button("previousButton", new StringResourceModel(submitUtils.getPreviousStateMessage(), this, null)){
+			Button previousButton = new Button("previousButton"){
 				@Override
 				public void onSubmit() {
 					statusChoice.setModelObject(submitUtils.getPreviousState());
@@ -335,10 +339,14 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 				
 			};
 			previousButton.add(new AttributeModifier("title", new Model(statesMap.get(submitUtils.getPreviousState()))));
+			previousButton.add(new AttributeModifier("value",
+					new StringResourceModel(submitUtils
+							.getPreviousStateMessage(), ItemViewFormPanel.this,
+							null)));
 
 			add(previousButton.setVisible(submitUtils.getPreviousState() != null));
 
-			Button nextButton = new Button("nextButton", new StringResourceModel(submitUtils.getNextStateMessage(), this, null)){
+			Button nextButton = new Button("nextButton"){
 				@Override
 				public void onSubmit() {
 					statusChoice.setModelObject(submitUtils.getNextState());
@@ -348,6 +356,9 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			};
 
 			nextButton.add(new AttributeModifier("title", new Model(statesMap.get(submitUtils.getNextState()))));
+			nextButton.add(new AttributeModifier("value",
+					new StringResourceModel(submitUtils.getNextStateMessage(),
+							ItemViewFormPanel.this, null)));
 			if(submitUtils.isClosedAllowedOnly()){
 				nextButton.add(new AttributeModifier("class", new Model("submit-to-close")));
 			}
@@ -726,7 +737,13 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 		private String previousStateMessage = "previous";
 
 		public String getPreviousStateMessage() {
-			return previousStateMessage;
+			return this.previousStateMessage;
+		}
+
+		public boolean isClosed() {
+
+			return this.currentState != null
+					&& this.currentState.intValue() == State.CLOSED;
 		}
 
 		public void setPreviousStateMessage(String previousStateMessage) {
@@ -752,17 +769,27 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 			this.currentState = currentState;
 			this.states = states;
 			if(CollectionUtils.isNotEmpty(states)){
+				String currentStateName = statesMap.get(currentState);
+				boolean isCurrentStateWithdrawn = StringUtils.isNotBlank(currentStateName) && "Withdrawn".equalsIgnoreCase(currentStateName.trim());
 				Iterator<Integer> statesIter = states.iterator();
 				Integer state = null;
 				while(statesIter.hasNext()){
 					state = statesIter.next();
 					String stateName = statesMap.get(state);
-					logger.warn("SubmitUtilDao state: " + state + "-" + stateName);
+					logger.debug("SubmitUtilDao state: " + state
+							+ ", state name: " + stateName + ", Withdrawn: "
+							+ ("Withdrawn".equalsIgnoreCase(stateName)));
 					// is a previous state accessible?
 					if(state.intValue() < currentState && state.intValue() > State.NEW){
 						previousState = state;
-						if ("Withdrawn".equalsIgnoreCase(stateName.trim())) {
-							previousStateMessage = "withdraw";
+						if ("Withdrawn".equalsIgnoreCase(stateName)) {
+							setPreviousStateMessage("withdraw");
+						}
+						else if(isCurrentStateWithdrawn){
+							setPreviousStateMessage("mask.update");
+						}
+						else{
+							setPreviousStateMessage("previous");
 						}
 					}
 
@@ -770,21 +797,26 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 					if(state.intValue() > currentState){
 						nextState = state;
 						if (nextState.intValue() == 99) {
-							nextStateMessage = "submit";
+							setNextStateMessage("submit");
 						}
-
-						if ("Withdrawn".equalsIgnoreCase(stateName.trim())) {
-							nextStateMessage = "withdraw";
+						else if ("Withdrawn".equalsIgnoreCase(stateName)) {
+							setNextStateMessage("withdraw");
+						}
+						else{
+							setNextStateMessage("next");
 						}
 						break;
 					}
 				}
+				logger.debug("SubmitUtilDao getPreviousStateMessage: "
+						+ getPreviousStateMessage() + ", getNextStateMessage: "
+						+ getNextStateMessage());
 				// can state be changed at all?
 				this.stateChangeAllowed = states.size() > 1 
 						|| (states.size() == 1 && states.get(0).intValue() != currentState);
 				this.singleStateChangeAllowed = states.size() == 1 ? states.get(0) : null;
 				
-				logger.info("SubmitUtilDao initialized with previous: "
+				logger.debug("SubmitUtilDao initialized with previous: "
 						+ previousState + ", next: " + nextState
 						+ ", stateChangeAllowed: " + stateChangeAllowed
 						+ ", lastStateBeforeClose: " + singleStateChangeAllowed

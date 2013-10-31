@@ -89,6 +89,10 @@ public class ApplicationsDashboardPanel extends BasePanel {
                 refIdLink.add(new Label("uniqueRefId",  o[4].toString().equals("99")?"view":"edit"));
                 
                 listItem.add(refIdLink);
+				if (closingDate != null && closingDate.after(new Date())) {
+					refIdLink.setVisible(false);
+				}
+
                 usedSpacePrefixes.add(o[0].toString());
                 noItems.setVisible(false);
             }
