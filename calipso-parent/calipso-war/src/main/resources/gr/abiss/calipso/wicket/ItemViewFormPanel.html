@@ -1,4 +1,4 @@
-<wicket:head>
+	<wicket:head>
 <script language="javascript" type="text/javascript" src="resources/js/tiny_mce/tiny_mce.js"></script>
 <script language="javascript" type="text/javascript">
 tinyMCE.init({
@@ -36,6 +36,7 @@ tinyMCE.init({
 				<!-- p class="help-message"><wicket:message key="ItemViewPanel.help"/></p-->
 				
 	<form wicket:id="form">  
+	<input type="hidden" wicket:id="hiddenfield" />
 	<a id="history-section" name="history-section"> </a>
 			<table class="form" cellspacing="0">
 				<tr>

@@ -84,6 +84,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
@@ -162,6 +163,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 	public class ItemViewForm extends Form {
 		private static final long serialVersionUID = 1L;
 		private String filename;
+		private String hiddenfield;
 		private FileUploadField fileUploadField;
 		private long itemId;
 		private DropDownChoice assignedToChoice;
@@ -177,6 +179,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 		public ItemViewForm(String id, final Item item) {
 			this(id, item, null);
 		}
+
 
 		@SuppressWarnings("serial")
 		public ItemViewForm(String id, final Item item, History previewHistory) {
@@ -195,10 +198,15 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 					history);
 			setModel(model);
 			this.item = item;
-
+			User user = getPrincipal();
+			HiddenField hiddenfield = new HiddenField("hiddenfield", new PropertyModel(this, "hiddenfield"));
+			if (!user.isGlobalAdmin() && !user.isSpaceAdmin()) {
+				hiddenfield.add(new SpaceClosingDateValidator(item.getSpace()
+					.getClosingDate()));
+			}
+			add(hiddenfield);
 			// custom fields
 			// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			User user = getPrincipal();
 			boolean historyMode = true;
 			customFieldsFormPanel = new CustomFieldsFormPanel("fields", model,
 					item, user, historyMode, fileUploadFields);
@@ -344,7 +352,7 @@ public class ItemViewFormPanel extends AbstractItemFormPanel implements IHeaderC
 							.getPreviousStateMessage(), ItemViewFormPanel.this,
 							null)));
 
-			add(previousButton.setVisible(submitUtils.getPreviousState() != null));
+			add(previousButton);
 
 			Button nextButton = new Button("nextButton"){
 				@Override

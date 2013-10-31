@@ -90,7 +90,7 @@ public class ApplicationsDashboardPanel extends BasePanel {
                 
                 listItem.add(refIdLink);
 				if (closingDate != null && closingDate.after(new Date())) {
-					refIdLink.setVisible(false);
+					// refIdLink.setVisible(false);
 				}
 
                 usedSpacePrefixes.add(o[0].toString());
