@@ -71,6 +71,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
+import org.apache.wicket.settings.IExceptionSettings.ThreadDumpStrategy;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.cookies.CookieUtils;
 import org.apache.wicket.util.time.Duration;
@@ -391,7 +392,10 @@ public class CalipsoApplication extends WebApplication {
 		SecurePackageResourceGuard guard = (SecurePackageResourceGuard) getResourceSettings().getPackageResourceGuard();
 		guard.addPattern("+*.htm");
 
-		this.getRequestCycleSettings().setTimeout(Duration.minutes(3));
+		this.getRequestCycleSettings().setTimeout(Duration.minutes(6));
+		this.getPageSettings().setVersionPagesByDefault(true);
+		this.getExceptionSettings().setThreadDumpStrategy(
+				ThreadDumpStrategy.THREAD_HOLDING_LOCK);
 	}
 
 	@Override
