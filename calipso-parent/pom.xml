@@ -128,6 +128,11 @@
 	      <artifactId>flying-saucer-pdf</artifactId>
 	      <version>9.0.3</version>
 	    </dependency>
+	    <dependency>
+		    <groupId>net.sourceforge.htmlcleaner</groupId>
+		    <artifactId>htmlcleaner</artifactId>
+		    <version>2.6.1</version>
+		</dependency>
 		<dependency>
 			<groupId>com.ociweb.xml</groupId>
 			<artifactId>wax</artifactId>

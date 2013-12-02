@@ -83,7 +83,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -216,9 +215,11 @@ public class ItemView extends BasePanel {
     		if(field.isMultivalue()){
     			logger.info("addFieldValueDisplay, fieldConfig: "+fieldConfig);
 				Label label = new Label("fieldValue",
-						StringEscapeUtils.unescapeHtml(MultipleValuesTextField
-								.toHtmlSafeTable(((String) value), fieldConfig,
-										this.getLocalizer(), this)));
+				// StringEscapeUtils.unescapeHtml(
+						MultipleValuesTextField.toHtmlSafeTable(
+								((String) value), fieldConfig,
+								this.getLocalizer(), this));
+				// );
     			label.setEscapeModelStrings(false);
     			label.add(new AttributeAppender("class", new Model("content"), " "));
         		listItem.add(label);

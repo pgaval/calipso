@@ -1,66 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" 
+    xml:lang="en" lang="en">
 	<head>
-		<style type='text/css'>
-			#normalFooter, #firstPageFooter{font-size:12px;} 
-			@page {
-				padding-top:100px;
-				margin-top:30px;
-				margin-bottom:30px;
-				
-				background: url('watermark.png') no-repeat top center; 
-				@bottom-center { content: element(footer); }
-			}
-			@page :first {
-				padding-top:10px;
-				background: url('watermark.png') no-repeat center 30px;
-				@bottom-center { content: element(firstPageFooter); }
-			}
-			#page:before {content: counter(page);}
-			
-			#pagecount:before {content: counter(pages);}
-			#header {
-		        	display: block; text-align: center;
-		        	position: running(header);
-		    }
-			#footer {
-		        	display: block; text-align: center;
-		        	position: running(footer);
-		    }
-			#firstPageFooter {
-		        	display: block; text-align: center;
-		        	position: running(firstPageFooter);
-		    }
-		    #page:before {content: counter(page);}
-			#pagecount:before {content: counter(pages);}
-			.heading-container1{display:none;}
-			h1{font-size:16px;margin:10px;padding:10px;background: #EADFD7;font-weight:bold;color:#666666;}
-			body {font-size:14px;margin:10px;padding:10px; font-family: "Arial Unicode MS"; }
-			th{text-align:left;font-weight:bold;}
-			td, th, caption{padding-left:4px;padding-right:4px;padding-top:2px;padding-bottom:2px;}
-			table.overview{ -fs-table-paginate:paginate;border-collapse:collapse;background:#FFFFFF;width:100%;margin-bottom:8px; }
-			table.overview-summary{display: none;}
-			tr.alt { background: #F2F2F2; }
-			table, tbody, thead, tfooter, tr{width:100%;}
-			table.custom-attribute-tabular {-fs-table-paginate:paginate;}
-			table.custom-attribute-tabular  tr { }
-			table.custom-attribute-tabular tr.even { background: #F7F7F7; }
-			table.custom-attribute-tabular thead {background: #f2ebe7;}
-			table.overview > thead > tr > th {background: #EADFD7;font-weight:bold;text-align:left;}
-			table.overview > thead:not(:first-child) > tr > th > span.continued:after {content: " (Cont)";}
-			
-			td, th{vertical-align:top;}
-			.clear{clear:both;}
-      		a, a:link{color:#4E3227; text-decoration: none;}
-      		table.overview th.label-right {
-			    font-weight: bold;
-			    width: 25%;
-			    vertical-align: top;
-			}
-			table.overview, 
-			table.overview tr, 
-			table.custom-attribute-tabular, 
-			table.custom-attribute-tabular tr {page-break-inside:avoid;}
+	   <title wicket:id="pageTitle"></title> 
+		<style type='text/css' wicket:id="styleString">
+
 		</style>
 	</head>
 	<body>
@@ -75,4 +21,3 @@
 		
 	</body>
 </html>
-		

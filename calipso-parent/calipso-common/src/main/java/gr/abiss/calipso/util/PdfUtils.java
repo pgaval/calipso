@@ -47,6 +47,10 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.wicket.Component;
 import org.apache.wicket.Localizer;
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.PrettyXmlSerializer;
+import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xml.sax.InputSource;
@@ -130,10 +134,10 @@ public class PdfUtils {
 				html = htmlBuffer.toString();
 			}
 			// convert HTML string to PDF and store it in the buffer output stream 
-	        writePdf(calipso, os, html);
 		} catch (Exception e) {
 			logger.error("Failed to creare PDF for asset, html: \n"+html, e);
 		}
+		writePdf(calipso, os, html);
 		return os.toByteArray();
 	}
 
@@ -201,16 +205,19 @@ public class PdfUtils {
 
 				html = htmlBuffer.toString();
 			}
-			// convert HTML string to PDF and store it in the buffer output stream 
-	        writePdf(calipso, os, html);
 		} catch (Exception e) {
 			logger.error("Failed to creare PDF for item, html: \n"+html, e);
 		}
+		// convert HTML string to PDF and store it in the buffer output stream
+		writePdf(calipso, os, html);
 		return os.toByteArray();
 	}
 
 	public static StringBuffer getDefaultHeader() {
-		StringBuffer htmlBuffer = new StringBuffer("<?xml version='1.0' encoding='UTF-8'?><html><head>" +
+		StringBuffer htmlBuffer = new StringBuffer(
+				"<?xml version='1.0' encoding='UTF-8'?>\n"
+						+ "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+						+ "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>" +
 				"<style type='text/css'>" +
 				"#normalFooter, #firstPageFooter{font-size:12px;} " +
 				"@page {" +
@@ -262,13 +269,34 @@ public class PdfUtils {
 	 * @throws IOException
 	 */
 	public static void writePdf(CalipsoService calipso, OutputStream os,
-			String html) throws DocumentException, IOException {
-	    logger.info("writePdf html: "+html);
+			String html) {
 		writePdf(calipso.getFontsDirPath(), calipso.getResourcesDirPath(), os, html);
 	}
 	
 	public static void writePdf(String fontDir, String resourcesBasePath, OutputStream os,
-			String html) throws DocumentException, IOException {
+ String html) {
+		try {
+		// Create a buffer to hold the cleaned up HTML
+		// Note: you can safely ignore both flush() and close(),
+		// as they do nothing in ByteArrayOutputStream's implementation.
+		// ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		// Clean up the HTML to be well formed
+		HtmlCleaner cleaner = new HtmlCleaner();
+		CleanerProperties props = cleaner.getProperties();
+		props.setAdvancedXmlEscape(true);
+		props.setRecognizeUnicodeChars(true);
+		props.setTranslateSpecialEntities(true);
+		props.setUseCdataForScriptAndStyle(false);
+		props.setOmitXmlDeclaration(false);
+		props.setOmitDoctypeDeclaration(false);
+		TagNode node = cleaner.clean(html);
+		// write to the ByteArray buffer
+		html = new PrettyXmlSerializer(props).getAsString(node);
+		logger.info("CLEANED HTML: " + html);
+		// update the html string using the cleaned-up version
+		// html = new String(out.toByteArray());
+
 		ITextRenderer renderer = new ITextRenderer();
 		renderer.getFontResolver()
 			.addFont(fontDir+File.separator+"ARIALUNI.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -289,6 +317,9 @@ public class PdfUtils {
 		}
 		renderer.layout();
 		renderer.createPDF(os);
+		} catch (Exception e) {
+			logger.error("Failed to creare PDF for item, html: \n" + html, e);
+		}
 	}
 
 	/**

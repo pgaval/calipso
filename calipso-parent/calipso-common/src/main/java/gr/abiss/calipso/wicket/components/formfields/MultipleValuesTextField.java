@@ -19,6 +19,7 @@
 
 package gr.abiss.calipso.wicket.components.formfields;
 
+import gr.abiss.calipso.util.XmlUtils;
 import gr.abiss.calipso.wicket.ErrorHighlighter;
 import gr.abiss.calipso.wicket.form.FieldUtils;
 
@@ -212,7 +213,7 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				if (StringUtils.isNotBlank(newSubFieldValues.get(i)+"")) {
 					foundNonBlankValue = true;
 				}
-				values.append(newSubFieldValues.get(i));
+				values.append(XmlUtils.escapeHTML(HtmlUtils.htmlUnescape(newSubFieldValues.get(i).toString())));
 
 				if (i + 1 < newSubFieldValues.size()) {
 					values.append(SEPARATOR_LINE_SUBVALUE);
@@ -385,7 +386,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * @return
 	 */
 	public static String toHtmlSafeLines(String input){
-		String escapedInput = HtmlUtils.htmlEscape(input);
+		String escapedInput = XmlUtils
+				.escapeHTML(HtmlUtils.htmlUnescape(input));
 		String html = escapedInput.replaceAll("\\n", "<br />")
 				.replaceAll(MultipleValuesTextField.SEPARATOR_LINE_SUBVALUE_REGEXP, " ");
 		return html;
@@ -406,9 +408,11 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * @return
 	 */
 	public static String toHtmlSafeTable(String input, FieldConfig fieldConfig, Localizer localizer, Component callerComponent){
-		// logger.info("toHtmlSafeTable input: "+input+", fieldConfig: "+fieldConfig+", localizer: "+localizer+", component: "+callerComponent);
+		String escapedInput = XmlUtils
+				.escapeHTML(HtmlUtils.htmlUnescape(input));
 		StringBuffer html = new StringBuffer();
-		List<String> escapedLines = MultipleValuesTextField.getValueRows(HtmlUtils.htmlEscape(input));
+		List<String> escapedLines = MultipleValuesTextField
+				.getValueRows(escapedInput);// HtmlUtils.htmlEscape(input));
 		final FieldSummaryHelper helper = new FieldSummaryHelper(fieldConfig);
 		if(CollectionUtils.isNotEmpty(escapedLines)){
 			html.append("<table cellspacing=\"1\" cellpadding=\"0\" class=\"custom-attribute-tabular\">");
@@ -482,7 +486,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 	 * @return
 	 */
 	public static String toHtmlSafePreformatedText(String input){
-		String escapedInput = HtmlUtils.htmlEscape(input);
+		String escapedInput = XmlUtils
+				.escapeHTML(HtmlUtils.htmlUnescape(input));// HtmlUtils.htmlEscape(input);
 		String html = escapedInput//.replaceAll("\\n", "<br />")
 				.replaceAll(MultipleValuesTextField.SEPARATOR_LINE_SUBVALUE_REGEXP, "\t");
 		return html;
