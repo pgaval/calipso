@@ -107,6 +107,7 @@
 							<value>500000</value>
 						</systemProperty>
 					</systemProperties>
+					<jettyConfig>${project.basedir}/src/main/resources/jetty.xml</jettyConfig>
 				</configuration>
 				<dependencies>
 					<dependency>
