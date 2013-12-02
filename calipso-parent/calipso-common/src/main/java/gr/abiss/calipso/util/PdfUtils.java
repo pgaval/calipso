@@ -87,7 +87,7 @@ public class PdfUtils {
 				Velocity.evaluate(context, writer, asset.getInventoryCode(), templateReader);
 				// get the output as a string
 				html = writer.getBuffer().toString();
-				logger.debug("Velocity result: \n"+html);
+				// logger.debug("Velocity result: \n"+html);
 			}
 			else{
 				StringBuffer htmlBuffer = getDefaultHeader();
@@ -293,7 +293,7 @@ public class PdfUtils {
 		TagNode node = cleaner.clean(html);
 		// write to the ByteArray buffer
 		html = new PrettyXmlSerializer(props).getAsString(node);
-		logger.info("CLEANED HTML: " + html);
+			// logger.info("CLEANED HTML: " + html);
 		// update the html string using the cleaned-up version
 		// html = new String(out.toByteArray());
 
@@ -303,6 +303,12 @@ public class PdfUtils {
 		if(StringUtils.isNotBlank(resourcesBasePath)){
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+					factory.setValidating(false);
+					factory.setFeature(
+							"http://apache.org/xml/features/nonvalidating/load-external-dtd",
+							false);
+
 			    DocumentBuilder builder = factory.newDocumentBuilder();
 			    InputSource is = new InputSource( new StringReader(html));
 			    Document doc = builder.parse(is);
