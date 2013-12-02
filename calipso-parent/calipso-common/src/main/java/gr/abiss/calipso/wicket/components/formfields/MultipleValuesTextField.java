@@ -213,7 +213,8 @@ public class MultipleValuesTextField extends FormComponentPanel {
 				if (StringUtils.isNotBlank(newSubFieldValues.get(i)+"")) {
 					foundNonBlankValue = true;
 				}
-				values.append(XmlUtils.escapeHTML(HtmlUtils.htmlUnescape(newSubFieldValues.get(i).toString())));
+				values.append(XmlUtils.escapeHTML(HtmlUtils
+						.htmlUnescape(newSubFieldValues.get(i) + "")));
 
 				if (i + 1 < newSubFieldValues.size()) {
 					values.append(SEPARATOR_LINE_SUBVALUE);
