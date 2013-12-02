@@ -390,6 +390,8 @@ public class CalipsoApplication extends WebApplication {
 		//fix for tinyMCE bug, see https://github.com/wicketstuff/core/issues/113
 		SecurePackageResourceGuard guard = (SecurePackageResourceGuard) getResourceSettings().getPackageResourceGuard();
 		guard.addPattern("+*.htm");
+
+		this.getRequestCycleSettings().setTimeout(Duration.minutes(3));
 	}
 
 	@Override
