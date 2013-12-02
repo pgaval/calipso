@@ -36,12 +36,12 @@
 
 package gr.abiss.calipso.wicket;
 
-import org.apache.log4j.Logger;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.RestartResponseAtInterceptPageException;
-
 import gr.abiss.calipso.domain.CalipsoBreadCrumbBar;
 import gr.abiss.calipso.domain.Space;
+
+import org.apache.log4j.Logger;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * Pretty URL Item creation page
@@ -70,5 +70,7 @@ public class NewItemPage extends BasePage {
         	// if not allowed, send to login
         	throw new RestartResponseAtInterceptPageException(LoginPage.class);
         }
-    }    
+
+		this.setVersioned(true);
+	}
 }

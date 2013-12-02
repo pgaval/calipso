@@ -23,9 +23,6 @@ import gr.abiss.calipso.domain.Item;
 import gr.abiss.calipso.domain.ItemRenderingTemplate;
 
 import org.apache.log4j.Logger;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.MarkupStream;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
@@ -39,6 +36,8 @@ import org.apache.wicket.util.template.PackageTextTemplate;
  * view. Currently only the default view is implemented using the ItemView panel.
  */
 public class ItemTemplateViewPage extends WebPage {
+
+	private static final long serialVersionUID = 4854112992037656475L;
 	private static final Logger logger = Logger.getLogger(ItemTemplateViewPage.class);
 
 
@@ -48,13 +47,16 @@ public class ItemTemplateViewPage extends WebPage {
 		PageParameters parameters = new PageParameters();
 		// parameters.set("name", name);
 		add(new JsTextContainer("styleString", parameters));
+		this.setVersioned(true);
 	}
 
 	public ItemTemplateViewPage(IModel<?> model) {
 		super(model);
+		this.setVersioned(true);
 		PageParameters parameters = new PageParameters();
 		// parameters.set("name", name);
 		add(new JsTextContainer("styleString", parameters));
+		this.setVersioned(true);
 	}
 
 
@@ -73,28 +75,10 @@ public class ItemTemplateViewPage extends WebPage {
 		add(new ItemView("panel", null, tmpl, item, true)
 				.setRenderBodyOnly(true));
 		add(new JsTextContainer("styleString", parameters));
+		this.setVersioned(true);
     }
 
-	private static class JsTextContainer extends WebMarkupContainer {
-
-		private PageParameters parameters;
-
-		public JsTextContainer(String id, PageParameters parameters) {
-			super(id);
-			this.parameters = parameters;
-		}
-
-		@Override
-		public void onComponentTagBody(MarkupStream markupStream,
-				ComponentTag openTag) {
-			String tagBody = // new StringBuffer().append(
-			getPackagedStyleString(this.parameters);// ).toString();
-			replaceComponentTagBody(markupStream, openTag, tagBody);
-		}
-
-	}
-
-	private static String getPackagedStyleString(PageParameters parameters) {
+	static String getPackagedStyleString(PageParameters parameters) {
 		PackageTextTemplate template = new PackageTextTemplate(
 				ItemTemplateViewPage.class, "pdf-style.tmpl");
 

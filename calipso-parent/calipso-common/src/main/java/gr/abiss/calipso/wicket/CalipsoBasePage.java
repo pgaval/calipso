@@ -51,6 +51,7 @@ public abstract class CalipsoBasePage extends WebPage {
         add(headerPanel);
 		String jtracVersion = ComponentUtils.getCalipso(this).getReleaseVersion();
 		add(new Label("version", jtracVersion));
+		this.setVersioned(true);
 
     }
 }

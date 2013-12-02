@@ -69,7 +69,7 @@ public abstract class BasePage extends WebPage {
 		infoPanel = new InfoPanel();
 		infoPanel.setRenderBodyOnly(false);
 		add(infoPanel);
-
+		this.setVersioned(true);
 		String calipsoVersion = ComponentUtils.getCalipso(this).getReleaseVersion();
 		add(new Label("version", calipsoVersion));
 		setTitle("Calipso");

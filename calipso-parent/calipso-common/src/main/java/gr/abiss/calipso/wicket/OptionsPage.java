@@ -61,6 +61,7 @@ public class OptionsPage extends BasePage {
         add(optionsPanel);
         breadCrumbBar.setActive(optionsPanel);
         refreshMenu(breadCrumbBar);
+		this.setVersioned(true);
     }
 
     public void activate (IBreadCrumbPanelFactory breadCrumbPanelFactory){

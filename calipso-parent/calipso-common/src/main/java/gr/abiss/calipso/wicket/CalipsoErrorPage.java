@@ -20,7 +20,6 @@
 package gr.abiss.calipso.wicket;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 
 /**
  * @author marcello
@@ -31,6 +30,7 @@ public class CalipsoErrorPage extends BasePage {
 
 	public CalipsoErrorPage(){
 		add(new WebMarkupContainer("errorMsg").setVisible(false));
+		this.setVersioned(true);
 	}
 	
 	public CalipsoErrorPage(RuntimeException e) {

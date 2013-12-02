@@ -83,7 +83,7 @@ public class LoginPage extends CalipsoBasePage {
         add(new LoginForm("form"));
         add(new ForgottenPasswordForm("forgottenPasswordForm"));
         //String jtracVersion = ComponentUtils.getCalipso(this).getReleaseVersion();
-        //add(new Label("version", jtracVersion));                
+		// add(new Label("version", jtracVersion));
     }
     
     /**
