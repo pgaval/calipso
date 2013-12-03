@@ -213,7 +213,7 @@ public class ItemView extends BasePanel {
     	else{
     		
     		if(field.isMultivalue()){
-    			logger.info("addFieldValueDisplay, fieldConfig: "+fieldConfig);
+				// logger.info("addFieldValueDisplay, fieldConfig: "+fieldConfig);
 				Label label = new Label("fieldValue",
 				// StringEscapeUtils.unescapeHtml(
 						MultipleValuesTextField.toHtmlSafeTable(
@@ -277,7 +277,7 @@ public class ItemView extends BasePanel {
     	        }
     	        		
     	        		
-				logger.info("printToPdf: " + markup);
+				// logger.info("printToPdf: " + markup);
             	getRequestCycle().scheduleRequestHandlerAfterCurrent(
 
             			new PdfRequestTarget(

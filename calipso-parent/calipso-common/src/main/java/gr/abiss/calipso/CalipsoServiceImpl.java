@@ -794,107 +794,120 @@ public class CalipsoServiceImpl implements CalipsoService {
 	@Override
 	public synchronized void storeHistoryForItem(long itemId,
 			Map<String, FileUpload> fileUploads, History history) {
-		Date now = new Date();
+		try {
 
-		Item item = dao.loadItem(itemId);
-		this.runPreStateChangePlugins(item);
-		// keep a ref to file uploads
-		for (String filename : fileUploads.keySet()) {
-			FileUpload upload = fileUploads.get(filename);
-			String extention = upload.getClientFileName().substring(
-					upload.getClientFileName().lastIndexOf('.'));
-			// String filename = upload.getClientFileName();
-			Attachment attachment = new Attachment();
-			attachment.setSpace(item.getSpace());
-			attachment.setItem(item);
-			attachment.setHistory(history);
+			Date now = new Date();
 
-			attachment.setFileName(filename + extention);
-			attachment.setOriginalFileName(upload.getClientFileName());
-			attachment.setSimple(filename.equalsIgnoreCase(Field.FIELD_TYPE_SIMPLE_ATTACHEMENT));
-			//logger.debug("storeHistoryForItem: making attachment with filename: "
-			//		+ attachment.getFileName());
-			attachment.setTemporary(false);
-			// attachments to Item, replacing others with the same name if
-			// needed
-			AttachmentUtils.addAndReplaceSameNamed(history, attachment);
-		}
+			Item item = dao.loadItem(itemId);
+			this.runPreStateChangePlugins(item);
+			// keep a ref to file uploads
+			for (String filename : fileUploads.keySet()) {
+				FileUpload upload = fileUploads.get(filename);
+				String extention = upload.getClientFileName().substring(
+						upload.getClientFileName().lastIndexOf('.'));
+				// String filename = upload.getClientFileName();
+				Attachment attachment = new Attachment();
+				attachment.setSpace(item.getSpace());
+				attachment.setItem(item);
+				attachment.setHistory(history);
 
-		// first apply edits onto item record before we change the item status
-		// the item.getEditableFieldList routine depends on the current State of
-		// the item
-		for (Field field : item.getEditableFieldList(history.getLoggedBy())) {
-			Object value = history.getValue(field.getName());
-			//logger.info("Before setting item's '"+field.getName()+"' value from:" + item.getValue(field.getName())+", to:"+value);
-			if (value != null) {
-				item.setValue(field.getName(), value);
+				attachment.setFileName(filename + extention);
+				attachment.setOriginalFileName(upload.getClientFileName());
+				attachment.setSimple(filename
+						.equalsIgnoreCase(Field.FIELD_TYPE_SIMPLE_ATTACHEMENT));
+				// logger.debug("storeHistoryForItem: making attachment with filename: "
+				// + attachment.getFileName());
+				attachment.setTemporary(false);
+				// attachments to Item, replacing others with the same name if
+				// needed
+				AttachmentUtils.addAndReplaceSameNamed(history, attachment);
 			}
-		}
-		if (history.getStatus() != null) {
-			// in case of state change, update the state due to
-			if (!history.getStatus().equals(item.getStatus())) {
-				// reset notifications
-				item.setSentDueToNotifications(false);
 
-				// get the new (i.e. the history) state duration
-				Map<Integer, Long> stateDurations = item.getSpace()
-						.getMetadata().getStatesDurationMap();
-				if (MapUtils.isNotEmpty(stateDurations)) {
-					Long stateDuration = stateDurations
-							.get(history.getStatus());
-					if (stateDuration != null) {
-						Date stateDeadline = new Date(now.getTime()
-								+ stateDuration.intValue());
-						item.setStateDueTo(stateDeadline);
-					}
+			// first apply edits onto item record before we change the item
+			// status
+			// the item.getEditableFieldList routine depends on the current
+			// State of
+			// the item
+			for (Field field : item.getEditableFieldList(history.getLoggedBy())) {
+				Object value = history.getValue(field.getName());
+				// logger.info("Before setting item's '"+field.getName()+"' value from:"
+				// + item.getValue(field.getName())+", to:"+value);
+				if (value != null) {
+					item.setValue(field.getName(), value);
 				}
 			}
-			item.setStatus(history.getStatus());
-			item.setAssignedTo(history.getAssignedTo()); // this may be null,
-															// when closing
-		}
-		if (history.getDueTo() != null) {
-			item.setDueTo(history.getDueTo());
-		}
-		if (history.getActualEffort() != null
-				&& history.getActualEffort().intValue() == 0) {
-			history.setActualEffort(null);
-		}
-		if (history.getPlannedEffort() != null
-				&& history.getPlannedEffort().intValue() > 0) {
-			item.setPlannedEffort(history.getPlannedEffort());
-		}
+			if (history.getStatus() != null) {
+				// in case of state change, update the state due to
+				if (!history.getStatus().equals(item.getStatus())) {
+					// reset notifications
+					item.setSentDueToNotifications(false);
 
-		item.setItemUsers(history.getItemUsers());
-		history.setTimeStamp(new Date());
-		// replace and move to permanent storage
-		item.add(history);
-
-		this.runPreHistorySavePlugins(history);
-		dao.save(history);
-		// update item with the latest, replacing name conflicts
-		AttachmentUtils.replaceAttachments(item, history.getAttachments());
-		dao.update(item);
-		// maybe no file uploads were given,
-		// e.g. when just updating Assets
-		if (fileUploads != null) {
-			// store the physical files *after* database persistence to
-			// produce proper ID-based file paths
-			if (logger.isDebugEnabled()) {
-				logger.debug("makePermanentAttachmentFiles, attachments: "
-						+ history.getAttachments() + ", uploadsMap: "
-						+ fileUploads);
+					// get the new (i.e. the history) state duration
+					Map<Integer, Long> stateDurations = item.getSpace()
+							.getMetadata().getStatesDurationMap();
+					if (MapUtils.isNotEmpty(stateDurations)) {
+						Long stateDuration = stateDurations.get(history
+								.getStatus());
+						if (stateDuration != null) {
+							Date stateDeadline = new Date(now.getTime()
+									+ stateDuration.intValue());
+							item.setStateDueTo(stateDeadline);
+						}
+					}
+				}
+				item.setStatus(history.getStatus());
+				item.setAssignedTo(history.getAssignedTo()); // this may be
+																// null,
+																// when closing
 			}
-			AttachmentUtils.makePermanentAttachmentFiles(
-					history.getAttachments(), fileUploads, calipsoHome);
-		}
+			if (history.getDueTo() != null) {
+				item.setDueTo(history.getDueTo());
+			}
+			if (history.getActualEffort() != null
+					&& history.getActualEffort().intValue() == 0) {
+				history.setActualEffort(null);
+			}
+			if (history.getPlannedEffort() != null
+					&& history.getPlannedEffort().intValue() > 0) {
+				item.setPlannedEffort(history.getPlannedEffort());
+			}
 
-		runPostStateChangePlugins(history, item);
+			item.setItemUsers(history.getItemUsers());
+			history.setTimeStamp(new Date());
+			// replace and move to permanent storage
+			item.add(history);
 
-		indexer.index(history);
-		indexer.index(item);
-		if (history.isSendNotifications()) {
-			mailSender.send(item);
+			this.runPreHistorySavePlugins(history);
+			dao.save(history);
+			// update item with the latest, replacing name conflicts
+			AttachmentUtils.replaceAttachments(item, history.getAttachments());
+			dao.update(item);
+			// maybe no file uploads were given,
+			// e.g. when just updating Assets
+			if (fileUploads != null) {
+				// store the physical files *after* database persistence to
+				// produce proper ID-based file paths
+				if (logger.isDebugEnabled()) {
+					logger.debug("makePermanentAttachmentFiles, attachments: "
+							+ history.getAttachments() + ", uploadsMap: "
+							+ fileUploads);
+				}
+				AttachmentUtils.makePermanentAttachmentFiles(
+						history.getAttachments(), fileUploads, calipsoHome);
+			}
+
+			runPostStateChangePlugins(history, item);
+
+			indexer.index(history);
+			indexer.index(item);
+			if (history.isSendNotifications()) {
+				mailSender.send(item);
+			}
+
+		} catch (Exception w) {
+			logger.error("storeHistoryForItem failed to persist", w);
+			throw RuntimeException.class.isAssignableFrom(w.getClass()) ? (RuntimeException) w
+					: new RuntimeException(w);
 		}
 	}
 

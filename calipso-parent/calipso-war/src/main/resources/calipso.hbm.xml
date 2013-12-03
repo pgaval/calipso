@@ -783,7 +783,7 @@
 			<column name="as_atid" />
 		</many-to-one>
 		
-		<set name="items" table="item_assets" inverse="true" lazy="true">
+		<set name="items" table="item_assets" inverse="true" cascade="none" lazy="true">
     		<key column="ia_asid" not-null="true"/>
 			<many-to-many column="ia_itemid" class="Item" />
 		</set>

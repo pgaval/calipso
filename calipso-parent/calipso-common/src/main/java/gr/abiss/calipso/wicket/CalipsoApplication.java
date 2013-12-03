@@ -53,12 +53,14 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.wicket.Component;
 import org.apache.wicket.ConverterLocator;
+import org.apache.wicket.DefaultExceptionMapper;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.RuntimeConfigurationType;
@@ -67,11 +69,20 @@ import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.markup.html.pages.RedirectPage;
+import org.apache.wicket.page.CouldNotLockPageException;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
+import org.apache.wicket.request.IExceptionMapper;
+import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.handler.PageProvider;
+import org.apache.wicket.request.handler.RenderPageRequestHandler;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.settings.IExceptionSettings.ThreadDumpStrategy;
+import org.apache.wicket.util.IProvider;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.cookies.CookieUtils;
 import org.apache.wicket.util.time.Duration;
@@ -126,15 +137,7 @@ public class CalipsoApplication extends WebApplication {
 		return calipsoCasProxyTicketValidator.getLogoutUrl();
 	}
 
-	// @Override
-	// public RequestCycle newRequestCycle(Request request, Response response) {
-	// return new WebRequestCycle(this, (WebRequest)request, response){
-	// @Override
-	// public Page onRuntimeException(Page page, RuntimeException e) {
-	// return new CalipsoErrorPage(e);
-	// }
-	// };
-	// }
+
 
 	@Override
 	public void init() {
@@ -144,8 +147,10 @@ public class CalipsoApplication extends WebApplication {
 		RuntimeConfigurationType configurationType = this.getConfigurationType();
 		if (RuntimeConfigurationType.DEVELOPMENT.equals(configurationType)) {
 			logger.info("You are in DEVELOPMENT mode");
-			getResourceSettings().setResourcePollFrequency(Duration.ONE_SECOND);
-			getDebugSettings().setComponentUseCheck(true);
+			// getResourceSettings().setResourcePollFrequency(Duration.ONE_SECOND);
+			// getDebugSettings().setComponentUseCheck(true);
+			getResourceSettings().setResourcePollFrequency(null);
+			getDebugSettings().setComponentUseCheck(false);
 			// getDebugSettings().setSerializeSessionAttributes(true);
 			// getMarkupSettings().setStripWicketTags(false);
 			// getExceptionSettings().setUnexpectedExceptionDisplay(
@@ -419,7 +424,7 @@ public class CalipsoApplication extends WebApplication {
 			user = (User) authentication.getPrincipal();
 		} catch (AuthenticationException ae) {
 			logger.error("Acegi authentication failed", ae);
-			ae.printStackTrace();
+			// ae.printStackTrace();
 		}
 		return user;
 	}
@@ -470,6 +475,52 @@ public class CalipsoApplication extends WebApplication {
         return locator;
 	}
 	
-	
+	/**
+	 * Maps exceptions to pages.
+	 */
+	@Override
+	public IProvider<IExceptionMapper> getExceptionMapperProvider() {
+		return new IProvider<IExceptionMapper>() {
+			@Override
+			public IExceptionMapper get() {
+				return new IExceptionMapper() {
+					final DefaultExceptionMapper def = new DefaultExceptionMapper();
+
+					@Override
+					public IRequestHandler map(Exception ex) {
+						PageParameters par = new PageParameters().add("ex", ex);
+						boolean couldNotLock = false;
+						if (ex.getClass().equals(
+								CouldNotLockPageException.class)) {
+							couldNotLock = true;
+						} else if (ex.getCause() != null
+								&& (ex.getCause()
+										.getClass()
+										.equals(CouldNotLockPageException.class) || (ex
+										.getCause().getCause() != null && ex
+										.getCause()
+										.getCause()
+										.getClass()
+										.equals(CouldNotLockPageException.class)))) {
+							couldNotLock = true;
+							
+						}
+
+						if (couldNotLock) {
+							Request request = RequestCycle.get().getRequest();
+							HttpServletRequest httpRequest = ((ServletWebRequest) request).getContainerRequest();
+							logger.error("Page lock timed out, invalidating session");
+							if (httpRequest.getSession(false) != null) {
+								httpRequest.getSession().invalidate();
+							}
+							return new RenderPageRequestHandler(
+									new PageProvider(LoginPage.class, par));
+						}
+						return def.map(ex);
+					}
+				};
+			}
+		};
+	}
 
 }
