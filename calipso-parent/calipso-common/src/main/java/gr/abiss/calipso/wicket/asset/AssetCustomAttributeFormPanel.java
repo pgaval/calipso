@@ -99,6 +99,9 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 	@SuppressWarnings("serial")
 	private void addComponents(final CompoundPropertyModel model,
 			final boolean isMandatory) {
+
+		logger.info("addComponents, isMandatory: " + isMandatory);
+
 		// Mandatory mark. red asterisk (*)
 		add(isMandatory?new MandatoryPanel("mandatoryPanel"):new WebMarkupContainer("mandatoryPanel"));
 		
@@ -119,7 +122,7 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		TextField mappingKey = new TextField("mappingKey");//, new PropertyModel(model.getObject(), "mappingKey"));
 		add(mappingKey);
 
-		addOptionsPanel(model, selected, isMandatory);
+		addOptionsPanel(model, selected, !isMandatory);
 		if (isMandatory) {// Edit Mode
 
 			mandatoryFragment = new Fragment("mandatoryField",
@@ -215,7 +218,8 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		// attributeTypes
 		// and a Map of pairs (AttributeTypes,AttributeTypes)
 		//final AttributeTypes attributeTypesList = new AttributeTypes();
-		
+
+		logger.debug("addType, isMandatory: " + isMandatory);
 		type = new DropDownChoice<Integer>("formType", new ArrayList<Integer>(CustomAttribute.FORM_TYPES), new IChoiceRenderer<Integer>() {
 			@Override
 			public Object getDisplayValue(Integer o) {
@@ -276,25 +280,29 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				logger.info("onUpdate");
-				//AssetCustomAttributeFormPanel.this.remove(validPanel);
-				Integer selected = type.getModelObject();
-				
-				if (selected.equals(AssetTypeCustomAttribute.FORM_TYPE_MULTISELECT)
-						|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_SELECT)
-						|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_OPTIONS_TREE)) {
-					optionsPanel.setVisible(true);
-					validPanel.setVisible(false);
+				if (isMandatory) {
+					// AssetCustomAttributeFormPanel.this.remove(validPanel);
+					Integer selected = type.getModelObject();
+
+					if (selected
+							.equals(AssetTypeCustomAttribute.FORM_TYPE_MULTISELECT)
+							|| selected
+									.equals(AssetTypeCustomAttribute.FORM_TYPE_SELECT)
+							|| selected
+									.equals(AssetTypeCustomAttribute.FORM_TYPE_OPTIONS_TREE)) {
+						optionsPanel.setVisible(true);
+						validPanel.setVisible(false);
+					} else if (selected
+							.equals(AssetTypeCustomAttribute.FORM_TYPE_TEXT)) {
+						optionsPanel.setVisible(false);
+						validPanel.setVisible(true);
+					} else {
+						optionsPanel.setVisible(false);
+						validPanel.setVisible(false);
+					}
+					target.add(optionsPanelContainer);
+					target.add(validPanelContainer);
 				}
-				else if (selected.equals(AssetTypeCustomAttribute.FORM_TYPE_TEXT)) {
-					optionsPanel.setVisible(false);
-					validPanel.setVisible(true);
-				}
-				else{
-					optionsPanel.setVisible(false);
-					validPanel.setVisible(false);
-				}
-				target.add(optionsPanelContainer);
-				target.add(validPanelContainer);				
 			}
 		});
 		
@@ -316,6 +324,7 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 
 	private void addName(final CompoundPropertyModel model,
 			final boolean isMandatory) {
+		logger.debug("addName, isMandatory: " + isMandatory);
 		if(model.getObject() instanceof AssetTypeCustomAttribute){
 			List<Language> languages = getCalipso().getSupportedLanguages();
 			CustomAttribute attr = (CustomAttribute) model.getObject();
@@ -346,11 +355,11 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 					description.setLabel(new ResourceModel("language."+language.getId()));
 					listItem.add(new SimpleFormComponentLabel("languageLabel", description));
 				}
-			});
+			}.setReuseItems(true));
 		}
 		else{
 			WebMarkupContainer container = new WebMarkupContainer("nameTranslations");
-			TextField description = new TextField("name", model);
+			TextField description = new TextField("name");
 			description.setRequired(false);
 			container.add(description);
 			container.add(new Label("languageLabel", "").setVisible(false));
@@ -378,7 +387,8 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 
 	private void addOptionsPanel(final CompoundPropertyModel model,
 			Integer selected, boolean hide) {
-		logger.info("selected: "+selected);
+		logger.info("addOptionsPanel, selected: " + selected + ", hide: "
+				+ hide);
 		Object modelObject = model.getObject();
 		if(modelObject instanceof AssetTypeCustomAttributeSearch){
 			modelObject = ((AssetTypeCustomAttributeSearch) modelObject).getSearchObject();
@@ -386,10 +396,10 @@ public class AssetCustomAttributeFormPanel extends BasePanel {
 		optionsPanel = new CustomAttributeOptionsPanel("optionTranslationsPanel", (AssetTypeCustomAttribute) modelObject, getCalipso().getSupportedLanguages(), textAreaOptions);
 		optionsPanel.setOutputMarkupId(true);
 		//optionsPanel.setOutputMarkupId(true);
-		if (hide = false
-				&& selected.equals(AssetTypeCustomAttribute.FORM_TYPE_SELECT)
-			|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_MULTISELECT)
-			|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_OPTIONS_TREE)) {
+		if (hide == false
+				&& (selected.equals(AssetTypeCustomAttribute.FORM_TYPE_SELECT)
+					|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_MULTISELECT)
+					|| selected.equals(AssetTypeCustomAttribute.FORM_TYPE_OPTIONS_TREE))) {
 			optionsPanel.setVisible(true);
 		}
 		else{

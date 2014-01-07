@@ -19,32 +19,22 @@
 
 package gr.abiss.calipso.wicket.customattrs;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import gr.abiss.calipso.domain.CustomAttribute;
+import gr.abiss.calipso.domain.Language;
+import gr.abiss.calipso.wicket.BasePanel;
+import gr.abiss.calipso.wicket.ErrorHighlighter;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.springframework.util.CollectionUtils;
-
-import gr.abiss.calipso.domain.CustomAttribute;
-import gr.abiss.calipso.domain.CustomAttributeLookupValue;
-import gr.abiss.calipso.domain.I18nStringIdentifier;
-import gr.abiss.calipso.domain.I18nStringResource;
-import gr.abiss.calipso.domain.Language;
-import gr.abiss.calipso.wicket.BasePanel;
-import gr.abiss.calipso.wicket.ErrorHighlighter;
 
 /**
  * Renders a textarea for options entry per language. Stores values in a
@@ -94,6 +84,7 @@ public class CustomAttributeOptionsPanel extends BasePanel {
 		// get the field's custom attribute or create one if needed
 
 		add(new ListView("optionTranslations", languages) {
+			@Override
 			protected void populateItem(ListItem listItem) {
 				// logger.debug("Building option translations for : "+fieldInternalName);
 				Language language = (Language) listItem.getModelObject();
@@ -120,7 +111,7 @@ public class CustomAttributeOptionsPanel extends BasePanel {
 						optionsTextArea));
 			}
 			
-		});
+		}.setReuseItems(true));
 	}
 
 }

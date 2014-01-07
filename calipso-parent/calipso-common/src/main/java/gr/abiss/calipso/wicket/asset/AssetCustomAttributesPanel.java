@@ -240,7 +240,15 @@ public class AssetCustomAttributesPanel extends BasePanel {
 		private final AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch;
 		private final Map<String,String> textAreaOptions = new HashMap<String,String>();
 
+
+
 		public AssetTypeCustomAttributeForm(String id, AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch) {
+			this(id, assetTypeCustomAttributeSearch, false);
+		}
+
+		public AssetTypeCustomAttributeForm(String id,
+				AssetTypeCustomAttributeSearch assetTypeCustomAttributeSearch,
+				boolean isSearch) {
 			super(id);
             FeedbackPanel feedback = new FeedbackPanel("feedback");
             filter = new CalipsoFeedbackMessageFilter();
